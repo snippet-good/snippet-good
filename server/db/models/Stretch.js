@@ -9,7 +9,7 @@ const Stretch = db.define('stretch', {
     }
   },
   body: {
-    type: db.STRING,
+    type: db.TEXT,
     allowNull: false,
     validate: {
       isEmpty: false
