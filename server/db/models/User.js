@@ -2,31 +2,33 @@ const db = require('../db')
 
 const User = db.define('user', {
   userName: {
-    type: db.STRING,
+    type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
       isEmpty: false
     }
   },
   firstName: {
-    type: db.STRING,
+    type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
       isEmpty: false
     }
   },
   lastName: {
-    type: db.STRING,
+    type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
       isEmpty: false
     }
   },
   email: {
-    type: STRING,
+    type: db.Sequelize.STRING,
     allowNull: false,
-    notEmpty: true,
     isEmail: true,
+    validate: {
+      isEmpty: false
+    },
     unique: {
       // If a user tries to sign up with an email that is already registered,
       // msg will be thrown as an error.
@@ -35,14 +37,14 @@ const User = db.define('user', {
     },
   },
   password: {
-    type: db.STRING,
+    type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
       isEmpty: false
     }
   },
   isAdmin: {
-    type: db.BOOLEAN,
+    type: db.Sequelize.BOOLEAN,
     defaultValue: false,
     validate: {
       isEmpty: false

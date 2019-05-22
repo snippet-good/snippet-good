@@ -3,7 +3,7 @@ const { User, Snippet, Stretch, Comment } = require('./models')
 
 function initDb(force = false) {
   return db.authenticate().then(() => {
-    // One-to-many relationships:
+    // Sequelize associations
     // --------------------------
     // A user has many snippets
     Snippet.belongsTo(User)

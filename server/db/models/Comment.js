@@ -2,7 +2,7 @@ const db = require('../db')
 
 const Comment = db.define('comment', {
   body: {
-    type: db.TEXT,
+    type: db.Sequelize.TEXT,
     allowNull: false,
     validate: {
       isEmpty: false

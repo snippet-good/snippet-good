@@ -2,14 +2,14 @@ const db = require('../db')
 
 const Snippet = db.define('snippet', {
   body: {
-    type: db.TEXT,
+    type: db.Sequelize.TEXT,
     allowNull: false,
     validate: {
       isEmpty: false
     }
   },
   isSolved: {
-    type: db.BOOLEAN,
+    type: db.Sequelize.BOOLEAN,
     defaultValue: false
   }
 })
