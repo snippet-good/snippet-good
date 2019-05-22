@@ -1,15 +1,16 @@
 {
-  "name": "",
+  "name": "snippet",
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "nodemon": "./node_modules/.bin/nodemon",
     "postinstall": "webpack",
     "start": "node server/index.js",
     "start:dev": "npm run start-server & npm run build-watch",
-    "start-server": "./node_modules/.bin/nodemon server/index.js --watch server -e js,html",
+    "start-server": "nodemon server/index.js --watch server -e js,html",
     "build-watch": "webpack -w",
-    "test": "jest ./tests/*.spec.js --watch --runInBand --silent",
-    "seed": "node bin/runSeed.js"
+    "test": "jest ./tests/*.spec.js --runInBand --silent",
+    "test:dev": "npm run test -- --watch"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
@@ -36,6 +38,7 @@
     "enzyme-adapter-react-16": "^1.11.2",
     "jest": "^24.5.0",
     "nodemon": "^1.18.10",
+    "redux-logger": "^3.0.6",
     "supertest": "^4.0.2",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0"
