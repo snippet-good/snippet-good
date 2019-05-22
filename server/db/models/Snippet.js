@@ -8,12 +8,9 @@ const Snippet = db.define('snippet', {
       isEmpty: false
     }
   },
-  status: {
-    type: db.ENUM('active', 'closed'),
-    allowNull: false,
-    validate: {
-      isEmpty: false
-    }
+  isSolved: {
+    type: db.BOOLEAN,
+    defaultValue: false
   }
 })
 

@@ -7,13 +7,6 @@ const Comment = db.define('comment', {
     validate: {
       isEmpty: false
     }
-  },
-  author: {
-    type: db.STRING,
-    allowNull: false,
-    validate: {
-      isEmpty: false
-    }
   }
 })
 
