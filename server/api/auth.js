@@ -12,7 +12,7 @@ router.post('/', (req, res, next) => {
       if (!user) {
         let error = new Error('incorrect credentials')
         error.status = 401
-        return next(error)
+        throw error
       }
       req.session.userId = user.id
       res.json(user)
