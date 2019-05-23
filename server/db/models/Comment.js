@@ -5,7 +5,7 @@ const Comment = db.define('comment', {
     type: db.Sequelize.TEXT,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   }
 })

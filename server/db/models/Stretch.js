@@ -5,21 +5,21 @@ const Stretch = db.define('stretch', {
     type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   },
   body: {
     type: db.Sequelize.TEXT,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   },
   author: {
     type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   }
 })
