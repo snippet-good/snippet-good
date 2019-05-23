@@ -5,21 +5,21 @@ const User = db.define('user', {
     type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   },
   firstName: {
     type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   },
   lastName: {
     type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   },
   email: {
@@ -27,27 +27,27 @@ const User = db.define('user', {
     allowNull: false,
     isEmail: true,
     validate: {
-      isEmpty: false
+      notEmpty: true
     },
     unique: {
       // If a user tries to sign up with an email that is already registered,
       // msg will be thrown as an error.
       args: true,
-      msg: 'There is already an account registered to this email.',
-    },
+      msg: 'There is already an account registered to this email.'
+    }
   },
   password: {
     type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   },
   isAdmin: {
     type: db.Sequelize.BOOLEAN,
     defaultValue: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   }
 })

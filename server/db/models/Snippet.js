@@ -5,7 +5,7 @@ const Snippet = db.define('snippet', {
     type: db.Sequelize.TEXT,
     allowNull: false,
     validate: {
-      isEmpty: false
+      notEmpty: true
     }
   },
   isSolved: {

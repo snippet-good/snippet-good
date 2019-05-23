@@ -4,5 +4,6 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: path.join(__dirname, 'CoverageReport'),
   coverageReporters: ['text', 'html'],
-  verbose: true
+  verbose: true,
+  setupFiles: ['<rootDir>/node_modules/regenerator-runtime/runtime']
 }
