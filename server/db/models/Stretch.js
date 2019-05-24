@@ -8,19 +8,18 @@ const Stretch = db.define('stretch', {
       notEmpty: true
     }
   },
-  body: {
+  textPrompt: {
     type: db.Sequelize.TEXT,
     allowNull: false,
     validate: {
       notEmpty: true
     }
   },
-  author: {
-    type: db.Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
+  codePrompt: {
+    type: db.Sequelize.TEXT
+  },
+  solution: {
+    type: db.Sequelize.TEXT
   }
 })
 
