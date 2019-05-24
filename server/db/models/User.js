@@ -31,7 +31,7 @@ const User = db.define('user', {
     },
     unique: {
       // If a user tries to sign up with an email that is already registered,
-      // msg will be thrown as an error.
+      // msg will be thrown as an erro.
       args: true,
       msg: 'There is already an account registered to this email.'
     }
