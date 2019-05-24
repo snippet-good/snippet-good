@@ -4,26 +4,26 @@ import login from '../../redux/store/thunks'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (userName, password) => dispatch(login(userName, password))
+    login: (email, password) => dispatch(login(email, password))
   }
 }
 
 const Login = ({ login }) => {
-  const [userName, setUserName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const handleSubmit = ev => {
     ev.preventDefault()
-    login(userName, password)
+    login(email, password)
   }
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <label>
-          Username:
+          Email:
           <input
             type="text"
-            value={userName}
-            onChange={ev => setUserName(ev.target.value)}
+            value={email}
+            onChange={ev => setEmail(ev.target.value)}
           />
         </label>
         <label>
