@@ -1,42 +1,36 @@
 const db = require('../db')
 
-const Stretch = db.define('stretch', {
+const Cohort = db.define('cohort', {
   id: {
     type: db.Sequelize.UUID,
     defaultValue: db.Sequelize.UUIDV4,
     primaryKey: true
   },
-  title: {
+  name: {
     type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
       notEmpty: true
     }
   },
-  textPrompt: {
-    type: db.Sequelize.TEXT,
+  startDate: {
+    type: db.Sequelize.DATEONLY,
     allowNull: false,
     validate: {
       notEmpty: true
     }
   },
-  codePrompt: {
-    type: db.Sequelize.TEXT
-  },
-  difficulty: {
-    type: db.Sequelize.INTEGER,
-    validate: {
-      min: 1,
-      max: 5
-    }
-  },
-  canBeCoded: {
-    type: db.Sequelize.BOOLEAN,
+  endDate: {
+    type: db.Sequelize.DATEONLY,
     allowNull: false,
     validate: {
-      notEmpty: true
+      notEmpty: true,
+      afterStartDate(value) {
+        if (this.startDate >= value)
+          throw new Error('endDate must be after startDate')
+      }
     }
   }
 })
 
-module.exports = Stretch
+module.exports = Cohort

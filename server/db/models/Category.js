@@ -1,13 +1,13 @@
 const db = require('../db')
 
-const Comment = db.define('comment', {
+const Category = db.define('category', {
   id: {
     type: db.Sequelize.UUID,
     defaultValue: db.Sequelize.UUIDV4,
     primaryKey: true
   },
-  body: {
-    type: db.Sequelize.TEXT,
+  name: {
+    type: db.Sequelize.STRING,
     allowNull: false,
     validate: {
       notEmpty: true
@@ -15,4 +15,4 @@ const Comment = db.define('comment', {
   }
 })
 
-module.exports = Comment
+module.exports = Category

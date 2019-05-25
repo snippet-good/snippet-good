@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { connect } from 'react-router-dom'
-import login from '../../redux/store/thunks'
+import { connect } from 'react-redux'
+import { login } from '../../store/thunks'
 
 const mapDispatchToProps = dispatch => {
   return {

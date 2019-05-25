@@ -3,20 +3,25 @@ const app = require('../../server/app')
 const {
   models: { User }
 } = require('../../server/db/index')
+const db = require('../../server/db/db')
 const syncAndSeed = require('../../bin/seed')
 
 describe('Auth routes', () => {
-  beforeEach(() => {
-    return syncAndSeed().then(() => {
-      return User.create({
-        userName: true,
-        firstName: 'Joe',
-        lastName: 'test',
-        email: 'joe@gmail.com',
-        password: '12345',
-        isAdmin: true
-      })
+  beforeAll(async () => {
+    await syncAndSeed()
+    return User.create({
+      userName: 'joe',
+      firstName: 'Joe',
+      lastName: 'test',
+      email: 'joe@gmail.com',
+      password: '12345',
+      isAdmin: true
     })
+  })
+
+  afterAll(async done => {
+    await db.close()
+    done()
   })
 
   describe('POST /api/auth', () => {

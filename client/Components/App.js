@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { HashRouter as Router, Route } from 'react-router-dom'
-import { Home, Login } from '../Components'
+import { Home, Login } from './index'
 
 class App extends Component {
   render() {

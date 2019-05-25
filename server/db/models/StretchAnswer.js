@@ -1,6 +1,6 @@
 const db = require('../db')
 
-const Comment = db.define('comment', {
+const StretchAnswer = db.define('stretchanswer', {
   id: {
     type: db.Sequelize.UUID,
     defaultValue: db.Sequelize.UUIDV4,
@@ -12,7 +12,17 @@ const Comment = db.define('comment', {
     validate: {
       notEmpty: true
     }
+  },
+  isSolved: {
+    type: db.Sequelize.BOOLEAN
+  },
+  rating: {
+    type: db.Sequelize.INTEGER,
+    validate: {
+      min: 1,
+      max: 5
+    }
   }
 })
 
-module.exports = Comment
+module.exports = StretchAnswer
