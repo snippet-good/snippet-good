@@ -11,7 +11,7 @@ const requiredFieldTest = (error, obj) => {
       error = new Error('NOOOOOOOOOOOOOOOOO')
     })
     .catch(err => {
-      console.log(err)
+      //console.log(err)
       error = err
     })
     .then(() => {
@@ -41,8 +41,8 @@ describe('Cohort model', () => {
         message = 'instance successfully created'
       })
       .catch(err => {
-        console.log(err)
-        message = 'instance NOT successfully created'
+        //console.log(err)
+        message = err
       })
       .then(() => {
         expect(message).toBe('instance successfully created')
@@ -84,7 +84,7 @@ describe('Cohort model', () => {
         error = new Error('NOOOOOOOOOOOOOOOOO')
       })
       .catch(err => {
-        console.log(err)
+        //console.log(err)
         error = err
       })
       .then(() => {
