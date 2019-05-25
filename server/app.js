@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
   if (err.errors) {
     error = err.errors.map(currentError => currentError.message)
   } else {
-    error = err
+    error = err.message
   }
   console.log(error)
   res.status(error.status || 500).send(error)

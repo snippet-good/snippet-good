@@ -9,3 +9,17 @@ export const login = (email, password) => {
       .then(user => dispatch(actions.getUser(user)))
   }
 }
+
+export const checkForUserThunk = () => {
+  return dispatch => {
+    return axios
+      .get('/api/auth')
+      .then(({ data }) => dispatch(actions.getUser(data)))
+  }
+}
+
+export const logoutUserThunk = () => {
+  return dispatch => {
+    return axios.delete('/api/auth').then(() => dispatch(actions.getUser({})))
+  }
+}

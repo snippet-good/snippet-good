@@ -27,7 +27,7 @@ router.get('/', (req, res, next) => {
     return next(error)
   }
 
-  User.findbyPk(req.session.userId)
+  User.findByPk(req.session.userId)
     .then(user => res.json(user))
     .catch(next)
 })

@@ -8,12 +8,15 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const Login = ({ login }) => {
+const Login = ({ login, history }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const handleSubmit = ev => {
     ev.preventDefault()
     login(email, password)
+      .then(() => history.push('/home'))
+      .catch(({ response: { data } }) => setError(data))
   }
   return (
     <div>
@@ -34,6 +37,7 @@ const Login = ({ login }) => {
             onChange={ev => setPassword(ev.target.value)}
           />
         </label>
+        {error && <div>{error}</div>}
         <button type="submit">Login</button>
       </form>
     </div>
