@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import { Home, Login } from './index'
-import { checkForUserThunk } from '../store/thunks'
+import { checkIfUserLoggedInThunk } from '../store/thunks'
 import { connect } from 'react-redux'
 
 class App extends Component {
   componentDidMount() {
-    return this.props.checkForUser()
+    return this.props.checkIfUserLoggedIn()
   }
 
   render() {
@@ -23,7 +23,7 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    checkForUser: () => dispatch(checkForUserThunk())
+    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk())
   }
 }
 

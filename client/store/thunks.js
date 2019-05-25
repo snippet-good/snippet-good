@@ -10,7 +10,7 @@ export const login = (email, password) => {
   }
 }
 
-export const checkForUserThunk = () => {
+export const checkIfUserLoggedInThunk = () => {
   return dispatch => {
     return axios
       .get('/api/auth')
