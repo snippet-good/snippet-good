@@ -1,10 +1,10 @@
 ## Design
 
-### To do:
-- Update database models and seed data
+### Steven
 - Login authentication
 - Find out how the hell to get this code editor to work
--
+- Update database models and seed data
+
 ***
 
 ### Functionality
@@ -23,6 +23,7 @@ Stretch Workflow:
 5. Stretch is completed
 
 When an admin clicks on ``My Stretches`` tab:
+### Dan
    - The admin is able to view all ``open``, ``scheduled``, and ``closed`` stretches.
    - The admin can change the status of an ``scheduled`` stretch into an ``open`` stretch.
 
@@ -30,11 +31,12 @@ When an admin clicks on ``My Stretches`` tab:
 <br/>
 
 When an admin clicks on the ``New Stretch`` button:
+### Kevin
    1. The admin is able to view all pre-existing stretches.
 	   - Add the selected stretch to ``StretchCohort`` model
    2. The admin is able to create test cases for the stretch.
    3. The admin is able to create a new stretch using a new Stretch form.
-	   - The new Stretch form will have a code and text editor.
+	   - The new Stretch form will have a code and text editor (Quill.js).
 	   - The stretch will be assigned to cohort(s).
 	   - Once the stretch is created successfully, the stretch will have the status of ``scheduled``.
 <br/>
@@ -70,3 +72,4 @@ After a stretch is completed:
 - Admin is able to set a time for when the stretch will automatically open.
 - Ability for user to favorite ``Snippet`` solutions
 - Admin is able to test solution code when creating a new stretch from an existing stretch
+- Have a field in ``Stretch`` model that indicates whether the stretch requires a coded answer or another type of answer
