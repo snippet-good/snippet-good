@@ -1,42 +1,37 @@
 const db = require('../db')
 
-const Stretch = db.define('stretch', {
+const CohortStretch = db.define('cohortstretch', {
   id: {
     type: db.Sequelize.UUID,
     defaultValue: db.Sequelize.UUIDV4,
     primaryKey: true
   },
-  title: {
-    type: db.Sequelize.STRING,
+  status: {
+    type: db.Sequelize.ENUM('scheduled', 'open', 'closed'),
     allowNull: false,
     validate: {
       notEmpty: true
     }
   },
-  textPrompt: {
-    type: db.Sequelize.TEXT,
+  allowAnswersToBeRun: {
+    type: db.Sequelize.BOOLEAN,
+    defaultValue: false,
     allowNull: false,
     validate: {
       notEmpty: true
     }
   },
-  codePrompt: {
+  solution: {
     type: db.Sequelize.TEXT
   },
-  difficulty: {
+  minutes: {
     type: db.Sequelize.INTEGER,
-    validate: {
-      min: 1,
-      max: 5
-    }
-  },
-  canBeCoded: {
-    type: db.Sequelize.BOOLEAN,
     allowNull: false,
     validate: {
-      notEmpty: true
+      notEmpty: true,
+      min: 1
     }
   }
 })
 
-module.exports = Stretch
+module.exports = CohortStretch

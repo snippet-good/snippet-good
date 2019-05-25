@@ -1,6 +1,11 @@
 const db = require('../db')
 
 const User = db.define('user', {
+  id: {
+    type: db.Sequelize.UUID,
+    defaultValue: db.Sequelize.UUIDV4,
+    primaryKey: true
+  },
   userName: {
     type: db.Sequelize.STRING,
     allowNull: false,
@@ -45,7 +50,7 @@ const User = db.define('user', {
   },
   isAdmin: {
     type: db.Sequelize.BOOLEAN,
-    defaultValue: false,
+    allowNull: false,
     validate: {
       notEmpty: true
     }
