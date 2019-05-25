@@ -30,11 +30,12 @@ app.get('/', (req, res, next) => {
 //error handling middleware
 app.use((err, req, res, next) => {
   let error
+  const status = err.status || 500
   if (err.errors) {
     error = err.errors.map(currentError => currentError.message)
   } else {
     error = err.message
   }
   console.log(error)
-  res.status(error.status || 500).send(error)
+  res.status(status).send(error)
 })
