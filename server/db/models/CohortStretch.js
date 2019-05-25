@@ -34,4 +34,12 @@ const CohortStretch = db.define('cohortstretch', {
   }
 })
 
+CohortStretch.getStretches = function(status) {
+  return CohortStretch.findAll({
+    where: {
+      status
+    }
+  })
+}
+
 module.exports = CohortStretch
