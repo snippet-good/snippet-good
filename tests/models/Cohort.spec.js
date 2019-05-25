@@ -2,6 +2,7 @@ const {
   models: { Cohort },
   initDb
 } = require('../../server/db/index')
+const db = require('../../server/db/db')
 const sequelizeValidationError = require('sequelize').ValidationError
 
 const requiredFieldTest = (error, obj) => {
@@ -19,9 +20,14 @@ const requiredFieldTest = (error, obj) => {
     })
 }
 
-describe.only('Cohort model', () => {
+describe('Cohort model', () => {
   beforeAll(() => {
     return initDb(true)
+  })
+
+  afterAll(async done => {
+    await db.close()
+    done()
   })
 
   test('Cohort instance is successfully created with name, startDate, and endDate fields filled in', () => {

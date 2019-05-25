@@ -10,7 +10,7 @@
     "start:dev": "npm run seed && npm run start-server & npm run build-watch",
     "start-server": "nodemon server/index.js --watch server -e js,html",
     "build-watch": "webpack -w",
-    "test": "jest ./tests/*.spec.js --runInBand",
+    "test": "jest ./tests/**/*.spec.js --runInBand",
     "test:dev": "DATABASE_URL=postgres://localhost/snippet_db_test npm run test -- --watch=true"
   },
   "keywords": [],
