@@ -3,6 +3,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import { Home, Login } from './index'
 import { checkIfUserLoggedInThunk } from '../store/thunks'
 import { connect } from 'react-redux'
+import SocketComp from '../store/socket/SocketComp'
 
 class App extends Component {
   componentDidMount() {
@@ -15,6 +16,7 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
+          <Route path="/socket" exact component={SocketComp} />
         </Switch>
       </Router>
     )
