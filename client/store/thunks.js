@@ -23,3 +23,51 @@ export const logoutUserThunk = () => {
     return axios.delete('/api/auth').then(() => dispatch(actions.getUser({})))
   }
 }
+
+export const fetchCohorts = () => {
+  return dispatch => {
+    return axios
+      .get('/api/cohorts')
+      .then(res => res.data)
+      .then(cohorts => dispatch(actions.getCohorts(cohorts)))
+  }
+}
+
+export const fetchCohort = cohortId => {
+  return dispatch => {
+    return axios
+      .get(`/api/cohorts/${cohortId}`)
+      .then(res => res.data)
+      .then(cohort => dispatch(actions.getCohort(cohort)))
+  }
+}
+
+export const fetchStudents = cohortId => {
+  return dispatch => {
+    return axios
+      .get(`/api/students/${cohortId}`)
+      .then(res => res.data)
+      .then(students => dispatch(actions.getStudents(students)))
+  }
+}
+
+export const fetchStretches = cohortId => {
+  return dispatch => {
+    return axios
+      .get(`/api/cohortStretch/${cohortId}`)
+      .then(res => res.data)
+      .then(cohortStretches => dispatch(actions.getStretches(cohortStretches)))
+  }
+}
+
+export const fetchStretchesByStatus = (cohortId, status) => {
+  console.log('thunk called', cohortId, status)
+  return dispatch => {
+    return axios
+      .get(`api/cohortStretch/${cohortId}/${status}`)
+      .then(res => res.data)
+      .then(stretchesByStatus =>
+        dispatch(actions.getStretches(stretchesByStatus))
+      )
+  }
+}
