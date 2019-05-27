@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const {
-  models: { CohortStretch }
+  models: { CohortStretch, Stretch }
 } = require('../db/index')
 
 module.exports = router
@@ -12,9 +12,16 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
-// get cohort stretches by status ('open', 'closed', 'scheduled')
-router.get('/:status', (req, res, next) => {
-  CohortStretch.getStretches(req.params.status)
-    .then(stretchesByStatus => res.send(stretchesByStatus))
+// get cohort stretches by cohort-id
+router.get('/:cohortId', (req, res, next) => {
+  Stretch.getStretchesByCohort(req.params.cohortId)
+    .then(stretches => res.send(stretches))
+    .catch(next)
+})
+
+// get cohort stretches by cohort and status ('open', 'closed', 'scheduled')
+router.get('/:cohortId/:status', (req, res, next) => {
+  Stretch.getStretchesByCohortAndStatus(req.params.cohortId, req.params.status)
+    .then(stretches => res.send(stretches))
     .catch(next)
 })
