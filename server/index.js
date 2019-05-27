@@ -11,7 +11,7 @@ initDb()
     )
     const io = socketio(server)
     socketServer(io)
-    socketServer(io, '/test')
+    //socketServer(io, '/test')
   })
   .catch(err => {
     console.log('unable to connect to server for following reason:')

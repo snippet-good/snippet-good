@@ -1,20 +1,15 @@
 import createSocket from './createSocket'
 
 const socketMiddleware = storeAPI => {
-  let socket = createSocket()
+  let socket
   //let socketTwo = createSocket('/test')
-
-  socket.on('connect', () => {
-    console.log('two-way connection established')
-  })
-
-  socket.on('GETTING_DRAW', () => {
-    console.log('in gertting draw')
-    storeAPI.dispatch({ type: 'GET_USER', user: { name: 'Joe' } })
-  })
 
   return next => action => {
     switch (action.type) {
+      case 'SEND_USER':
+        socket = createSocket('', storeAPI)
+        socket.sendUser(storeAPI.getState().user.id)
+        break
       case 'SENDING_DRAW':
         console.log('in sending draw')
         socket.sendDraw()

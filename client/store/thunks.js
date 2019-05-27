@@ -7,6 +7,7 @@ export const login = (email, password) => {
       .post('/api/auth', { email, password })
       .then(res => res.data)
       .then(user => dispatch(actions.getUser(user)))
+      .then(() => dispatch({ type: 'SEND_USER' }))
   }
 }
 

@@ -15,7 +15,7 @@ const Login = ({ login, history }) => {
   const handleSubmit = ev => {
     ev.preventDefault()
     login(email, password)
-      .then(() => history.push('/home'))
+      .then(() => history.push('/'))
       .catch(({ response: { data } }) => setError(data))
   }
   return (
