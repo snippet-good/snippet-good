@@ -1,4 +1,5 @@
 const db = require('../db')
+const CohortStretch = require('./CohortStretch')
 
 const Stretch = db.define('stretch', {
   id: {
@@ -38,5 +39,44 @@ const Stretch = db.define('stretch', {
     }
   }
 })
+
+Stretch.getStretchesByCohort = async function(cohortId) {
+  const cohortStretches = await CohortStretch.findAll({
+    where: {
+      cohortId
+    }
+  })
+
+  const stretchesByCohort = []
+  for (let i = 0; i < cohortStretches.length; ++i) {
+    let stretch = await Stretch.findOne({
+      where: {
+        id: cohortStretches[i].stretchId
+      }
+    })
+    stretchesByCohort.push(stretch)
+  }
+  return stretchesByCohort
+}
+
+Stretch.getStretchesByCohortAndStatus = async function(cohortId, status) {
+  const cohortStretches = await CohortStretch.findAll({
+    where: {
+      cohortId,
+      status
+    }
+  })
+
+  const stretchesByCohort = []
+  for (let i = 0; i < cohortStretches.length; ++i) {
+    let stretch = await Stretch.findOne({
+      where: {
+        id: cohortStretches[i].stretchId
+      }
+    })
+    stretchesByCohort.push(stretch)
+  }
+  return stretchesByCohort
+}
 
 module.exports = Stretch
