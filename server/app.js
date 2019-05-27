@@ -4,6 +4,7 @@ const volleyball = require('volleyball')
 const session = require('express-session')
 const app = express()
 const auth = require('./api/auth')
+const codeeditor = require('./api/codeeditor')
 
 module.exports = app
 
@@ -21,6 +22,7 @@ app.use('/public', express.static(path.join(__dirname, '..', 'public')))
 
 //routers
 app.use('/api/auth', auth)
+app.use('/api/code', codeeditor)
 
 //route for serving up index.html
 app.get('/', (req, res, next) => {
