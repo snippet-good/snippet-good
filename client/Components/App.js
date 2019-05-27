@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
-import { Home, Login, CodeEditor } from './index'
+import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
 import { checkIfUserLoggedInThunk } from '../store/thunks'
 import { connect } from 'react-redux'
 
@@ -13,6 +13,8 @@ class App extends Component {
     return (
       <Router>
         <Switch>
+          <Route path="/admin" exact component={AdminHomeView} />
+          <Route path="/cohort/:id" exact component={SingleCohort} />
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
           <Route path="/code" exact component={CodeEditor} />
