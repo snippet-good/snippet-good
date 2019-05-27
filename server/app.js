@@ -4,7 +4,11 @@ const volleyball = require('volleyball')
 const session = require('express-session')
 const app = express()
 const auth = require('./api/auth')
+<<<<<<< HEAD
 const cohortStretch = require('./api/cohort-stretch-routes')
+=======
+const codeeditor = require('./api/codeeditor')
+>>>>>>> 9f1cfc1cfc9e939af235e87506a9930321d82367
 
 module.exports = app
 
@@ -22,7 +26,11 @@ app.use('/public', express.static(path.join(__dirname, '..', 'public')))
 
 //routers
 app.use('/api/auth', auth)
+<<<<<<< HEAD
 app.use('/api/cohortStretch', cohortStretch)
+=======
+app.use('/api/code', codeeditor)
+>>>>>>> 9f1cfc1cfc9e939af235e87506a9930321d82367
 
 //route for serving up index.html
 app.get('/', (req, res, next) => {
