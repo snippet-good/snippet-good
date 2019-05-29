@@ -6,6 +6,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { checkIfUserLoggedInThunk } from '../store/auth/actions'
 import { getAllUsers } from '../store/users/actions'
+import { getAllCategories } from '../store/categories/actions'
 
 // React sub-components
 // import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
@@ -14,18 +15,12 @@ class App extends Component {
   componentDidMount() {
     this.props.checkIfUserLoggedIn()
     this.props.getUsers()
+    this.props.getCategories()
   }
 
   render() {
-    const { users } = this.props
+    return <div>hi</div>
 
-    return (
-      <div>
-        <ul>
-          <li>Users: {users ? users.length : 0}</li>
-        </ul>
-      </div>
-    )
     return (
       <Router>
         <Switch>
@@ -40,16 +35,15 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ users }) => ({ users })
-
 const mapDispatchToProps = dispatch => {
   return {
     checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
-    getUsers: () => dispatch(getAllUsers())
+    getUsers: () => dispatch(getAllUsers()),
+    getCategories: () => dispatch(getAllCategories())
   }
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(App)
