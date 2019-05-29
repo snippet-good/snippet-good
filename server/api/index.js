@@ -19,6 +19,4 @@ router.use('/stretch-answers', require('./stretch-answers'))
 // Misc. API
 router.use('/code', require('./code-editor'))
 
-router.get('/', (req, res, next) => res.redirect('/docs'))
-
 module.exports = router
