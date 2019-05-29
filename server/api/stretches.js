@@ -1,13 +1,12 @@
 const router = require('express').Router()
 const {
-  models: { CohortStretch }
+  models: { Stretch }
 } = require('../db/index')
 
 module.exports = router
 
-// get all cohort stretches, excluding status
 router.get('/', (req, res, next) => {
-  CohortStretch.findAll()
-    .then(cohortStretch => res.send(cohortStretch))
+  Stretch.findAll()
+    .then(stretches => res.send(stretches))
     .catch(next)
 })

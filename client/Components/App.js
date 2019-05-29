@@ -1,14 +1,21 @@
 import React, { Component } from 'react'
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
-import { checkIfUserLoggedInThunk } from '../store/thunks'
+import { checkIfUserLoggedInThunk, fetchStretches } from '../store/thunks'
 import { connect } from 'react-redux'
 
 class App extends Component {
-  componentDidMount() {
-    return this.props.checkIfUserLoggedIn()
+  constructor() {
+    super()
+    this.getData = this.getData.bind(this)
   }
-
+  componentDidMount() {
+    this.getData()
+  }
+  getData() {
+    this.props.checkIfUserLoggedIn()
+    this.props.fetchStretches()
+  }
   render() {
     return (
       <Router>
@@ -26,7 +33,8 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk())
+    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
+    fetchStretches: () => dispatch(fetchStretches())
   }
 }
 

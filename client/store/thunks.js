@@ -51,23 +51,11 @@ export const fetchStudents = cohortId => {
   }
 }
 
-export const fetchStretches = cohortId => {
+export const fetchStretches = () => {
   return dispatch => {
     return axios
-      .get(`/api/cohortStretch/${cohortId}`)
+      .get('/api/stretches')
       .then(res => res.data)
-      .then(cohortStretches => dispatch(actions.getStretches(cohortStretches)))
-  }
-}
-
-export const fetchStretchesByStatus = (cohortId, status) => {
-  console.log('thunk called', cohortId, status)
-  return dispatch => {
-    return axios
-      .get(`api/cohortStretch/${cohortId}/${status}`)
-      .then(res => res.data)
-      .then(stretchesByStatus =>
-        dispatch(actions.getStretches(stretchesByStatus))
-      )
+      .then(stretches => dispatch(stretches))
   }
 }

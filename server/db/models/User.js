@@ -58,25 +58,21 @@ const User = db.define('user', {
   }
 })
 
-User.getStudentsByCohort = async function(cohortId) {
-  const cohortStudents = await CohortUser.findAll({
+User.getStudentsByCohort = function(cohortId) {
+  return User.findAll({
     where: {
-      cohortId
-    }
-  })
-  const studentsByCohort = []
-  for (let i = 0; i < cohortStudents.length; ++i) {
-    let student = await User.findOne({
-      where: {
-        isAdmin: false,
-        id: cohortStudents[i].userId
+      isAdmin: false
+    },
+    include: [
+      {
+        attributes: [],
+        model: CohortUser,
+        where: {
+          cohortId
+        }
       }
-    })
-    if (student !== null) {
-      studentsByCohort.push(student)
-    }
-  }
-  return studentsByCohort
+    ]
+  })
 }
 
 module.exports = User
