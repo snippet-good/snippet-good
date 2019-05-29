@@ -1,21 +1,31 @@
+// React imports
 import React, { Component } from 'react'
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
-import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
-import { checkIfUserLoggedInThunk } from '../store/users/actions'
+
+// Redux imports
 import { connect } from 'react-redux'
+import { checkIfUserLoggedInThunk } from '../store/auth/actions'
+import { getAllUsers } from '../store/users/actions'
+
+// React sub-components
+// import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
 
 class App extends Component {
-  constructor() {
-    super()
-    this.getData = this.getData.bind(this)
-  }
   componentDidMount() {
-    this.getData()
-  }
-  getData() {
     this.props.checkIfUserLoggedIn()
+    this.props.getUsers()
   }
+
   render() {
+    const { users } = this.props
+
+    return (
+      <div>
+        <ul>
+          <li>Users: {users ? users.length : 0}</li>
+        </ul>
+      </div>
+    )
     return (
       <Router>
         <Switch>
@@ -30,14 +40,16 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = ({ users }) => ({ users })
+
 const mapDispatchToProps = dispatch => {
   return {
     checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
-    fetchStretches: () => dispatch(fetchStretches())
+    getUsers: () => dispatch(getAllUsers())
   }
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(App)

@@ -1,9 +1,9 @@
-import { GET_USER } from './actions'
+import { GET_USERS } from './actions'
 
-export default (state = {}, action) => {
+export default (state = [], action) => {
   switch (action.type) {
-    case GET_USER:
-      return { ...action.user }
+    case GET_USERS:
+      return [...action.users]
 
     default:
       return state
