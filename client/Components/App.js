@@ -21,7 +21,7 @@ import CreateStretch from './CreateStretch/View'
 
 class App extends Component {
   componentDidMount() {
-    this.props.checkIfUserLoggedIn()
+    this.props.checkIfUserLoggedIn().catch(() => {})
 
     // For testing purposes only, remove as needed
     this.props.load()

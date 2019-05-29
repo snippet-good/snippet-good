@@ -156,11 +156,11 @@ const syncAndSeed = async () => {
   const createdCategories = await createSeedInstances(Category, [
     { name: 'Algorithms' },
     { name: 'Express' },
-    { name: 'database' },
+    { name: 'Database' },
     { name: 'Vanilla JS' },
     { name: 'React' },
     { name: 'Redux' },
-    { name: 'React-ROouter' }
+    { name: 'React-Router' }
   ])
 
   const createdUsers = await createSeedInstances(User, createUserObjects())
