@@ -6,7 +6,7 @@ const {
 // GET, retrieves all stretches from the database
 router.get('/', (req, res, next) => {
   Stretch.findAll({ include: [Category] })
-    .then(stretches => res.send(stretches))
+    .then(stretches => res.json(stretches))
     .catch(next)
 })
 

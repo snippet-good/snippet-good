@@ -12,6 +12,7 @@ router.use('/cohort-users', require('./cohort-users'))
 router.use('/categories', require('./categories'))
 router.use('/stretches', require('./stretches'))
 router.use('/cohort-stretches', require('./cohort-stretches'))
+router.use('/stretch-answers', require('./stretch-answers'))
 // StretchAnswer
 
 // Misc. API

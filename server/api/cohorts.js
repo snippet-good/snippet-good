@@ -6,7 +6,7 @@ const {
 // GET, retrieves all cohorts from the database
 router.get('/', (req, res, next) => {
   Cohort.findAll()
-    .then(cohorts => res.send(cohorts))
+    .then(cohorts => res.json(cohorts))
     .catch(next)
 })
 
