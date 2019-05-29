@@ -22,13 +22,13 @@ function initDb(force = false) {
     CohortUser.belongsTo(User)
     User.hasMany(CohortUser)
 
-    // Comment belongs to User
-    Comment.belongsTo(User)
-    User.hasMany(Comment)
+    // Comment belongs to CohortUser
+    Comment.belongsTo(CohortUser)
+    CohortUser.hasMany(Comment)
 
-    // StretchAnswer belongs to User
-    StretchAnswer.belongsTo(User)
-    User.hasMany(StretchAnswer)
+    // StretchAnswer belongs to CohortUser
+    StretchAnswer.belongsTo(CohortUser)
+    CohortUser.hasMany(StretchAnswer)
 
     // Stretch belongs to User
     Stretch.belongsTo(User, { as: 'author' })
