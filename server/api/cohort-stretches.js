@@ -4,8 +4,9 @@ const {
 } = require('../db/index')
 
 // GET, retrieves all cohort stretches from the database
-router.get('/', (req, res, next) => {
-   CohortStretch.findAll({
+router
+  .get('/', (req, res, next) => {
+    CohortStretch.findAll({
       include: [
         {
           model: Cohort,
@@ -23,19 +24,19 @@ router.get('/', (req, res, next) => {
     })
   })
   .then(cohortStretches => {
-    return cohortStretches.map(cohortStretch => {
-      const values = cohortStretch.get()
-      const { cohort, ...cohortStretchesFields } = values
-      const cohortValues = cohort.get()
-      const { cohortusers, name } = cohortValues
-      return {
-        ...cohortStretchesFields,
-        cohortName: name,
-        adminIds: cohortusers.map(cu => cu.userId)
-      }
-    })
-    .then(cohortStretches => res.json(cohortStretches))
-    .catch(next)
-})
+    return Promise.all([cohortStretches
+      .map(cohortStretch => {
+        const values = cohortStretch.get()
+        const { cohort, ...cohortStretchesFields } = values
+        const cohortValues = cohort.get()
+        const { cohortusers, name } = cohortValues
+        return {
+          ...cohortStretchesFields,
+          cohortName: name,
+          adminIds: cohortusers.map(cu => cu.userId)
+        }
+      })
+      .then(cohortStretches => res.json(cohortStretches))
+  }).catch(next)
 
 module.exports = router

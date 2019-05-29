@@ -17,6 +17,7 @@ import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
 // import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
+import CreateStretch from './CreateStretch/View'
 
 class App extends Component {
   componentDidMount() {
@@ -27,7 +28,7 @@ class App extends Component {
   }
 
   render() {
-    return <div>hi</div>
+    return <CreateStretch />
 
     return (
       <Router>
