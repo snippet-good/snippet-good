@@ -10,6 +10,7 @@ import { checkIfUserLoggedInThunk } from '../store/auth/actions'
 import { getAllUsers } from '../store/users/actions'
 import { getAllCohorts } from '../store/cohorts/actions'
 import { getAllCategories } from '../store/categories/actions'
+import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
 // import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
@@ -19,9 +20,7 @@ class App extends Component {
     this.props.checkIfUserLoggedIn()
 
     // For testing purposes only, remove as needed
-    this.props.getUsers()
-    this.props.getCategories()
-    this.props.getCohorts()
+    this.props.load()
   }
 
   render() {
@@ -46,9 +45,12 @@ const mapDispatchToProps = dispatch => {
     checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
 
     // For testing purposes only, remove as needed
-    getUsers: () => dispatch(getAllUsers()),
-    getCohorts: () => dispatch(getAllCohorts()),
-    getCategories: () => dispatch(getAllCategories())
+    load: () => {
+      dispatch(getAllUsers())
+      dispatch(getAllCohorts())
+      dispatch(getAllCategories())
+      dispatch(getAllCohortStretches())
+    }
   }
 }
 
