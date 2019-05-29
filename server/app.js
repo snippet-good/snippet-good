@@ -25,6 +25,7 @@ app.use(express.json())
 app.use('/public', express.static(path.join(__dirname, '..', 'public')))
 
 //routers
+app.use('/api', require('./api'))
 app.use('/api/auth', auth)
 app.use('/api/cohortStretch', cohortStretch)
 app.use('/api/code', codeeditor)
