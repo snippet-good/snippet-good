@@ -5,7 +5,10 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 // Redux imports
 import { connect } from 'react-redux'
 import { checkIfUserLoggedInThunk } from '../store/auth/actions'
+
+// For testing purposes only, remove as needed
 import { getAllUsers } from '../store/users/actions'
+import { getAllCohorts } from '../store/cohorts/actions'
 import { getAllCategories } from '../store/categories/actions'
 
 // React sub-components
@@ -14,8 +17,11 @@ import { getAllCategories } from '../store/categories/actions'
 class App extends Component {
   componentDidMount() {
     this.props.checkIfUserLoggedIn()
+
+    // For testing purposes only, remove as needed
     this.props.getUsers()
     this.props.getCategories()
+    this.props.getCohorts()
   }
 
   render() {
@@ -38,7 +44,10 @@ class App extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
+
+    // For testing purposes only, remove as needed
     getUsers: () => dispatch(getAllUsers()),
+    getCohorts: () => dispatch(getAllCohorts()),
     getCategories: () => dispatch(getAllCategories())
   }
 }

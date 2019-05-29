@@ -10,12 +10,12 @@ export const CREATE_CATEGORY = 'CREATE_CATEGORY'
 // Action creators
 
 const getCategories = categories => ({ type: GET_CATEGORIES, categories })
-const createUser = newUser => ({ type: CREATE_USER, newUser })
+const createCategory = newCategory => ({ type: CREATE_CATEGORY, newCategory })
 
 // --------------------------------------------------
 // CRUD thunks
 
-// Redux thunk to get all users from API
+// Redux thunk to get all categories from API
 export const getAllCategories = () => dispatch => {
   return axios
     .get('/api/categories')

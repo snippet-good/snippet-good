@@ -8,11 +8,12 @@ import reduxLogger from 'redux-logger'
 import userDetails from './auth/reducer' // Manages user authentication
 
 import users from './users/reducer'
+import cohorts from './cohorts/reducer'
 
 import categories from './categories/reducer'
 
 const store = createStore(
-  combineReducers({ userDetails, users, categories }),
+  combineReducers({ userDetails, users, cohorts, categories }),
   applyMiddleware(thunk, reduxLogger)
 )
 
