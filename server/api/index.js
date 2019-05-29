@@ -1,4 +1,5 @@
-const router = require('express').Router()
+const express = require('express')
+const router = express.Router()
 
 // Authentication API
 router.use('/auth', require('./auth'))
@@ -18,83 +19,6 @@ router.use('/stretch-answers', require('./stretch-answers'))
 // Misc. API
 router.use('/code', require('./code-editor'))
 
-// API Directory
-router.get('/', (req, res, next) => {
-  const headers = ['Models', 'GET', 'POST', 'PUT', 'DELETE']
-  const data = [
-    { model: 'User', routes: ['/api/users', null, null, null] },
-    { model: 'Cohort', routes: ['/api/cohorts', null, null, null] },
-    { model: 'CohortUser', routes: ['/api/cohort-users', null, null, null] },
-    { model: 'Category', routes: ['/api/categories', null, null, null] },
-    { model: 'Stretch', routes: ['/api/stretches', null, null, null] },
-    {
-      model: 'CohortStretch',
-      routes: ['/api/cohort-stretches', null, null, null]
-    },
-    {
-      model: 'StretchAnswer',
-      routes: ['/api/stretch-answers', null, null, null]
-    }
-  ].sort((a, b) => {
-    var textA = a.model.toUpperCase()
-    var textB = b.model.toUpperCase()
-    return textA < textB ? -1 : textA > textB ? 1 : 0
-  })
-
-  res.send(`
-  <html>
-    <head>
-      <style>
-        body {
-          font-family: 'arial';
-        }
-
-        td {
-          padding: 0.9em;
-        }
-
-        thead td {
-          border-bottom: 2px solid black;
-          font-size: 18px;
-        }
-
-        tbody td {
-          border-bottom: 1px solid grey;
-        }
-      </style>
-
-      <title>Snippet Good | API</title>
-    </head>
-
-    <body>
-      <h1>API Directory</h1>
-        <hr/>
-
-      <table>
-        <thead>
-          <tr>
-            ${headers.map(h => `<td>${h}</td>`).join('')}
-          </tr>
-        </thead>
-
-        <tbody>
-          ${data
-            .map(
-              d => `
-            <tr>
-              <td>${d.model}</td>
-              ${d.routes
-                .map(r => (r ? `<td><a href=${r}>${r}</a></td>` : `<td></td>`))
-                .join('')}
-            </tr>
-          `
-            )
-            .join('')}
-        </tbody>
-      </table>
-    </body>
-    </html>
-  `)
-})
+router.get('/', (req, res, next) => res.redirect('/docs'))
 
 module.exports = router
