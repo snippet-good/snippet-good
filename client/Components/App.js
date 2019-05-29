@@ -9,6 +9,7 @@ import { checkIfUserLoggedInThunk } from '../store/auth/actions'
 // For testing purposes only, remove as needed
 import { getAllUsers } from '../store/users/actions'
 import { getAllCohorts } from '../store/cohorts/actions'
+import { getAllCohortUsers } from '../store/cohort-users/actions'
 import { getAllCategories } from '../store/categories/actions'
 import { getAllStretches } from '../store/stretches/actions'
 import { getAllStretchAnswers } from '../store/stretch-answers/actions'
@@ -50,6 +51,7 @@ const mapDispatchToProps = dispatch => {
     load: () => {
       dispatch(getAllUsers())
       dispatch(getAllCohorts())
+      dispatch(getAllCohortUsers())
       dispatch(getAllCategories())
       dispatch(getAllStretches())
       dispatch(getAllStretchAnswers())

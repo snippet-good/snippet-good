@@ -9,6 +9,7 @@ import userDetails from './auth/reducer' // Manages user authentication
 
 import users from './users/reducer'
 import cohorts from './cohorts/reducer'
+import cohortUsers from './cohort-users/reducer'
 
 import categories from './categories/reducer'
 import stretches from './stretches/reducer'
@@ -23,6 +24,7 @@ const store = createStore(
     // User-related state
     users,
     cohorts,
+    cohortUsers,
 
     // Stretch-related state
     categories,
