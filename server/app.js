@@ -3,7 +3,6 @@ const path = require('path')
 const volleyball = require('volleyball')
 const session = require('express-session')
 const app = express()
-const students = require('./api/students')
 
 //setting up express-session, volleyball logging, json parsing, and serving up static files
 app.use(
@@ -19,7 +18,6 @@ app.use('/public', express.static(path.join(__dirname, '..', 'public')))
 
 // routers
 app.use('/api', require('./api'))
-app.use('/api/students', students)
 
 //route for serving up index.html
 app.get('/', (req, res, next) => {
