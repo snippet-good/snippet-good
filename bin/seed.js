@@ -122,7 +122,7 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
   return cohortStretches
 }
 
-const createStretchAnswerObjects = (stretchIds, userIds) => {
+const createStretchAnswerObjects = (stretchIds, cohortUserIds) => {
   let stretchAnswers = []
   for (let i = 0; i < 150; ++i) {
     let stretchAnswer = {
@@ -130,7 +130,7 @@ const createStretchAnswerObjects = (stretchIds, userIds) => {
       isSolved: Math.random() <= 0.5 ? Math.random() <= 0.5 : null,
       rating:
         Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
-      userId: getRandomArrayEntry(userIds),
+      cohortuserId: getRandomArrayEntry(cohortUserIds),
       stretchId: getRandomArrayEntry(stretchIds)
     }
     stretchAnswers.push(stretchAnswer)
@@ -143,7 +143,7 @@ const createCommentObjects = (stretchIds, userIds) => {
   for (let i = 0; i < 60; ++i) {
     let comment = {
       body: paragraph(),
-      userId: getRandomArrayEntry(userIds),
+      cohortuserId: getRandomArrayEntry(userIds),
       stretchId: getRandomArrayEntry(stretchIds)
     }
     comments.push(comment)
@@ -168,10 +168,18 @@ const syncAndSeed = async () => {
     Cohort,
     createCohortObjects()
   )
-  await createSeedInstances(
+  const createdCohortUsers = await createSeedInstances(
     CohortUser,
     createCohortUserObjects(createdCohorts, createdUsers)
   )
+
+  const adminIds = createdUsers.filter(u => u.isAdmin).map(u => u.id)
+  const cohortUsersAdmin = createdCohortUsers
+    .filter(cu => adminIds.includes(cu.userId))
+    .map(cu => cu.id)
+  const cohortUsersStudents = createdCohortUsers
+    .filter(cu => !adminIds.includes(cu.userId))
+    .map(cu => cu.id)
 
   const createdStreches = await createSeedInstances(
     Stretch,
@@ -193,15 +201,12 @@ const syncAndSeed = async () => {
     StretchAnswer,
     createStretchAnswerObjects(
       createdStreches.map(stretch => stretch.id),
-      createdUsers.filter(u => !u.isAdmin).map(u => u.id)
+      cohortUsersStudents
     )
   )
   await createSeedInstances(
     Comment,
-    createCommentObjects(
-      createdStreches.map(s => s.id),
-      createdUsers.filter(u => u.isAdmin).map(u => u.id)
-    )
+    createCommentObjects(createdStreches.map(s => s.id), cohortUsersAdmin)
   )
   console.log('database successfully seeded!')
 }

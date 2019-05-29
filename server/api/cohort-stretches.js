@@ -1,9 +1,10 @@
 const router = require('express').Router()
 const {
-  models: { CohortStretch, Cohort, User, CohortUser }
+  models: { CohortStretch }
 } = require('../db/index')
 
 // GET, retrieves all cohort stretches from the database
+<<<<<<< HEAD
 router
   .get('/', (req, res, next) => {
     CohortStretch.findAll({
@@ -38,5 +39,12 @@ router
       })
       .then(cohortStretches => res.json(cohortStretches))
   }).catch(next)
+=======
+router.get('/', (req, res, next) => {
+  CohortStretch.getAllCohortStretches()
+    .then(cohortStretches => res.json(cohortStretches))
+    .catch(next)
+})
+>>>>>>> cd544121369451d4f6ca4b4468174c6037932faf
 
 module.exports = router
