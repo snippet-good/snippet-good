@@ -91,10 +91,7 @@ router.get('/', (req, res, next) => {
             )
             .join('')}
         </tbody>
-
-
       </table>
-
     </body>
     </html>
   `)
