@@ -3,12 +3,10 @@ const {
   models: { Cohort }
 } = require('../db/index')
 
-module.exports = router
-
-// get all cohorts
+// GET, retrieves all cohorts from the database
 router.get('/', (req, res, next) => {
   Cohort.findAll()
-    .then(cohorts => res.send(cohorts))
+    .then(cohorts => res.json(cohorts))
     .catch(next)
 })
 
@@ -22,3 +20,5 @@ router.get('/:id', (req, res, next) => {
     .then(cohort => res.send(cohort))
     .catch(next)
 })
+
+module.exports = router
