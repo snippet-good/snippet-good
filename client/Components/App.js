@@ -10,6 +10,7 @@ import { checkIfUserLoggedInThunk } from '../store/auth/actions'
 import { getAllUsers } from '../store/users/actions'
 import { getAllCohorts } from '../store/cohorts/actions'
 import { getAllCategories } from '../store/categories/actions'
+import { getAllStretches } from '../store/stretches/actions'
 import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
@@ -49,6 +50,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(getAllUsers())
       dispatch(getAllCohorts())
       dispatch(getAllCategories())
+      dispatch(getAllStretches())
       dispatch(getAllCohortStretches())
     }
   }

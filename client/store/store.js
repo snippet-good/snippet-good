@@ -11,10 +11,23 @@ import users from './users/reducer'
 import cohorts from './cohorts/reducer'
 
 import categories from './categories/reducer'
+import stretches from './stretches/reducer'
 import cohortStretches from './cohort-stretches/reducer'
 
 const store = createStore(
-  combineReducers({ userDetails, users, cohorts, categories, cohortStretches }),
+  combineReducers({
+    // Authentication state
+    userDetails,
+
+    // User-related state
+    users,
+    cohorts,
+
+    // Stretch-related state
+    categories,
+    stretches,
+    cohortStretches
+  }),
   applyMiddleware(thunk, reduxLogger)
 )
 
