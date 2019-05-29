@@ -1,5 +1,4 @@
 const db = require('../db')
-const CohortUser = require('./CohortUser')
 
 const User = db.define('user', {
   id: {
@@ -57,22 +56,5 @@ const User = db.define('user', {
     }
   }
 })
-
-User.getStudentsByCohort = function(cohortId) {
-  return User.findAll({
-    where: {
-      isAdmin: false
-    },
-    include: [
-      {
-        attributes: [],
-        model: CohortUser,
-        where: {
-          cohortId
-        }
-      }
-    ]
-  })
-}
 
 module.exports = User

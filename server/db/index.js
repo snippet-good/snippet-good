@@ -11,6 +11,71 @@ const {
   CohortUser
 } = models
 
+CohortStretch.getAllCohortStretches = function() {
+  return this.findAll({
+    include: [
+      {
+        model: Cohort,
+        attributes: ['name'],
+        include: [
+          {
+            model: CohortUser,
+            include: [{ model: User, where: { isAdmin: true }, attributes: [] }]
+          }
+        ]
+      }
+    ]
+  }).then(cohortStretches => {
+    return cohortStretches.map(cohortStretch => {
+      const values = cohortStretch.get()
+      const { cohort, ...cohortStretchesFields } = values
+      const cohortValues = cohort.get()
+      const { cohortusers, name } = cohortValues
+      return {
+        ...cohortStretchesFields,
+        cohortName: name,
+        adminIds: cohortusers.map(cu => cu.userId)
+      }
+    })
+  })
+}
+
+Stretch.getAllStretches = function() {
+  return this.findAll({
+    include: [
+      Category,
+      { model: User, as: 'author', attributes: ['firstName', 'lastName'] }
+    ]
+  }).then(stretches => {
+    return stretches.map(stretch => {
+      const data = stretch.get()
+      const { category, author, ...stretchFields } = data
+      return {
+        ...stretchFields,
+        categoryName: category.name,
+        autherName: `${author.firstName} ${author.lastName}`
+      }
+    })
+  })
+}
+
+User.getStudentsByCohort = function(cohortId) {
+  return this.findAll({
+    where: {
+      isAdmin: false
+    },
+    include: [
+      {
+        attributes: [],
+        model: CohortUser,
+        where: {
+          cohortId
+        }
+      }
+    ]
+  })
+}
+
 function initDb(force = false) {
   return db.authenticate().then(() => {
     // Sequelize associations
@@ -22,13 +87,13 @@ function initDb(force = false) {
     CohortUser.belongsTo(User)
     User.hasMany(CohortUser)
 
-    // Comment belongs to User
-    Comment.belongsTo(User)
-    User.hasMany(Comment)
+    // Comment belongs to CohortUser
+    Comment.belongsTo(CohortUser)
+    CohortUser.hasMany(Comment)
 
-    // StretchAnswer belongs to User
-    StretchAnswer.belongsTo(User)
-    User.hasMany(StretchAnswer)
+    // StretchAnswer belongs to CohortUser
+    StretchAnswer.belongsTo(CohortUser)
+    CohortUser.hasMany(StretchAnswer)
 
     // Stretch belongs to User
     Stretch.belongsTo(User, { as: 'author' })
