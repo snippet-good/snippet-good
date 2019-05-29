@@ -3,11 +3,11 @@ const {
   models: { CohortStretch }
 } = require('../db/index')
 
-module.exports = router
-
-// get all cohort stretches, excluding status
+// GET, retrieves all cohort stretches from the database
 router.get('/', (req, res, next) => {
   CohortStretch.findAll()
-    .then(cohortStretch => res.send(cohortStretch))
+    .then(cohortStretches => res.json(cohortStretches))
     .catch(next)
 })
+
+module.exports = router
