@@ -12,6 +12,7 @@ import cohorts from './cohorts/reducer'
 
 import categories from './categories/reducer'
 import stretches from './stretches/reducer'
+import stretchAnswers from './stretch-answers/reducer'
 import cohortStretches from './cohort-stretches/reducer'
 
 const store = createStore(
@@ -26,6 +27,7 @@ const store = createStore(
     // Stretch-related state
     categories,
     stretches,
+    stretchAnswers,
     cohortStretches
   }),
   applyMiddleware(thunk, reduxLogger)

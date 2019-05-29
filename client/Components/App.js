@@ -11,6 +11,7 @@ import { getAllUsers } from '../store/users/actions'
 import { getAllCohorts } from '../store/cohorts/actions'
 import { getAllCategories } from '../store/categories/actions'
 import { getAllStretches } from '../store/stretches/actions'
+import { getAllStretchAnswers } from '../store/stretch-answers/actions'
 import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
@@ -51,6 +52,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(getAllCohorts())
       dispatch(getAllCategories())
       dispatch(getAllStretches())
+      dispatch(getAllStretchAnswers())
       dispatch(getAllCohortStretches())
     }
   }
