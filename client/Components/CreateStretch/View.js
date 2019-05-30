@@ -9,13 +9,15 @@ import GeneralInfo from './GeneralInfo'
 
 import CodeEditor from '../CodeEditor/CodeEditor'
 
+import { ViewStyles as styles } from './styles'
+
 // Notes:
 // - Need to connect state.userDetails to obtain authorId
 
 class CreateStretch extends Component {
   state = {
     title: 'Untitled',
-    category: 'None',
+    categoryId: '00000',
     scheduledDate: new Date(),
     textPrompt: 'This is an example text prompt.',
     codePrompt: 'This is an example code prompt.',
@@ -24,6 +26,7 @@ class CreateStretch extends Component {
   }
 
   handleChange = event => {
+    // return console.log(event.target)
     const { name, value } = event.target
     this.setState({ [name]: value })
   }
@@ -31,7 +34,7 @@ class CreateStretch extends Component {
   handleSubmit = event => {
     event.preventDefault()
     console.log(this.state)
-    this.props.createStretch({ ...this.state, authorId: 1, categoryId: 1 })
+    // this.props.createStretch({ ...this.state, authorId: 1, categoryId: 1 })
   }
 
   render() {
@@ -53,7 +56,7 @@ class CreateStretch extends Component {
                 // This is given to the component for display purposes.
 
                 title={state.title}
-                category={state.category}
+                categoryId={state.categoryId}
                 scheduledDate={state.scheduledDate}
               />
             </Grid>
@@ -71,19 +74,6 @@ class CreateStretch extends Component {
         </div>
       </form>
     )
-  }
-}
-
-const styles = {
-  root: {
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  sub: {
-    width: '80%'
-  },
-  codeEditor: {
-    width: '95%'
   }
 }
 

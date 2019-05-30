@@ -17,13 +17,15 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { DateTimePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 
+import { GeneralInfoStyles as styles } from './styles'
+
 // Notes:
 // - Input fields in stretch details section is vertically misaligned
 // - Prep this view accept information for updating a stretch
 
 const GeneralInfo = props => {
   const { categories, stretches, stretchAnswers } = props // Redux state
-  const { title, category, scheduledDate } = props // Local state
+  const { title, categoryId, scheduledDate } = props // Local state
   const { handleChange } = props // Event handlers from View component
 
   if (!categories) return null
@@ -31,6 +33,8 @@ const GeneralInfo = props => {
   // This state handled the opening/closing of the stretch details ExpansionPanel.
   const [infoIsOpen, setInfoIsOpen] = useState(false)
   const handleInfoClick = () => setInfoIsOpen(!infoIsOpen)
+
+  const categoryObject = categories.find(c => c.id === categoryId)
 
   // This function is handle the Material UI's DateTimePicker component.
   // The component does not emit a standard event. It only emits the selected date.
@@ -62,7 +66,9 @@ const GeneralInfo = props => {
 
               <Grid item xs={4}>
                 <InputLabel shrink>Category</InputLabel>
-                <Typography variant="subtitle2">{category}</Typography>
+                <Typography variant="subtitle2">
+                  {categoryObject ? categoryObject.name : 'No category'}
+                </Typography>
               </Grid>
 
               <Grid item xs={4}>
@@ -97,17 +103,17 @@ const GeneralInfo = props => {
               <FormControl style={styles.select}>
                 <InputLabel shrink>Category</InputLabel>
                 <Select
-                  name="category"
+                  name="categoryId"
                   label="Category"
-                  value={category}
+                  value={categoryId}
                   autoWidth
                   onChange={handleChange}
                 >
-                  <MenuItem value="None">
+                  <MenuItem value="00000">
                     <em>None</em>
                   </MenuItem>
                   {categories.map(c => (
-                    <MenuItem key={c.id} value={c.name}>
+                    <MenuItem key={c.id} value={c.id}>
                       {c.name}
                     </MenuItem>
                   ))}
@@ -145,31 +151,6 @@ const GeneralInfo = props => {
       </ExpansionPanel>
     </div>
   )
-}
-
-const styles = {
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '0.5em 0.5em 1.75em',
-    borderBottom: '2px solid lightGrey'
-  },
-  info: {
-    width: '98%'
-  },
-  select: {
-    width: '90%',
-    marginTop: '3px'
-  },
-  dateSelect: {
-    width: '90%'
-  },
-  inputContainer: {},
-  box: {
-    display: 'flex',
-    alignItems: 'center'
-  }
 }
 
 const mapStateToProps = state => ({
