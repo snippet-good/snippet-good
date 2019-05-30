@@ -19,6 +19,9 @@ export const GeneralInfoStyles = {
     padding: '0.5em 0.5em 1.75em',
     borderBottom: '2px solid lightGrey'
   },
+  input: {
+    width: '30%'
+  },
   info: {
     width: '98%'
   },

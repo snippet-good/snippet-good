@@ -17,7 +17,7 @@ import { ViewStyles as styles } from './styles'
 class CreateStretch extends Component {
   state = {
     title: 'Untitled',
-    categoryId: '00000',
+    categoryId: '',
     scheduledDate: new Date(),
     textPrompt: 'This is an example text prompt.',
     codePrompt: 'This is an example code prompt.',
@@ -26,7 +26,6 @@ class CreateStretch extends Component {
   }
 
   handleChange = event => {
-    // return console.log(event.target)
     const { name, value } = event.target
     this.setState({ [name]: value })
   }
@@ -34,7 +33,7 @@ class CreateStretch extends Component {
   handleSubmit = event => {
     event.preventDefault()
     console.log(this.state)
-    // this.props.createStretch({ ...this.state, authorId: 1, categoryId: 1 })
+    // this.props.createStretch({ ...this.state, authorId: 1 })
   }
 
   render() {
@@ -53,10 +52,12 @@ class CreateStretch extends Component {
             <Grid item xs={12}>
               <GeneralInfo
                 handleChange={handleChange}
-                // This is given to the component for display purposes.
+                // The below are given to the component for display purposes.
 
                 title={state.title}
                 categoryId={state.categoryId}
+                canBeCoded={state.canBeCoded}
+                difficulty={state.difficulty}
                 scheduledDate={state.scheduledDate}
               />
             </Grid>

@@ -12,6 +12,8 @@ import InputLabel from '@material-ui/core/InputLabel'
 import TextField from '@material-ui/core/TextField'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import Switch from '@material-ui/core/Switch'
+import Slider from '@material-ui/lab/Slider'
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { DateTimePicker } from '@material-ui/pickers'
@@ -25,7 +27,7 @@ import { GeneralInfoStyles as styles } from './styles'
 
 const GeneralInfo = props => {
   const { categories, stretches, stretchAnswers } = props // Redux state
-  const { title, categoryId, scheduledDate } = props // Local state
+  const { title, categoryId, canBeCoded, difficulty, scheduledDate } = props // Local state
   const { handleChange } = props // Event handlers from View component
 
   if (!categories) return null
@@ -34,12 +36,21 @@ const GeneralInfo = props => {
   const [infoIsOpen, setInfoIsOpen] = useState(false)
   const handleInfoClick = () => setInfoIsOpen(!infoIsOpen)
 
+  // This variable is to handle the display for the category on the collapsed ExpansionPanel.
   const categoryObject = categories.find(c => c.id === categoryId)
 
-  // This function is handle the Material UI's DateTimePicker component.
-  // The component does not emit a standard event. It only emits the selected date.
+  // This function is to handle change from the Material UI's DateTimePicker component.
+  // This is because the component does not emit a standard event. It only emits the selected date.
   const handleTimeChange = date =>
     handleChange({ target: { name: 'scheduledDate', value: date } })
+
+  // This function is to handle change from the Material UI's Slider component.
+  // This is because the component passes its value as a second parameter to the event handler function.
+  const handleDifficultyChange = (event, value) =>
+    handleChange({ target: { name: 'difficulty', value } })
+
+  const handleCanBeCodedChange = event =>
+    handleChange({ target: { name: 'canBeCoded', value: !canBeCoded } })
 
   return (
     <div style={styles.root}>
@@ -109,7 +120,7 @@ const GeneralInfo = props => {
                   autoWidth
                   onChange={handleChange}
                 >
-                  <MenuItem value="00000">
+                  <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
                   {categories.map(c => (
@@ -137,14 +148,32 @@ const GeneralInfo = props => {
               </FormControl>
             </Grid>
 
+            <Grid item xs={12} style={{ height: '20px' }} />
+
+            {/* Difficulty slider */}
+            <Grid item xs={4}>
+              <InputLabel shrink>Difficulty: {difficulty}</InputLabel>
+              <br />
+              <Slider
+                name="difficulty"
+                value={difficulty}
+                min={1}
+                max={5}
+                step={1}
+                onChange={handleDifficultyChange}
+                style={{ width: '80%' }}
+              />
+            </Grid>
+
             <Grid item xs={4}>
               {' '}
             </Grid>
+
+            {/* Switch for canBeCoded */}
             <Grid item xs={4}>
-              {' '}
-            </Grid>
-            <Grid item xs={4}>
-              {' '}
+              <InputLabel shrink>Can be coded?</InputLabel>
+              <br />
+              <Switch checked={canBeCoded} onChange={handleCanBeCodedChange} />
             </Grid>
           </Grid>
         </ExpansionPanelDetails>
