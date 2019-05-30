@@ -17,53 +17,51 @@ import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
 // import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
-import { AdminStretches } from './index';
 
+import { Home, Login, CodeEditor, AdminHomeView, SingleCohort, AdminStretches } from './index'
 
 class App extends Component {
-  componentDidMount() {
-    this.props.checkIfUserLoggedIn()
+    componentDidMount() {
+        this.props.checkIfUserLoggedIn()
 
-    // For testing purposes only, remove as needed
-    this.props.load()
-  }
+        // For testing purposes only, remove as needed
+        this.props.load()
+    }
 
-  render() {
-    //return <div>hi</div>
-
-    return (
-      <Router>
-        <Switch>
-          {/* <Route path='/admin' exact component={AdminHomeView} /> */}
-          <Route path='/admin/stretches' exact component={AdminStretches} />
-          {/* <Route path='/cohort/:id' exact component={SingleCohort} />
-          <Route path='/' exact component={Home} />
-          <Route path='/login' exact component={Login} />
-          <Route path='/code' exact component={CodeEditor} /> */}
-        </Switch>
-      </Router>
-    )
-  }
+    render() {
+        return (
+            <Router>
+                <Switch>
+                    <Route path="/admin" exact component={AdminHomeView} />
+                    <Route path="/cohort/:id" exact component={SingleCohort} />
+                    <Route path="/" exact component={Home} />
+                    <Route path="/login" exact component={Login} />
+                    <Route path="/code" exact component={CodeEditor} />
+                    <Route path='/admin/stretches' exact component={AdminStretches} />
+                </Switch>
+            </Router>
+        )
+    }
 }
 
 const mapDispatchToProps = dispatch => {
-  return {
-    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
+    return {
+        checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
 
-    // For testing purposes only, remove as needed
-    load: () => {
-      dispatch(getAllUsers())
-      dispatch(getAllCohorts())
-      dispatch(getAllCohortUsers())
-      dispatch(getAllCategories())
-      dispatch(getAllStretches())
-      dispatch(getAllStretchAnswers())
-      dispatch(getAllCohortStretches())
+        // For testing purposes only, remove as needed
+        load: () => {
+            dispatch(getAllUsers())
+            dispatch(getAllCohorts())
+            dispatch(getAllCohortUsers())
+            dispatch(getAllCategories())
+            dispatch(getAllStretches())
+            dispatch(getAllStretchAnswers())
+            dispatch(getAllCohortStretches())
+        }
     }
-  }
 }
 
 export default connect(
-  null,
-  mapDispatchToProps
+    null,
+    mapDispatchToProps
 )(App)
