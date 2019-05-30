@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 
 import Grid from '@material-ui/core/Grid'
-import Divider from '@material-ui/core/Divider'
 
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
+
+import CodeEditor from '../CodeEditor/CodeEditor'
 
 const CreateStretch = props => {
   const { categories, stretches, stretchAnswers } = props
@@ -22,6 +23,14 @@ const CreateStretch = props => {
           <Grid item xs={12}>
             <GeneralInfo categories={categories} />
           </Grid>
+
+          <Grid item xs={6}>
+            Text editor
+          </Grid>
+
+          <Grid item xs={6}>
+            <CodeEditor style={styles.codeEditor} />
+          </Grid>
         </Grid>
       </div>
     </form>
@@ -35,6 +44,9 @@ const styles = {
   },
   sub: {
     width: '80%'
+  },
+  codeEditor: {
+    width: '95%'
   }
 }
 

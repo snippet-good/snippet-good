@@ -84,7 +84,7 @@ class AceEditor extends Component {
           ))}
         </Select>
 
-        <div id="ace" style={{ width: '50%' }} />
+        <div id="ace" style={this.props.style} />
         {this.state.codeResponse &&
           this.state.codeResponse
             .split('\n')
@@ -103,6 +103,10 @@ class AceEditor extends Component {
       </div>
     )
   }
+}
+
+AceEditor.defaultProps = {
+  style: { width: '50%' }
 }
 
 export default AceEditor

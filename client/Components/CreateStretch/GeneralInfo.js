@@ -144,7 +144,8 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '0.5em'
+    padding: '0.5em 0.5em 1.75em',
+    borderBottom: '2px solid lightGrey'
   },
   info: {
     width: '98%'
