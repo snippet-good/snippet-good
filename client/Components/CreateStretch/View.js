@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { createStretch } from '../../store/stretches/actions'
 
 import Grid from '@material-ui/core/Grid'
 
@@ -7,15 +9,18 @@ import GeneralInfo from './GeneralInfo'
 
 import CodeEditor from '../CodeEditor/CodeEditor'
 
+// Notes:
+// - Need to connect state.userDetails to obtain authorId
+
 class CreateStretch extends Component {
   state = {
     title: 'Untitled',
     category: 'None',
     scheduledDate: new Date(),
-    textPrompt: '',
-    codePrompt: '',
+    textPrompt: 'This is an example text prompt.',
+    codePrompt: 'This is an example code prompt.',
     canBeCoded: true,
-    difficulty: 0
+    difficulty: 3
   }
 
   handleChange = event => {
@@ -26,6 +31,7 @@ class CreateStretch extends Component {
   handleSubmit = event => {
     event.preventDefault()
     console.log(this.state)
+    this.props.createStretch({ ...this.state, authorId: 1, categoryId: 1 })
   }
 
   render() {
@@ -81,4 +87,11 @@ const styles = {
   }
 }
 
-export default CreateStretch
+const mapDispatchToProps = dispatch => ({
+  createStretch: details => dispatch(createStretch(details))
+})
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(CreateStretch)

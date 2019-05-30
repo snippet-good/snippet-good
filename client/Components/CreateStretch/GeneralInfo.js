@@ -24,7 +24,7 @@ import DateFnsUtils from '@date-io/date-fns'
 const GeneralInfo = props => {
   const { categories, stretches, stretchAnswers } = props // Redux state
   const { title, category, scheduledDate } = props // Local state
-  const { handleChange } = props // Event handlers
+  const { handleChange } = props // Event handlers from View component
 
   if (!categories) return null
 
