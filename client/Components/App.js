@@ -48,15 +48,15 @@ const mapDispatchToProps = dispatch => {
     return {
         checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
 
-        // For testing purposes only, remove as needed
-        load: () => {
-            dispatch(getAllUsers())
-            dispatch(getAllCohorts())
-            dispatch(getAllCohortUsers())
-            dispatch(getAllCategories())
-            dispatch(getAllStretches())
-            dispatch(getAllStretchAnswers())
-            dispatch(getAllCohortStretches())
+    // For testing purposes only, remove as needed
+    load: () => {
+      // dispatch(getAllUsers())
+      dispatch(getAllCohorts())
+      dispatch(getAllCohortUsers())
+      dispatch(getAllCategories())
+      dispatch(getAllStretches())
+      //dispatch(getAllStretchAnswers())
+      dispatch(getAllCohortStretches())
         }
     }
 }

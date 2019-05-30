@@ -1,4 +1,5 @@
 const db = require('./db')
+const { Op } = require('sequelize')
 const models = require('./models')
 const {
   User,
@@ -11,12 +12,80 @@ const {
   CohortUser
 } = models
 
+Cohort.getCohortsOfSingleAdmin = function(adminId) {
+  return this.findAll({
+    include: [{ model: CohortUser, attributes: [], where: { userId: adminId } }]
+  })
+}
+
+StretchAnswer.getAnswersOfStudentsOfSingleAdmin = function(adminId) {
+  return User.findOne({
+    where: { id: adminId },
+    include: CohortUser
+  })
+    .then(user => user.cohortusers.map(cu => cu.cohortId))
+    .then(cohortIds => {
+      return this.findAll({
+        include: [
+          {
+            model: CohortUser,
+            attributes: ['cohortId'],
+            where: { cohortId: { [Op.in]: cohortIds } }
+          }
+        ]
+      })
+    })
+    .then(stretchAnswers => {
+      return stretchAnswers.map(s => {
+        const values = s.get()
+        const {
+          cohortuser: { cohortId },
+          ...itemValues
+        } = values
+        return {
+          ...itemValues,
+          cohortId
+        }
+      })
+    })
+}
+
+User.getStudentsOfSingleAdmin = function(adminId) {
+  return this.findOne({
+    where: { id: adminId },
+    include: CohortUser
+  })
+    .then(user => user.cohortusers.map(cu => cu.cohortId))
+    .then(cohortIds => {
+      return this.findAll({
+        where: { isAdmin: false },
+        include: [
+          {
+            model: CohortUser,
+            attributes: ['cohortId'],
+            where: { cohortId: { [Op.in]: cohortIds } }
+          }
+        ]
+      })
+    })
+    .then(students => {
+      return students.map(s => {
+        const values = s.get()
+        const { cohortusers, ...studentValues } = values
+        return {
+          ...studentValues,
+          cohortIds: cohortusers.map(cu => cu.cohortId)
+        }
+      })
+    })
+}
+
 CohortStretch.getAllCohortStretches = function() {
   return this.findAll({
     include: [
       {
         model: Cohort,
-        attributes: ['name'],
+        attributes: ['name', 'id'],
         include: [
           {
             model: CohortUser,
@@ -29,10 +98,13 @@ CohortStretch.getAllCohortStretches = function() {
     return cohortStretches.map(cohortStretch => {
       const values = cohortStretch.get()
       const { cohort, ...cohortStretchesFields } = values
+
       const cohortValues = cohort.get()
-      const { cohortusers, name } = cohortValues
+
+      const { cohortusers, name, id } = cohortValues
       return {
         ...cohortStretchesFields,
+        cohortId: id,
         cohortName: name,
         adminIds: cohortusers.map(cu => cu.userId)
       }

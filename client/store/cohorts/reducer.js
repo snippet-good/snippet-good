@@ -1,8 +1,8 @@
-import { GET_COHORTS } from './actions'
+import { SET_COHORTS } from './actions'
 
 export default (state = [], action) => {
   switch (action.type) {
-    case GET_COHORTS:
+    case SET_COHORTS:
       return [...action.cohorts]
 
     default:
