@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+
 const SingleCohort = ({ cohort, cohortStudents }) => {
   const { root } = useStyles()
   const { name } = cohort
