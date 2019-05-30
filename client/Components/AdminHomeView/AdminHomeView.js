@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import { getFilteredStretchesOfAdmin } from './helperfunctions'
-import ScheduledStretchesList from '../ScheduledStretchesList'
+import ScheduledCohortStretchesList from '../ScheduledCohortStretchesList'
 import Sidebar from '../Sidebar'
 
 import Card from '@material-ui/core/Card'
@@ -65,7 +65,9 @@ const AdminHomeView = ({
         Open scheduled stretch
       </Button>
       {showScheduled && (
-        <ScheduledStretchesList scheduledStretches={scheduledStretches} />
+        <ScheduledCohortStretchesList
+          scheduledCohortStretches={scheduledStretches}
+        />
       )}
       <Button onClick={() => history.push('/createstretch')}>
         Add new stretch
