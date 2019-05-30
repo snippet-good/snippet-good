@@ -11,6 +11,12 @@ const {
   CohortUser
 } = models
 
+Cohort.getCohortsOfSingleAdmin = function(adminId) {
+  return this.findAll({
+    include: [{ model: CohortUser, attributes: [], where: { userId: adminId } }]
+  })
+}
+
 CohortStretch.getAllCohortStretches = function() {
   return this.findAll({
     include: [

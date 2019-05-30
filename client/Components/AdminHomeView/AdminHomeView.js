@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { getAllCohorts } from '../../store/cohorts/actions'
+import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 
-const AdminHomeView = ({ cohorts, getAllCohorts }) => {
+const AdminHomeView = ({ cohorts, userId, getCohortsOfAdmin }) => {
   useEffect(() => {
-    getAllCohorts()
-  }, [])
+    if (userId) {
+      getCohortsOfAdmin(userId)
+    }
+  }, [userId])
   return (
     <div>
       <h2>Welcome Admin! Your cohorts:</h2>
@@ -23,14 +25,16 @@ const AdminHomeView = ({ cohorts, getAllCohorts }) => {
   )
 }
 
-const mapStateToProps = ({ cohorts, cohortStretches }) => ({
+const mapStateToProps = ({ cohorts, cohortStretches, userDetails }) => ({
   cohorts,
-  cohortStretches
+  cohortStretches,
+  userDetails,
+  userId: userDetails.id
 })
 
 const mapDispatchToProps = dispatch => {
   return {
-    getAllCohorts: () => dispatch(getAllCohorts())
+    getCohortsOfAdmin: adminId => dispatch(getCohortsOfAdminThunk(adminId))
   }
 }
 
