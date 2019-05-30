@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { fetchCohorts } from '../../store/thunks'
+import { getAllCohorts } from '../../store/cohorts/actions'
 
 const mapStateToProps = ({ cohorts }) => {
   return {
@@ -11,12 +11,12 @@ const mapStateToProps = ({ cohorts }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchCohorts: () => dispatch(fetchCohorts())
+    getAllCohorts: () => dispatch(getAllCohorts())
   }
 }
-const AdminHomeView = ({ cohorts, fetchCohorts }) => {
+const AdminHomeView = ({ cohorts, getAllCohorts }) => {
   useEffect(() => {
-    fetchCohorts()
+    getAllCohorts()
   }, [])
   return (
     <div>
