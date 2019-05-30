@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 /*import { fetchCohort, fetchStudents } from '../../store/thunks'
 
-const mapStateToProps = ({ cohort, students }) => {
-  return {
-    cohort,
-    students
-  }
-}
+// const mapStateToProps = ({ cohort, students }) => {
+//   return {
+//     cohort,
+//     students
+//   }
+// }
 
 const mapDispatchToProps = dispatch => {
   return {

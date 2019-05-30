@@ -24,10 +24,10 @@ const AdminHomeView = ({ cohorts, getAllCohorts }) => {
       <ul>
         {cohorts.length
           ? cohorts.map(cohort => (
-              <li key={cohort.id}>
-                <Link to={`/cohort/${cohort.id}`}>{cohort.name}</Link>
-              </li>
-            ))
+            <li key={cohort.id}>
+              <Link to={`/cohort/${cohort.id}`}>{cohort.name}</Link>
+            </li>
+          ))
           : ''}
       </ul>
     </div>
