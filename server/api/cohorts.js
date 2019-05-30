@@ -10,6 +10,8 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
+router.get()
+
 // get single cohort
 router.get('/:id', (req, res, next) => {
   Cohort.findOne({

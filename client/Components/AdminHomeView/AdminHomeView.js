@@ -3,17 +3,6 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getAllCohorts } from '../../store/cohorts/actions'
 
-const mapStateToProps = ({ cohorts }) => {
-  return {
-    cohorts
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    getAllCohorts: () => dispatch(getAllCohorts())
-  }
-}
 const AdminHomeView = ({ cohorts, getAllCohorts }) => {
   useEffect(() => {
     getAllCohorts()
@@ -32,6 +21,17 @@ const AdminHomeView = ({ cohorts, getAllCohorts }) => {
       </ul>
     </div>
   )
+}
+
+const mapStateToProps = ({ cohorts, cohortStretches }) => ({
+  cohorts,
+  cohortStretches
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getAllCohorts: () => dispatch(getAllCohorts())
+  }
 }
 
 export default connect(
