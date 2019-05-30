@@ -29,7 +29,9 @@ CohortStretch.getAllCohortStretches = function() {
     return cohortStretches.map(cohortStretch => {
       const values = cohortStretch.get()
       const { cohort, ...cohortStretchesFields } = values
+
       const cohortValues = cohort.get()
+
       const { cohortusers, name } = cohortValues
       return {
         ...cohortStretchesFields,
