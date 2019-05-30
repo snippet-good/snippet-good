@@ -24,6 +24,15 @@ export const getAllUsers = () => dispatch => {
   return axios.get('/api/users').then(res => dispatch(getUsers(res.data)))
 }
 
+export const getUsersOfSingleAdminThunk = adminId => {
+  return dispatch => {
+    return axios.get(`/api/users/admin/${adminId}`).then(res => {
+      console.log(res)
+      dispatch(getUsers(res.data))
+    })
+  }
+}
+
 export const createNewUser = newUser => {}
 
 export const updateUser = userInfo => {}

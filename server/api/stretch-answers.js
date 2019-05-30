@@ -10,4 +10,11 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
+// GET all StrecthAnswers of students associated to adminId
+router.get('/admin/:adminId', (req, res, next) => {
+  StretchAnswer.getAnswersOfStudentsOfSingleAdmin(req.params.adminId)
+    .then(stretchAnswers => res.json(stretchAnswers))
+    .catch(next)
+})
+
 module.exports = router

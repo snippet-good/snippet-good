@@ -47,12 +47,12 @@ const mapDispatchToProps = dispatch => {
 
     // For testing purposes only, remove as needed
     load: () => {
-      dispatch(getAllUsers())
+      // dispatch(getAllUsers())
       dispatch(getAllCohorts())
       dispatch(getAllCohortUsers())
       dispatch(getAllCategories())
       dispatch(getAllStretches())
-      dispatch(getAllStretchAnswers())
+      //dispatch(getAllStretchAnswers())
       dispatch(getAllCohortStretches())
     }
   }

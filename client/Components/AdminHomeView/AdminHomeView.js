@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
+import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
+import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import { getFilteredStretchesOfAdmin } from './helperfunctions'
 import ScheduledCohortStretchesList from '../ScheduledCohortStretchesList'
 import Sidebar from '../Sidebar'
@@ -14,13 +16,19 @@ const AdminHomeView = ({
   cohorts,
   userId,
   getCohortsOfAdmin,
+  getStudentsOfSingleAdmin,
+  getStretchAnswersOfSingleAdmin,
   openStretches,
   scheduledStretches,
   history
 }) => {
   useEffect(() => {
     if (userId) {
-      getCohortsOfAdmin(userId)
+      Promise.all([
+        getCohortsOfAdmin(userId),
+        getStretchAnswersOfSingleAdmin(userId),
+        getStudentsOfSingleAdmin(userId)
+      ])
     }
   }, [userId])
   const [showScheduled, setShowScheduled] = useState(false)
@@ -37,7 +45,15 @@ const AdminHomeView = ({
           {openStretches.length && (
             <ul>
               {openStretches.map(stretch => {
-                const { title, id, minutes, category, cohortName } = stretch
+                const {
+                  title,
+                  id,
+                  minutes,
+                  category,
+                  cohortName,
+                  cohortSize,
+                  completedStretches
+                } = stretch
                 return (
                   <Card key={id}>
                     <CardContent>
@@ -56,6 +72,9 @@ const AdminHomeView = ({
                       >{`${minutes}:00`}</Typography>
                       <Typography variant="body2" component="p">
                         {category}
+                      </Typography>
+                      <Typography variant="body2" component="p">
+                        {`${completedStretches} out of ${cohortSize} students are done`}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -85,12 +104,16 @@ const mapStateToProps = ({
   stretches,
   cohorts,
   cohortStretches,
-  userDetails
+  userDetails,
+  users,
+  stretchAnswers
 }) => {
   const { open, scheduled } = getFilteredStretchesOfAdmin(
     userDetails.id,
     cohortStretches,
-    stretches
+    stretches,
+    users,
+    stretchAnswers
   )
   return {
     openStretches: open,
@@ -102,7 +125,11 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    getCohortsOfAdmin: adminId => dispatch(getCohortsOfAdminThunk(adminId))
+    getCohortsOfAdmin: adminId => dispatch(getCohortsOfAdminThunk(adminId)),
+    getStretchAnswersOfSingleAdmin: adminId =>
+      dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
+    getStudentsOfSingleAdmin: adminId =>
+      dispatch(getUsersOfSingleAdminThunk(adminId))
   }
 }
 

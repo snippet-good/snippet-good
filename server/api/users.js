@@ -10,4 +10,11 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
+// GET all students associated to adminId
+router.get('/admin/:adminId', (req, res, next) => {
+  User.getStudentsOfSingleAdmin(req.params.adminId)
+    .then(users => res.json(users))
+    .catch(next)
+})
+
 module.exports = router
