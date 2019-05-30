@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
 
 import Grid from '@material-ui/core/Grid'
 
@@ -8,33 +7,65 @@ import GeneralInfo from './GeneralInfo'
 
 import CodeEditor from '../CodeEditor/CodeEditor'
 
-const CreateStretch = props => {
-  const { categories, stretches, stretchAnswers } = props
-  console.log(categories)
+class CreateStretch extends Component {
+  state = {
+    title: 'Untitled',
+    category: 'None',
+    scheduledDate: new Date(),
+    textPrompt: '',
+    codePrompt: '',
+    canBeCoded: true,
+    difficulty: 0
+  }
 
-  return (
-    <form>
-      <div style={styles.root}>
-        <Grid container spacing={2} style={styles.sub}>
-          <Grid item xs={12}>
-            <Controls />
-          </Grid>
+  handleChange = event => {
+    const { name, value } = event.target
+    this.setState({ [name]: value })
+  }
 
-          <Grid item xs={12}>
-            <GeneralInfo categories={categories} />
-          </Grid>
+  handleSubmit = event => {
+    event.preventDefault()
+    console.log(this.state)
+  }
 
-          <Grid item xs={6}>
-            Text editor
-          </Grid>
+  render() {
+    const { state, handleChange, handleSubmit } = this
 
-          <Grid item xs={6}>
-            <CodeEditor style={styles.codeEditor} />
+    return (
+      <form onSubmit={handleSubmit}>
+        <div style={styles.root}>
+          <Grid container spacing={2} style={styles.sub}>
+            {/* This section displays the button controls. */}
+            <Grid item xs={12}>
+              <Controls />
+            </Grid>
+
+            {/* This section displays the stretch details. */}
+            <Grid item xs={12}>
+              <GeneralInfo
+                handleChange={handleChange}
+                // This is given to the component for display purposes.
+
+                title={state.title}
+                category={state.category}
+                scheduledDate={state.scheduledDate}
+              />
+            </Grid>
+
+            {/* This section displays the embedded text editor. */}
+            <Grid item xs={6}>
+              Text editor
+            </Grid>
+
+            {/* This section displays the embedded code editor. */}
+            <Grid item xs={6}>
+              <CodeEditor style={styles.codeEditor} />
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
-    </form>
-  )
+        </div>
+      </form>
+    )
+  }
 }
 
 const styles = {
@@ -50,10 +81,4 @@ const styles = {
   }
 }
 
-const mapStateToProps = ({ categories, stretches, stretchAnswers }) => ({
-  categories,
-  stretches,
-  stretchAnswers
-})
-
-export default connect(mapStateToProps)(CreateStretch)
+export default CreateStretch

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 
 import Grid from '@material-ui/core/Grid'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -16,22 +17,25 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { DateTimePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 
-// Issues:
-// - Vertical misalignment from input fields in stretch details sections
+// Notes:
+// - Input fields in stretch details section is vertically misaligned
+// - Prep this view accept information for updating a stretch
 
 const GeneralInfo = props => {
-  const { categories } = props
+  const { categories, stretches, stretchAnswers } = props // Redux state
+  const { title, category, scheduledDate } = props // Local state
+  const { handleChange } = props // Event handlers
+
   if (!categories) return null
-  // This state handles the opening/closing for the StretchDetails ExpansionPanel.
+
+  // This state handled the opening/closing of the stretch details ExpansionPanel.
   const [infoIsOpen, setInfoIsOpen] = useState(false)
   const handleInfoClick = () => setInfoIsOpen(!infoIsOpen)
 
-  // This state handles the category display on the select input.
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const handleCategoryChange = event => setSelectedCategory(event.target.value)
-
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  const handleDateChange = date => setSelectedDate(date)
+  // This function is handle the Material UI's DateTimePicker component.
+  // The component does not emit a standard event. It only emits the selected date.
+  const handleTimeChange = date =>
+    handleChange({ target: { name: 'scheduledDate', value: date } })
 
   return (
     <div style={styles.root}>
@@ -53,18 +57,18 @@ const GeneralInfo = props => {
             <Grid container justify="center" alignItems="center" spacing={2}>
               <Grid item xs={4}>
                 <InputLabel shrink>Title</InputLabel>
-                <Typography variant="subtitle2">Untitled</Typography>
+                <Typography variant="subtitle2">{title}</Typography>
               </Grid>
+
               <Grid item xs={4}>
                 <InputLabel shrink>Category</InputLabel>
-                <Typography variant="subtitle2">
-                  {selectedCategory ? selectedCategory : 'No category'}
-                </Typography>
+                <Typography variant="subtitle2">{category}</Typography>
               </Grid>
+
               <Grid item xs={4}>
                 <InputLabel shrink>Scheduled Date</InputLabel>
                 <Typography variant="subtitle2">
-                  {selectedDate.toString().slice(0, 10)}
+                  {scheduledDate.toString().slice(0, 10)}
                 </Typography>
               </Grid>
             </Grid>
@@ -79,9 +83,11 @@ const GeneralInfo = props => {
 
             <Grid item xs={4} style={styles.box}>
               <TextField
+                name="title"
                 label="Title"
                 defaultValue="Untitled"
                 margin="normal"
+                onChange={handleChange}
               />
             </Grid>
 
@@ -91,12 +97,13 @@ const GeneralInfo = props => {
               <FormControl style={styles.select}>
                 <InputLabel shrink>Category</InputLabel>
                 <Select
+                  name="category"
                   label="Category"
-                  value={selectedCategory}
+                  value={category}
                   autoWidth
-                  onChange={handleCategoryChange}
+                  onChange={handleChange}
                 >
-                  <MenuItem value="">
+                  <MenuItem value="None">
                     <em>None</em>
                   </MenuItem>
                   {categories.map(c => (
@@ -113,11 +120,12 @@ const GeneralInfo = props => {
               <FormControl style={styles.dateSelect}>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                   <DateTimePicker
-                    value={selectedDate}
+                    name="scheduledDate"
+                    value={scheduledDate}
                     disablePast
-                    onChange={handleDateChange}
                     label="Scheduled Date"
                     showTodayButton
+                    onChange={handleTimeChange}
                   />
                 </MuiPickersUtilsProvider>
               </FormControl>
@@ -164,4 +172,10 @@ const styles = {
   }
 }
 
-export default GeneralInfo
+const mapStateToProps = state => ({
+  categories: state.categories,
+  stretches: state.stretches,
+  stretchAnswers: state.stretchAnswers
+})
+
+export default connect(mapStateToProps)(GeneralInfo)
