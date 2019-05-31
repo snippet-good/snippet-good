@@ -40,3 +40,9 @@ export const getAllStretchAnswers = () => dispatch => {
     .get('/api/stretch-answers')
     .then(res => dispatch(getStretchAnswers(res.data)))
 }
+
+export const getStretchAnswersOfSingleAdminThunk = adminId => dispatch => {
+  return axios
+    .get(`/api/stretch-answers/admin/${adminId}`)
+    .then(res => dispatch(getStretchAnswers(res.data)))
+}

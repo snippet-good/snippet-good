@@ -1,4 +1,5 @@
 const db = require('./db')
+const { Op } = require('sequelize')
 const models = require('./models')
 const {
   User,

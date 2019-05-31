@@ -19,25 +19,33 @@ import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 // import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
 import CreateStretch from './CreateStretch/View'
 
+import {
+  Home,
+  Login,
+  CodeEditor,
+  AdminHomeView,
+  SingleCohort,
+  AdminStretches
+} from './index'
+
 class App extends Component {
   componentDidMount() {
-    this.props.checkIfUserLoggedIn().catch(() => {})
+    this.props.checkIfUserLoggedIn()
 
     // For testing purposes only, remove as needed
     this.props.load()
   }
 
   render() {
-    return <CreateStretch />
-
     return (
       <Router>
         <Switch>
-          <Route path='/admin' exact component={AdminHomeView} />
-          <Route path='/cohort/:id' exact component={SingleCohort} />
-          <Route path='/' exact component={Home} />
-          <Route path='/login' exact component={Login} />
-          <Route path='/code' exact component={CodeEditor} />
+          <Route path="/admin" exact component={AdminHomeView} />
+          <Route path="/cohort/:id" exact component={SingleCohort} />
+          <Route path="/" exact component={Home} />
+          <Route path="/login" exact component={Login} />
+          <Route path="/code" exact component={CodeEditor} />
+          <Route path="/admin/stretches" exact component={AdminStretches} />
         </Switch>
       </Router>
     )
@@ -50,12 +58,12 @@ const mapDispatchToProps = dispatch => {
 
     // For testing purposes only, remove as needed
     load: () => {
-      dispatch(getAllUsers())
+      // dispatch(getAllUsers())
       dispatch(getAllCohorts())
       dispatch(getAllCohortUsers())
       dispatch(getAllCategories())
       dispatch(getAllStretches())
-      dispatch(getAllStretchAnswers())
+      //dispatch(getAllStretchAnswers())
       dispatch(getAllCohortStretches())
     }
   }

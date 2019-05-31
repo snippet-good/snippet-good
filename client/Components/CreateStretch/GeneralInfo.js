@@ -26,7 +26,7 @@ import { GeneralInfoStyles as styles } from './styles'
 // - Prep this view accept information for updating a stretch
 
 const GeneralInfo = props => {
-  const { categories, stretches, stretchAnswers } = props // Redux state
+  const { categories } = props // Redux state
   const { title, categoryId, canBeCoded, difficulty, scheduledDate } = props // Local state
   const { handleChange } = props // Event handlers from View component
 
@@ -173,7 +173,11 @@ const GeneralInfo = props => {
             <Grid item xs={4}>
               <InputLabel shrink>Can be coded?</InputLabel>
               <br />
-              <Switch checked={canBeCoded} onChange={handleCanBeCodedChange} />
+              <Switch
+                checked={canBeCoded}
+                color="primary"
+                onChange={handleCanBeCodedChange}
+              />
             </Grid>
           </Grid>
         </ExpansionPanelDetails>
@@ -182,10 +186,6 @@ const GeneralInfo = props => {
   )
 }
 
-const mapStateToProps = state => ({
-  categories: state.categories,
-  stretches: state.stretches,
-  stretchAnswers: state.stretchAnswers
-})
+const mapStateToProps = ({ categories }) => ({ categories })
 
 export default connect(mapStateToProps)(GeneralInfo)

@@ -14,7 +14,7 @@ Stretch.getAllStretches = function() {
       return {
         ...stretchFields,
         categoryName: category.name,
-        autherName: `${author.firstName} ${author.lastName}`
+        authorName: `${author.firstName} ${author.lastName}`
       }
     })
   })

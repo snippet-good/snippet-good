@@ -38,3 +38,23 @@ export const GeneralInfoStyles = {
     alignItems: 'center'
   }
 }
+
+export const ControlsStyles = {
+  root: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1em',
+    borderBottom: '2px solid lightGrey'
+  }
+}
+
+export const ExistingStretchesStyles = {
+  root: {
+    width: '82.5vw',
+    height: '500px',
+    top: '50%',
+    bottom: '50%',
+    transform: `translate(10%, 25%)`
+  }
+}

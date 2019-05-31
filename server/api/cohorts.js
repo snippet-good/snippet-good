@@ -10,6 +10,13 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
+// get cohorts belong to :userId
+router.get('/user/:userId', (req, res, next) => {
+  Cohort.getCohortsOfSingleAdmin(req.params.userId)
+    .then(cohorts => res.json(cohorts))
+    .catch(next)
+})
+
 // get single cohort
 router.get('/:id', (req, res, next) => {
   Cohort.findOne({

@@ -14,14 +14,15 @@ describe('cohort-stretch routes', () => {
     await db.close()
     done()
   })
-  describe('/api/cohortStretch', () => {
+  describe('/api/cohort-stretches', () => {
     test('it returns all cohort stretches, excluding status', done => {
       request(app)
-        .get('/api/cohortStretch')
+        .get('/api/cohort-stretches')
         .then(res => {
           expect(res.status).toBe(200)
+          return done()
         })
-      done()
+        .catch(err => done(err))
     })
   })
 })

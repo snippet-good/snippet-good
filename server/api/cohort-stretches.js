@@ -10,4 +10,11 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
+router.put('/:id', (req, res, next) => {
+  CohortStretch.findByPk(req.params.id)
+    .then(cohortstretch => cohortstretch.update(req.body))
+    .then(cohortstretch => res.json(cohortstretch))
+    .catch(next)
+})
+
 module.exports = router

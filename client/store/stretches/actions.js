@@ -29,8 +29,22 @@ export const getAllStretches = () => dispatch => {
     .then(res => dispatch(getStretches(res.data)))
 }
 
+// Redux thunk for creating a new stretch
 export const createStretch = newStretch => dispatch => {
   return axios
     .post('/api/stretches', newStretch)
     .then(res => console.log(res.data))
+}
+
+// Redux thunk for searching stretches by keyword
+export const searchStretches = searchTerm => dispatch => {
+  return axios
+    .get('/api/stretches')
+    .then(res => res.data)
+    .then(stretches =>
+      stretches.filter(stretch =>
+        stretch.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    )
+    .then(stretches => dispatch(getStretches(stretches)))
 }

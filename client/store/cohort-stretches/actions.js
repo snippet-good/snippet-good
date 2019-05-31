@@ -21,6 +21,12 @@ const createCohortStretch = newCohortStretch => ({
   newCohortStretch
 })
 
+const updateCohortStretch = (cohortStretchId, updatedItemFrontEnd) => ({
+  type: UPDATE_COHORT_STRETCH,
+  cohortStretchId,
+  updatedItemFrontEnd
+})
+
 // --------------------------------------------------
 // CRUD thunks
 
@@ -29,4 +35,18 @@ export const getAllCohortStretches = () => dispatch => {
   return axios
     .get('/api/cohort-stretches')
     .then(res => dispatch(getCohortStretches(res.data)))
+}
+
+export const updateCohortStretchThunk = (
+  cohortStretchId,
+  updatedFields,
+  updatedItemFrontEnd
+) => {
+  return dispatch => {
+    return axios
+      .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
+      .then(() =>
+        dispatch(updateCohortStretch(cohortStretchId, updatedItemFrontEnd))
+      )
+  }
 }

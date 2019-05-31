@@ -4,6 +4,7 @@ import CodeEditor from './CodeEditor/CodeEditor'
 import ViewCohortStretch from './ViewCohortStretch'
 import AdminHomeView from './AdminHomeView'
 import SingleCohort from './SingleCohort'
+import AdminStretches from './AdminStretches'
 
 export {
   Home,
@@ -11,5 +12,6 @@ export {
   CodeEditor,
   ViewCohortStretch,
   AdminHomeView,
-  SingleCohort
+  SingleCohort,
+  AdminStretches,
 }
