@@ -25,7 +25,8 @@ import {
   CodeEditor,
   AdminHomeView,
   SingleCohort,
-  AdminStretches
+  AdminStretches,
+  AdminController
 } from './index'
 
 class App extends Component {
@@ -40,14 +41,7 @@ class App extends Component {
     return (
       <Router>
         <Switch>
-          <Route path="/admin" exact component={AdminHomeView} />
-          <Route path="/cohort/:id" exact component={SingleCohort} />
-          <Route path="/" exact component={Home} />
-          <Route path="/login" exact component={Login} />
-          <Route path="/code" exact component={CodeEditor} />
-          <Route path="/admin/stretches" exact component={AdminStretches} />
-
-          <Route path="/stretches/create" component={CreateStretch} />
+          <AdminController />
         </Switch>
       </Router>
     )
@@ -75,3 +69,12 @@ export default connect(
   null,
   mapDispatchToProps
 )(App)
+
+/*<Switch>
+<Route path="/admin" exact component={AdminController} />
+<Route path="/cohort/:id" exact component={SingleCohort} />
+<Route path="/" exact component={Home} />
+<Route path="/login" exact component={Login} />
+
+<Route path="/stretches/create" component={CreateStretch} />
+</Switch>*/
