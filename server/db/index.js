@@ -1,21 +1,22 @@
 const db = require('./db')
-const { Op } = require('sequelize')
-const models = require('./models')
 const {
-  User,
   StretchAnswer,
-  Stretch,
   Comment,
   Cohort,
-  CohortStretch,
   Category,
-  CohortUser
-} = models
+  CohortUser,
+  User,
+  Stretch,
+  CohortStretch
+} = require('./models')
 
-require('./models/User')
-
-require('./methods/CohortStretch')
-require('./methods/Stretch')
+const {
+  CohortStretchMethods,
+  UserMethods,
+  StretchMethods,
+  CohortMethods,
+  StretchAnswerMethods
+} = require('./methods')
 
 function initDb(force = false) {
   return db.authenticate().then(() => {
@@ -64,7 +65,23 @@ function initDb(force = false) {
   })
 }
 
+User.getStudentsOfSingleAdmin = UserMethods.getStudentsOfSingleAdmin
+Stretch.getAllStretches = StretchMethods.getAllStretches
+CohortStretch.getAllCohortStretches = CohortStretchMethods.getAllCohortStretches
+Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
+StretchAnswer.getAnswersOfStudentsOfSingleAdmin =
+  StretchAnswerMethods.getAnswersOfStudentsOfSingleAdmin
+
 module.exports = {
   initDb,
-  models
+  models: {
+    StretchAnswer,
+    Comment,
+    Cohort,
+    Category,
+    CohortUser,
+    CohortStretch,
+    User,
+    Stretch
+  }
 }

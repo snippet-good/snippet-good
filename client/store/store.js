@@ -32,7 +32,7 @@ const store = createStore(
     stretchAnswers,
     cohortStretches
   }),
-  applyMiddleware(thunk)
+  applyMiddleware(thunk, reduxLogger)
 )
 
 export default store

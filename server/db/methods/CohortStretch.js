@@ -1,8 +1,8 @@
 const models = require('../models')
 const { User, Cohort, CohortStretch, CohortUser } = models
 
-CohortStretch.getAllCohortStretches = function() {
-  return this.findAll({
+const getAllCohortStretches = function() {
+  return CohortStretch.findAll({
     include: [
       {
         model: Cohort,
@@ -29,3 +29,5 @@ CohortStretch.getAllCohortStretches = function() {
     })
   })
 }
+
+module.exports = { getAllCohortStretches }

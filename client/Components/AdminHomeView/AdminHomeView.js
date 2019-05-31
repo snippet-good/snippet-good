@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
@@ -12,7 +11,6 @@ import CardContent from '@material-ui/core/CardContent'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
-import AdminStretches from '../AdminStretches'
 
 const AdminHomeView = ({
   cohorts,
