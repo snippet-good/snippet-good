@@ -12,7 +12,7 @@ export const DELETE_STRETCH = 'DELETE_STRETCH'
 // Action creators
 
 const getStretches = stretches => ({ type: GET_STRETCHES, stretches })
-const createStretch = newStretch => ({ type: CREATE_STRETCH, newStretch })
+const addStretch = newStretch => ({ type: CREATE_STRETCH, newStretch })
 const replaceStretch = updatedStretch => ({
   type: UPDATE_STRETCH,
   updatedStretch
@@ -29,12 +29,22 @@ export const getAllStretches = () => dispatch => {
     .then(res => dispatch(getStretches(res.data)))
 }
 
+// Redux thunk for creating a new stretch
+export const createStretch = newStretch => dispatch => {
+  return axios
+    .post('/api/stretches', newStretch)
+    .then(res => console.log(res.data))
+}
+
 // Redux thunk for searching stretches by keyword
 export const searchStretches = searchTerm => dispatch => {
   return axios
     .get('/api/stretches')
     .then(res => res.data)
-    .then(stretches => stretches.filter(stretch => stretch.title.toLowerCase()
-      .includes(searchTerm.toLowerCase())))
+    .then(stretches =>
+      stretches.filter(stretch =>
+        stretch.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    )
     .then(stretches => dispatch(getStretches(stretches)))
 }
