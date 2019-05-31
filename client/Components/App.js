@@ -46,6 +46,8 @@ class App extends Component {
           <Route path="/login" exact component={Login} />
           <Route path="/code" exact component={CodeEditor} />
           <Route path="/admin/stretches" exact component={AdminStretches} />
+
+          <Route path="/stretches/create" component={CreateStretch} />
         </Switch>
       </Router>
     )
