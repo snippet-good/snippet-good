@@ -1,6 +1,6 @@
 // React imports
 import React, { Component } from 'react'
-import { HashRouter as Router, Route, Switch } from 'react-router-dom'
+import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
 // Redux imports
 import { connect } from 'react-redux'
@@ -16,17 +16,7 @@ import { getAllStretchAnswers } from '../store/stretch-answers/actions'
 import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
-// import { Home, Login, CodeEditor, AdminHomeView, SingleCohort } from './index'
-import CreateStretch from './CreateStretch/View'
-
-import {
-  Home,
-  Login,
-  CodeEditor,
-  AdminHomeView,
-  SingleCohort,
-  AdminStretches
-} from './index'
+import { Home, Login, AdminController } from './index'
 
 class App extends Component {
   componentDidMount() {
@@ -40,14 +30,9 @@ class App extends Component {
     return (
       <Router>
         <Switch>
-          <Route path="/admin" exact component={AdminHomeView} />
-          <Route path="/cohort/:id" exact component={SingleCohort} />
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
-          <Route path="/code" exact component={CodeEditor} />
-          <Route path="/admin/stretches" exact component={AdminStretches} />
-
-          <Route path="/stretches/create" component={CreateStretch} />
+          <AdminController />
         </Switch>
       </Router>
     )
@@ -75,3 +60,12 @@ export default connect(
   null,
   mapDispatchToProps
 )(App)
+
+/*<Switch>
+<Route path="/admin" exact component={AdminController} />
+<Route path="/cohort/:id" exact component={SingleCohort} />
+<Route path="/" exact component={Home} />
+<Route path="/login" exact component={Login} />
+
+<Route path="/stretches/create" component={CreateStretch} />
+</Switch>*/

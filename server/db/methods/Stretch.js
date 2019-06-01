@@ -1,8 +1,8 @@
 const models = require('../models')
 const { User, Stretch, Category } = models
 
-Stretch.getAllStretches = function() {
-  return this.findAll({
+const getAllStretches = function() {
+  return Stretch.findAll({
     include: [
       Category,
       { model: User, as: 'author', attributes: ['firstName', 'lastName'] }
@@ -19,3 +19,5 @@ Stretch.getAllStretches = function() {
     })
   })
 }
+
+module.exports = { getAllStretches }

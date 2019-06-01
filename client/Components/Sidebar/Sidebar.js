@@ -46,7 +46,9 @@ const Sidebar = ({ cohorts, history }) => {
               <ListItem
                 key={index}
                 button
-                onClick={() => history.push(`/stretches/${el}`)}
+                onClick={() =>
+                  history.push(`/admin/stretches/${el === 'All' ? '' : el}`)
+                }
                 className={nested}
               >
                 <ListItemText primary={el} />
@@ -69,7 +71,7 @@ const Sidebar = ({ cohorts, history }) => {
               <ListItem
                 key={cohort.id}
                 button
-                onClick={() => history.push(`/cohort/${cohort.id}`)}
+                onClick={() => history.push(`/admin/cohort/${cohort.id}`)}
                 className={nested}
               >
                 <ListItemText primary={cohort.name} />

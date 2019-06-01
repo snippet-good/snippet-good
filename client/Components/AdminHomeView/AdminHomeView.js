@@ -91,7 +91,7 @@ const AdminHomeView = ({
               scheduledCohortStretches={scheduledStretches}
             />
           )}
-          <Button onClick={() => history.push('/createstretch')}>
+          <Button onClick={() => history.push('/admin/stretches/create')}>
             Add new stretch
           </Button>
         </Grid>
@@ -132,7 +132,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(getUsersOfSingleAdminThunk(adminId))
   }
 }
-
 
 export default connect(
   mapStateToProps,

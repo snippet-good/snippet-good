@@ -1,17 +1,14 @@
 const { Op } = require('sequelize')
+const { User, CohortUser, StretchAnswer } = require('../models')
 
-const models = require('../models')
-const { User, CohortUser } = models
-
-const getStudentsOfSingleAdmin = function(adminId) {
+const getAnswersOfStudentsOfSingleAdmin = function(adminId) {
   return User.findOne({
     where: { id: adminId },
     include: CohortUser
   })
     .then(user => user.cohortusers.map(cu => cu.cohortId))
     .then(cohortIds => {
-      return this.findAll({
-        where: { isAdmin: false },
+      return StretchAnswer.findAll({
         include: [
           {
             model: CohortUser,
@@ -21,16 +18,19 @@ const getStudentsOfSingleAdmin = function(adminId) {
         ]
       })
     })
-    .then(students => {
-      return students.map(s => {
+    .then(stretchAnswers => {
+      return stretchAnswers.map(s => {
         const values = s.get()
-        const { cohortusers, ...studentValues } = values
+        const {
+          cohortuser: { cohortId },
+          ...itemValues
+        } = values
         return {
-          ...studentValues,
-          cohortIds: cohortusers.map(cu => cu.cohortId)
+          ...itemValues,
+          cohortId
         }
       })
     })
 }
 
-module.exports = { getStudentsOfSingleAdmin }
+module.exports = { getAnswersOfStudentsOfSingleAdmin }

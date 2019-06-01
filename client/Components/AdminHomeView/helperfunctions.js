@@ -27,7 +27,9 @@ export const getFilteredStretchesOfAdmin = (
   students,
   stretchAnswers
 ) => {
+  console.log('HEREEEEEEEEEEEEEEEEEEE')
   const numberOfStudentsPerCohorts = getNumberOfStudentsPerCohorts(students)
+  console.log('num', numberOfStudentsPerCohorts)
   const numberOfStretches = getNumberStretchesCompletedByGroup(stretchAnswers)
   const stretchesTitlesMap = stretches.reduce((obj, value) => {
     obj[value.id] = {
@@ -61,33 +63,3 @@ export const getFilteredStretchesOfAdmin = (
       { scheduled: [], open: [] }
     )
 }
-
-/*User.getStudentsOfSingleAdminByCohort = function(adminId) {
-  return CohortUser.findAll({
-    where: { userId: adminId }
-  })
-    .then(cohortUsers => cohortUsers.map(cu => cu.cohortId))
-    .then(cohortIds => {
-      return this.findAll({
-        where: { isAdmin: false },
-        include: [
-          {
-            model: CohortUser,
-            attributes: ['cohortId'],
-            where: { cohortId: { [Op.in]: cohortIds } }
-          }
-        ]
-      })
-    })
-    .then(students => {
-      return students.reduce((obj, student) => {
-        student.cohortusers
-          .map(cu => cu.cohortId)
-          .forEach(cohortId => {
-            if (!obj[cohortId]) obj[cohortId] = []
-            obj[cohortId].push(student)
-          })
-        return obj
-      }, {})
-    })
-}*/
