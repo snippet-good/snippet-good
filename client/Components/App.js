@@ -51,7 +51,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(getAllCohortUsers())
       dispatch(getAllCategories())
       dispatch(getAllStretches())
-      //dispatch(getAllStretchAnswers())
+      dispatch(getAllStretchAnswers())
       dispatch(getAllCohortStretches())
     }
   }
