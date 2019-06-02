@@ -24,7 +24,7 @@ class AdminStretches extends Component {
     this.state = {
       searchTerm: '',
       filterCategoryNames: [],
-      filterAuthorIds: [],
+      selectedAuthor: ''
     }
   }
 
@@ -61,7 +61,7 @@ class AdminStretches extends Component {
     this.setState({ filterCategoryNames })
   }
 
-  // filter products by selected category
+  // filter by selected category
   applyCategoryFilter = evt => {
     evt.preventDefault()
     const { filterCategoryNames } = this.state
@@ -85,6 +85,28 @@ class AdminStretches extends Component {
     fetchStretches()
   }
 
+  //filter by category tick box
+  selectAuthorFilter = ({ target }) => {
+    this.setState({ selectedAuthor: target.value })
+  }
+
+  // filter products by selected category
+  applyAuthorFilter = evt => {
+    evt.preventDefault()
+    const { selectedAuthor } = this.state
+    let { stretches, filterStretches } = this.props
+    const newStretches = stretches.filter(stretch => stretch.authorName === selectedAuthor)
+    filterStretches(newStretches)
+  }
+
+  // clear filter
+  clearAuthorFilter = evt => {
+    evt.preventDefault()
+    const { fetchStretches } = this.props
+    this.setState({ selectedAuthor: '' })
+    fetchStretches()
+  }
+
   render() {
     const { searchTerm } = this.state
     const { stretches } = this.props
@@ -92,6 +114,10 @@ class AdminStretches extends Component {
     const allCategories = []
     stretches.map(stretch => allCategories.push(stretch.categoryName))
     const categories = [...new Set(allCategories)]
+
+    const allAuthors = []
+    stretches.map(stretch => allAuthors.push(stretch.authorName))
+    const authors = [...new Set(allAuthors)]
 
     return (
       <div className="stretches-page">
@@ -150,7 +176,20 @@ class AdminStretches extends Component {
               </div>
             </form>
 
-
+            <Typography variant="h6">Filter by Author:</Typography>
+            <form onSubmit={this.applyAuthorFilter}>
+              <select value={this.state.selectedAuthor} onChange={this.selectAuthorFilter}>
+                {authors.map(auth => <option value={auth}>{auth}</option>)}
+              </select>
+              <div>
+                <Button type="submit" color="primary">
+                  Apply Filter
+              </Button>
+                <Button type="reset" color="secondary" onClick={this.clearAuthorFilter}>
+                  Clear Filter
+              </Button>
+              </div>
+            </form>
           </div>
         </Card>
 
@@ -210,8 +249,6 @@ const mapDispatchToProps = dispatch => {
     fetchStretches: () => dispatch(getAllStretches()),
     searchStretches: searchTerm => dispatch(searchStretches(searchTerm)),
     filterStretches: newStretches => dispatch(filterStretches(newStretches))
-    // filterCategories: categoryIds => dispatch(filterCategories(categoryIds)),
-    // filterProducts: categoryIds => dispatch(filterProducts(categoryIds)),
   }
 }
 export default connect(
