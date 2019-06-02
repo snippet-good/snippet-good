@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -20,11 +21,11 @@ const useStyles = makeStyles(theme => ({
 
 function StretchListView(props) {
   const classes = useStyles()
-  function createOpenStretchData(title, categoryName, difficulty) {
-    return { title, categoryName, difficulty }
+  function createOpenStretchData(id, title, categoryName, difficulty) {
+    return { id, title, categoryName, difficulty }
   }
-  function createSubmittedStretchData(title, isSolved, rating) {
-    return { title, isSolved, rating }
+  function createSubmittedStretchData(title, isSolved, rating, stretchId) {
+    return { title, isSolved, rating, stretchId }
   }
 
   const rows = []
@@ -32,6 +33,7 @@ function StretchListView(props) {
     for (let i = 0; i < props.openStretches.length; ++i) {
       rows.push(
         createOpenStretchData(
+          props.openStretches[i].id,
           props.openStretches[i].title,
           props.openStretches[i].categoryName,
           props.openStretches[i].difficulty
@@ -44,7 +46,8 @@ function StretchListView(props) {
         createSubmittedStretchData(
           props.submittedStretches[i].title,
           props.submittedStretches[i].isSolved,
-          props.submittedStretches[i].rating
+          props.submittedStretches[i].rating,
+          props.submittedStretches[i].stretchId
         )
       )
     }
@@ -64,7 +67,7 @@ function StretchListView(props) {
             {rows.map((row, indx) => (
               <TableRow key={indx}>
                 <TableCell component="th" scope="row">
-                  {row.title}
+                  <Link to={`/student/stretch/${row.id}`}>{row.title}</Link>
                 </TableCell>
                 <TableCell align="right">{row.categoryName}</TableCell>
                 <TableCell align="right">{row.difficulty}</TableCell>
