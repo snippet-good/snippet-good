@@ -6,6 +6,7 @@ import AdminHomeView from './AdminHomeView'
 import SingleCohort from './SingleCohort'
 import AdminStretches from './AdminStretches'
 import AdminController from './AdminController'
+import StudentHomeView from './StudentHomeView'
 
 export {
   Home,
@@ -15,5 +16,6 @@ export {
   AdminHomeView,
   SingleCohort,
   AdminStretches,
-  AdminController
+  AdminController,
+  StudentHomeView
 }
