@@ -4,13 +4,27 @@ import { Link } from 'react-router-dom'
 import { getAllCategories } from '../../store/categories/actions'
 import { getAllStretches } from '../../store/stretches/actions'
 import { searchStretches } from '../../store/stretches/actions'
+import { filterStretches } from '../../store/stretches/actions'
+
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
+import Button from '@material-ui/core/Button';
+
+import Card from '@material-ui/core/Card';
+
+import Typography from '@material-ui/core/Typography';
+
 
 class AdminStretches extends Component {
   constructor() {
     super()
     this.state = {
       searchTerm: '',
-      filterCategoryIds: []
+      filterCategoryNames: [],
+      filterAuthorIds: [],
     }
   }
 
@@ -36,72 +50,146 @@ class AdminStretches extends Component {
     console.log(searchTerm)
   }
 
+  //filter by category tick box
+  selectCategoryFilter = ({ target }) => {
+    let { filterCategoryNames } = this.state
+    if (filterCategoryNames.includes(target.value)) {
+      filterCategoryNames = filterCategoryNames.filter(cat => cat !== target.value)
+    } else {
+      filterCategoryNames.push(target.value)
+    }
+    this.setState({ filterCategoryNames })
+  }
+
+  // filter products by selected category
+  applyCategoryFilter = evt => {
+    evt.preventDefault()
+    const { filterCategoryNames } = this.state
+    let { stretches, filterStretches, fetchStretches } = this.props
+    if (filterCategoryNames.length === 0) {
+      fetchStretches()
+    } else {
+      const newStretches = stretches.filter(stretch => filterCategoryNames.includes(stretch.categoryName))
+      filterStretches(newStretches)
+    }
+  }
+
+  // clear filter
+  clearCategoryFilter = evt => {
+    evt.preventDefault()
+    const { fetchStretches } = this.props
+    document.querySelectorAll('input[type=checkbox]').forEach(el => {
+      el.checked = false;
+    })
+    this.setState({ filterCategoryNames: [] })
+    fetchStretches()
+  }
+
   render() {
     const { searchTerm } = this.state
-    const { stretches, categories } = this.props
+    const { stretches } = this.props
+
+    const allCategories = []
+    stretches.map(stretch => allCategories.push(stretch.categoryName))
+    const categories = [...new Set(allCategories)]
 
     return (
       <div className="stretches-page">
-        <div className="stretches-filter">
-          <form onSubmit={this.applySearch}>
-            <label htmlFor="searchItems">
-              <h4>Search Stretches:</h4>
-            </label>
-            <div className="stretch-search">
-              <div className="md-form">
-                <input
-                  className="form-control menu-search-bar"
-                  type="search"
-                  name="searchItems"
-                  value={searchTerm}
-                  onChange={this.enterSearch}
-                />
+        <Card>
+          <div className="stretches-filter">
+            <form onSubmit={this.applySearch}>
+              <label htmlFor="searchItems">
+                <Typography variant="h6">Search Stretches:</Typography>
+              </label>
+              <div className="stretch-search">
+                <div className="md-form">
+                  <input
+                    className="form-control menu-search-bar"
+                    type="search"
+                    name="searchItems"
+                    value={searchTerm}
+                    onChange={this.enterSearch}
+                  />
+                </div>
+                <Button type="submit" color="primary">
+                  Search
+              </Button>
+                <Button
+                  type="submit"
+                  color="secondary"
+                  onClick={this.clearSearch}
+                  className="btn btn-secondary"
+                >
+                  Clear
+              </Button>
               </div>
-              <button type="submit" className="btn btn-secondary">
-                Search
-              </button>
-              <button
-                type="submit"
-                onClick={this.clearSearch}
-                className="btn btn-secondary"
-              >
-                Clear
-              </button>
-            </div>
-          </form>
+            </form>
 
-          {/* TODO: add filter on category and cohort */}
+            <Typography variant="h6">Filter by Category:</Typography>
+            <form onSubmit={this.applyCategoryFilter}>
+              {categories.map(cat => {
+                return (
+                  <div key={cat} className="filter-cat">
+                    <label>{cat}</label>
+                    <input
+                      type="checkbox"
+                      name="filterCategoryNames"
+                      value={cat}
+                      onChange={this.selectCategoryFilter}
+                    />
+                  </div>
+                );
+              })}
+              <div>
+                <Button type="submit" color="primary">
+                  Apply Filter
+              </Button>
+                <Button type="reset" color="secondary" onClick={this.clearCategoryFilter}>
+                  Clear Filter
+              </Button>
+              </div>
+            </form>
 
-          <div>
-            <h2>Stretch Inventory</h2>
-            <Link to="/admin/stretches/create">
-              <button type="button"> New Stretch </button>
-            </Link>
-            <table className>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Text Prompt</th>
-                  <th>Difficulty</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stretches.map(stretch => {
-                  return (
-                    <tr key={stretch.id}>
-                      <td>
-                        <Link to={`/admin/singleStretch/${stretch.id}`}>
-                          {stretch.title}
-                        </Link>
-                      </td>
-                      <td>{stretch.textPrompt}</td>
-                      <td>{stretch.difficulty}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+
           </div>
+        </Card>
+
+        {/* TODO: add filter on category and cohort */}
+
+        <div>
+          <Link to="/admin/stretches/create">
+            <Button variant="contained" color="primary"> New Stretch </Button>
+          </Link>
+          <Typography variant="h6" id="tableTitle">
+            Stretch Inventory
+          </Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Title</TableCell>
+                <TableCell>Author</TableCell>
+                <TableCell>Category</TableCell>
+                <TableCell>Difficulty</TableCell>
+
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {stretches.map(stretch => {
+                return (
+                  <TableRow key={stretch.id}>
+                    <TableCell>
+                      <Link to={`/admin/singleStretch/${stretch.id}`}>
+                        {stretch.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{stretch.authorName}</TableCell>
+                    <TableCell>{stretch.categoryName}</TableCell>
+                    <TableCell>{stretch.difficulty}</TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
         </div>
       </div>
     )
@@ -120,7 +208,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchCategories: () => dispatch(getAllCategories()),
     fetchStretches: () => dispatch(getAllStretches()),
-    searchStretches: searchTerm => dispatch(searchStretches(searchTerm))
+    searchStretches: searchTerm => dispatch(searchStretches(searchTerm)),
+    filterStretches: newStretches => dispatch(filterStretches(newStretches))
     // filterCategories: categoryIds => dispatch(filterCategories(categoryIds)),
     // filterProducts: categoryIds => dispatch(filterProducts(categoryIds)),
   }

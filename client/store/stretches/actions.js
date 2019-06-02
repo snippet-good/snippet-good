@@ -48,3 +48,7 @@ export const searchStretches = searchTerm => dispatch => {
     )
     .then(stretches => dispatch(getStretches(stretches)))
 }
+
+export const filterStretches = newStretches => dispatch => {
+  dispatch(getStretches(newStretches))
+}
