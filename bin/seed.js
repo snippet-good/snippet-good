@@ -115,7 +115,18 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
       solution: Math.random() <= 0.7 ? paragraph() : null,
       minutes: getRandomArrayEntry([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
       cohortId,
-      stretchId: getRandomArrayEntry(stretchIds)
+      stretchId: getRandomArrayEntry(stretchIds),
+      scheduledDate: new Date(
+        2019,
+        getRandomArrayEntry([8, 9, 10, 11]),
+        getRandomArrayEntry(
+          Array(31)
+            .fill(0)
+            .map((el, indx) => indx + 1)
+        ),
+        6,
+        40
+      )
     }
     cohortStretches.push(cohortStretch)
   }
@@ -131,20 +142,21 @@ const createStretchAnswerObjects = (stretchIds, cohortUserIds) => {
       rating:
         Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
       cohortuserId: getRandomArrayEntry(cohortUserIds),
-      stretchId: getRandomArrayEntry(stretchIds)
+      stretchId: getRandomArrayEntry(stretchIds),
+      timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10])
     }
     stretchAnswers.push(stretchAnswer)
   }
   return stretchAnswers
 }
 
-const createCommentObjects = (stretchIds, userIds) => {
+const createCommentObjects = (stretchanswerIds, adminIds) => {
   let comments = []
   for (let i = 0; i < 60; ++i) {
     let comment = {
       body: paragraph(),
-      cohortuserId: getRandomArrayEntry(userIds),
-      stretchId: getRandomArrayEntry(stretchIds)
+      userId: getRandomArrayEntry(adminIds),
+      stretchanswerId: getRandomArrayEntry(stretchanswerIds)
     }
     comments.push(comment)
   }
@@ -189,7 +201,7 @@ const syncAndSeed = async () => {
     )
   )
 
-  await createSeedInstances(
+  const createdCohortStretches = await createSeedInstances(
     CohortStretch,
     createCohortStretchObjects(
       createdCohorts.map(c => c.id),
@@ -197,16 +209,19 @@ const syncAndSeed = async () => {
     )
   )
 
-  await createSeedInstances(
+  const cohortStretchIds = createdCohortStretches.map(cs => cs.stretchId)
+  const createdStretchAnswers = await createSeedInstances(
     StretchAnswer,
     createStretchAnswerObjects(
-      createdStreches.map(stretch => stretch.id),
+      createdStreches
+        .map(stretch => stretch.id)
+        .filter(id => cohortStretchIds.includes(id)),
       cohortUsersStudents
     )
   )
   await createSeedInstances(
     Comment,
-    createCommentObjects(createdStreches.map(s => s.id), cohortUsersAdmin)
+    createCommentObjects(createdStretchAnswers.map(s => s.id), adminIds)
   )
   console.log('database successfully seeded!')
 }

@@ -1,17 +1,12 @@
-const socketio = require('socket.io')
-
-const generateSocket = server => {
-  const io = socketio(server)
-
-  io.on('connect', socket => {
+const socketFunction = socketServer => {
+  socketServer.on('connect', socket => {
     console.log(`${socket.id} has connected`)
     socket.userId = socket.handshake.query.userId
+    console.log(socketServer.sockets.clients())
     socket.on('disconnect', () => {
-      console.log(`${socket.id} has dosconnected`)
+      console.log(`${socket.id} has disconnected`)
     })
   })
-
-  return io
 }
 
-module.exports = generateSocket
+module.exports = socketFunction

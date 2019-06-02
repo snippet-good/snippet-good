@@ -16,7 +16,7 @@ import { getAllStretchAnswers } from '../store/stretch-answers/actions'
 import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
-import { Home, Login, AdminController } from './index'
+import { Home, Login, AdminController, StudentClosedStretchView } from './index'
 
 class App extends Component {
   componentDidMount() {
@@ -32,6 +32,11 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
+          <Route
+            path="/student/stretchAnswer/:stretchAnswerId"
+            exact
+            component={StudentClosedStretchView}
+          />
           <AdminController />
         </Switch>
       </Router>
@@ -50,7 +55,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(getAllCohortUsers())
       dispatch(getAllCategories())
       dispatch(getAllStretches())
-      //dispatch(getAllStretchAnswers())
+      dispatch(getAllStretchAnswers())
       dispatch(getAllCohortStretches())
     }
   }

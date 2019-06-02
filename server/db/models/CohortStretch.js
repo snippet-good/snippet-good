@@ -31,6 +31,17 @@ const CohortStretch = db.define('cohortstretch', {
       notEmpty: true,
       min: 1
     }
+  },
+  scheduledDate: {
+    type: db.Sequelize.DATE,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+      afterCurrentDate(value) {
+        if (value <= Date.now())
+          throw new Error('Can not schedule stretch for before right now')
+      }
+    }
   }
 })
 

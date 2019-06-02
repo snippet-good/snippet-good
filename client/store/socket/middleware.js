@@ -6,7 +6,7 @@ const socketMiddleware = storeAPI => {
   return next => action => {
     switch (action.type) {
       case GET_USER_DETAILS:
-        socket = Socket(action.user.id)
+        socket = new Socket(action.userDetails.id)
         break
       case LOGOUT:
         socket.disconnectUser()
