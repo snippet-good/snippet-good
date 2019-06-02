@@ -5,6 +5,8 @@ import { createStretch, updateStretch } from '../../store/stretches/actions'
 
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel'
+import Typography from '@material-ui/core/Typography'
 
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
@@ -13,10 +15,14 @@ import CodeEditor from '../CodeEditor/CodeEditor'
 import { SingleStretchStyles as styles } from './styles'
 import { GeneralInfoStyles } from './styles'
 
+// Notes:
+// - Need to work on componentDidUpdate()
+
 class SingleStretch extends Component {
   state = {
     mode: 'read',
     title: 'Untitled',
+    id: '',
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
     codePrompt: 'This is an example code prompt.',
@@ -39,16 +45,29 @@ class SingleStretch extends Component {
     delete data.mode
 
     if (this.state.mode === 'update') {
-      console.log('Updated stretch:', this.state)
+      this.props
+        .updateStretch({ ...data, id: this.state.id })
+        .then(() => this.setState({ mode: 'read' }))
     }
 
     if (this.state.mode === 'create') {
       this.props.createStretch(data)
+      // Redirect to somewhere
     }
   }
 
   componentDidMount() {
-    this.setState({ mode: this.props.mode, ...this.props.stretch })
+    const {
+      match: { params },
+      mode,
+      stretches
+    } = this.props
+
+    let attributes
+    if (params.id && stretches)
+      attributes = stretches.find(s => s.id === params.id)
+
+    this.setState({ mode, ...attributes })
   }
 
   render() {
@@ -69,20 +88,29 @@ class SingleStretch extends Component {
             </Grid>
 
             <Grid item xs={12} style={GeneralInfoStyles.root}>
-              <TextField
-                id="standard-full-width"
-                name="textPrompt"
-                label="Text Prompt"
-                defaultValue={state.textPrompt}
-                placeholder="Enter your written prompt here."
-                helperText="This is to be substituted with a rich text editor."
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true
-                }}
-                onChange={handleChange}
-              />
+              {mode === 'read' ? (
+                <div>
+                  <InputLabel shrink>Text Prompt</InputLabel>
+                  <Typography variant="subtitle1">
+                    {state.textPrompt}
+                  </Typography>
+                </div>
+              ) : (
+                <TextField
+                  id="standard-full-width"
+                  name="textPrompt"
+                  label="Text Prompt"
+                  value={state.textPrompt}
+                  placeholder="Enter your written prompt here."
+                  helperText="This is to be substituted with a rich text editor."
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  onChange={handleChange}
+                />
+              )}
             </Grid>
 
             <Grid item xs={12}>
@@ -100,12 +128,14 @@ SingleStretch.defaultProps = {
   stretch: {}
 }
 
+const mapStateToProps = ({ stretches }) => ({ stretches })
+
 const mapDispatchToProps = dispatch => ({
   createStretch: newStretch => dispatch(createStretch(newStretch)),
   updateStretch: updatedStretch => dispatch(updateStretch(updatedStretch))
 })
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SingleStretch)

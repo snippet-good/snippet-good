@@ -40,7 +40,7 @@ export const createStretch = newStretch => dispatch => {
 
 export const updateStretch = updatedStretch => dispatch => {
   return axios
-    .put('/api/stretches', updatedStretch)
+    .put(`/api/stretches/${updatedStretch.id}`, updatedStretch)
     .then(res =>
       console.log('Axios PUT to /api/stretches was successful:', res.data)
     )

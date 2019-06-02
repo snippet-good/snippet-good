@@ -17,4 +17,12 @@ router.post('/', (req, res, next) => {
     .catch(next)
 })
 
+// PUT, updates an existing stretch
+router.put('/:id', (req, res, next) => {
+  Stretch.findByPk(req.params.id)
+    .then(stretch => stretch.update(req.body))
+    .then(stretch => res.json(stretch))
+    .catch(next)
+})
+
 module.exports = router
