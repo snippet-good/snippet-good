@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import { AdminStretches, AdminHomeView, SingleCohort } from '../../Components'
-import CreateStretch from '../../Components/CreateStretch/View'
+import SingleStretch from '../SingleStretch/SingleStretch'
 
 class AdminController extends Component {
   render() {
@@ -10,7 +10,7 @@ class AdminController extends Component {
         <Route path="/admin" exact component={AdminHomeView} />
         <Route path="/admin/stretches" exact component={AdminStretches} />
         <Route path="/admin/cohort/:id" exact component={SingleCohort} />
-        <Route path="/admin/stretches/create" exact component={CreateStretch} />
+        <Route path="/admin/stretches/create" exact component={SingleStretch} />
       </div>
     )
   }
