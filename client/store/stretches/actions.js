@@ -41,9 +41,10 @@ export const createStretch = newStretch => dispatch => {
 export const updateStretch = updatedStretch => dispatch => {
   return axios
     .put(`/api/stretches/${updatedStretch.id}`, updatedStretch)
-    .then(res =>
+    .then(res => {
       console.log('Axios PUT to /api/stretches was successful:', res.data)
-    )
+      dispatch(replaceStretch(res.data))
+    })
 }
 
 // Redux thunk for searching stretches by keyword
