@@ -21,65 +21,67 @@ const GeneralInfo = props => {
     handleChange({ target: { name: 'difficulty', value } })
 
   return (
-    <ExpansionPanel>
-      <ExpansionPanelSummary>
-        <Typography variant="h6">Stretch Details</Typography>
-      </ExpansionPanelSummary>
+    <div style={styles.root}>
+      <ExpansionPanel>
+        <ExpansionPanelSummary>
+          <Typography variant="h6">Stretch Details</Typography>
+        </ExpansionPanelSummary>
 
-      <ExpansionPanelDetails>
-        <Grid container spacing={2}>
-          <Grid item xs={12} style={styles.row}>
-            {/* Title input/display */}
-            <div>
-              <InputLabel shrink>Title</InputLabel>
-              {mode === 'read' ? (
-                <Typography variant="subtitle2">{title}</Typography>
-              ) : (
-                <TextField
-                  name="title"
-                  defaultValue={title}
-                  margin="normal"
-                  onChange={handleChange}
-                />
-              )}
-            </div>
-
-            {/* Category select/display */}
-            <div>
-              <InputLabel shrink>Category</InputLabel>
-              {mode === 'read' ? (
-                <Typography variant="subtitle2">{categoryName}</Typography>
-              ) : (
-                <CategorySelect
-                  attributes={attributes}
-                  handleChange={handleChange}
-                />
-              )}
-            </div>
-
-            {/* Difficulty slider/display */}
-            {mode === 'read' ? (
+        <ExpansionPanelDetails>
+          <Grid container spacing={2}>
+            <Grid item xs={12} style={styles.row}>
+              {/* Title input/display */}
               <div>
-                <InputLabel shrink>Difficulty</InputLabel>
-                <Typography variant="subtitle2">{difficulty}</Typography>
+                <InputLabel shrink>Title</InputLabel>
+                {mode === 'read' ? (
+                  <Typography variant="subtitle2">{title}</Typography>
+                ) : (
+                  <TextField
+                    name="title"
+                    defaultValue={title}
+                    margin="normal"
+                    onChange={handleChange}
+                  />
+                )}
               </div>
-            ) : (
+
+              {/* Category select/display */}
               <div>
-                <InputLabel shrink>Difficulty: {difficulty}</InputLabel>
-                <Slider
-                  name="difficulty"
-                  value={difficulty}
-                  min={1}
-                  max={5}
-                  step={1}
-                  onChange={handleDifficultyChange}
-                />
+                <InputLabel shrink>Category</InputLabel>
+                {mode === 'read' ? (
+                  <Typography variant="subtitle2">{categoryName}</Typography>
+                ) : (
+                  <CategorySelect
+                    attributes={attributes}
+                    handleChange={handleChange}
+                  />
+                )}
               </div>
-            )}
+
+              {/* Difficulty slider/display */}
+              {mode === 'read' ? (
+                <div>
+                  <InputLabel shrink>Difficulty</InputLabel>
+                  <Typography variant="subtitle2">{difficulty}</Typography>
+                </div>
+              ) : (
+                <div>
+                  <InputLabel shrink>Difficulty: {difficulty}</InputLabel>
+                  <Slider
+                    name="difficulty"
+                    value={difficulty}
+                    min={1}
+                    max={5}
+                    step={1}
+                    onChange={handleDifficultyChange}
+                  />
+                </div>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    </div>
   )
 }
 

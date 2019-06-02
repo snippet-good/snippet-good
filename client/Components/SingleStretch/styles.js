@@ -30,6 +30,11 @@ export const ControlStyles = {
 }
 
 export const GeneralInfoStyles = {
+  root: {
+    width: '100%',
+    padding: '1em 1em 2em',
+    borderBottom: '2px solid lightGrey'
+  },
   row: {
     display: 'flex',
     justifyContent: 'space-between',

@@ -4,11 +4,14 @@ import { connect } from 'react-redux'
 import { createStretch, updateStretch } from '../../store/stretches/actions'
 
 import Grid from '@material-ui/core/Grid'
+import TextField from '@material-ui/core/TextField'
 
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
+import CodeEditor from '../CodeEditor/CodeEditor'
 
 import { SingleStretchStyles as styles } from './styles'
+import { GeneralInfoStyles } from './styles'
 
 class SingleStretch extends Component {
   state = {
@@ -40,7 +43,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
-      this.create(data)
+      this.props.createStretch(data)
     }
   }
 
@@ -65,8 +68,25 @@ class SingleStretch extends Component {
               <GeneralInfo attributes={state} handleChange={handleChange} />
             </Grid>
 
+            <Grid item xs={12} style={GeneralInfoStyles.root}>
+              <TextField
+                id="standard-full-width"
+                name="textPrompt"
+                label="Text Prompt"
+                defaultValue={state.textPrompt}
+                placeholder="Enter your written prompt here."
+                helperText="This is to be substituted with a rich text editor."
+                fullWidth
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true
+                }}
+                onChange={handleChange}
+              />
+            </Grid>
+
             <Grid item xs={12}>
-              text
+              <CodeEditor style={{ width: '100%' }} />
             </Grid>
           </Grid>
         </div>
