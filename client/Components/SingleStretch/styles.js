@@ -28,3 +28,11 @@ export const ControlStyles = {
     color: 'white'
   }
 }
+
+export const GeneralInfoStyles = {
+  row: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
+}

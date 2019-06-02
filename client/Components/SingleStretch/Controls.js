@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
-import Button from '@material-ui/core/Button'
+import React from 'react'
 
-import Modal from '@material-ui/core/Modal'
+import Button from '@material-ui/core/Button'
 
 import { ControlStyles as styles } from './styles'
 

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Grid from '@material-ui/core/Grid'
 
 import Controls from './Controls'
+import GeneralInfo from './GeneralInfo'
 
 import { SingleStretchStyles as styles } from './styles'
 
@@ -11,15 +12,20 @@ class SingleStretch extends Component {
     mode: 'read',
     title: 'Untitled',
     categoryId: '',
-    scheduledDate: new Date(),
+    categoryName: 'No category',
     textPrompt: 'This is an example text prompt.',
     codePrompt: 'This is an example code prompt.',
-    canBeCoded: true,
     difficulty: 3
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
   changeMode = mode => this.setState({ mode })
+
+  handleChange = event => {
+    const { name, value } = event.target
+    this.setState({ [name]: value })
+    console.log(this.state)
+  }
 
   handleSubmit = event => {
     event.preventDefault()
@@ -32,7 +38,7 @@ class SingleStretch extends Component {
 
   render() {
     const { state, props } = this
-    const { handleSubmit, changeMode } = this
+    const { handleSubmit, handleChange, changeMode } = this
     const { mode } = state
 
     return (
@@ -44,7 +50,7 @@ class SingleStretch extends Component {
             </Grid>
 
             <Grid item xs={12}>
-              {/* <GeneralInfo /> */}
+              <GeneralInfo attributes={state} handleChange={handleChange} />
             </Grid>
           </Grid>
         </div>
