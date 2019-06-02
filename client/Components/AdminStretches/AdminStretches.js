@@ -41,7 +41,7 @@ class AdminStretches extends Component {
     fetchStretches()
   }
 
-  // filter products by search term
+  // filter by search term
   applySearch = evt => {
     evt.preventDefault()
     const { searchTerm } = this.state
@@ -85,12 +85,12 @@ class AdminStretches extends Component {
     fetchStretches()
   }
 
-  //filter by category tick box
+  //filter by author
   selectAuthorFilter = ({ target }) => {
     this.setState({ selectedAuthor: target.value })
   }
 
-  // filter products by selected category
+  // filter by selected author
   applyAuthorFilter = evt => {
     evt.preventDefault()
     const { selectedAuthor } = this.state
