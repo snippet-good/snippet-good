@@ -7,6 +7,7 @@ import SingleCohort from './SingleCohort'
 import AdminStretches from './AdminStretches'
 import AdminController from './AdminController'
 import StudentHomeView from './StudentHomeView'
+import OpenStretchView from './OpenStretchView'
 
 export {
   Home,
@@ -17,5 +18,6 @@ export {
   SingleCohort,
   AdminStretches,
   AdminController,
-  StudentHomeView
+  StudentHomeView,
+  OpenStretchView
 }
