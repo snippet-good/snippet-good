@@ -30,13 +30,6 @@ const Stretch = db.define('stretch', {
       min: 1,
       max: 5
     }
-  },
-  canBeCoded: {
-    type: db.Sequelize.BOOLEAN,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
   }
 })
 

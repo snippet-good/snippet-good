@@ -10,7 +10,11 @@ class AdminController extends Component {
         <Route path="/admin" exact component={AdminHomeView} />
         <Route path="/admin/stretches" exact component={AdminStretches} />
         <Route path="/admin/cohort/:id" exact component={SingleCohort} />
-        <Route path="/admin/stretches/create" exact component={SingleStretch} />
+        <Route
+          path="/admin/stretches/create"
+          exact
+          render={routeProps => <SingleStretch mode="create" {...routeProps} />}
+        />
       </div>
     )
   }

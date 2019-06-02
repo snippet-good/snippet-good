@@ -33,7 +33,17 @@ export const getAllStretches = () => dispatch => {
 export const createStretch = newStretch => dispatch => {
   return axios
     .post('/api/stretches', newStretch)
-    .then(res => console.log(res.data))
+    .then(res =>
+      console.log('Axios POST to /api/stretches was successful:', res.data)
+    )
+}
+
+export const updateStretch = updatedStretch => dispatch => {
+  return axios
+    .put('/api/stretches', updatedStretch)
+    .then(res =>
+      console.log('Axios PUT to /api/stretches was successful:', res.data)
+    )
 }
 
 // Redux thunk for searching stretches by keyword

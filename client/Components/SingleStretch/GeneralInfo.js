@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid'
 import InputLabel from '@material-ui/core/InputLabel'
 import TextField from '@material-ui/core/TextField'
 import CategorySelect from '../StretchForm/CategorySelect'
-import DifficultySlider from '../StretchForm/DifficultySlider'
+import Slider from '@material-ui/lab/Slider'
 
 import { GeneralInfoStyles as styles } from './styles'
 
@@ -17,7 +17,9 @@ const GeneralInfo = props => {
   const { attributes, handleChange } = props
   const { mode, title, categoryName, difficulty } = attributes
 
-  console.log(attributes)
+  const handleDifficultyChange = (event, value) =>
+    handleChange({ target: { name: 'difficulty', value } })
+
   return (
     <ExpansionPanel>
       <ExpansionPanelSummary>
@@ -48,7 +50,10 @@ const GeneralInfo = props => {
               {mode === 'read' ? (
                 <Typography variant="subtitle2">{categoryName}</Typography>
               ) : (
-                <CategorySelect attributes={attributes} />
+                <CategorySelect
+                  attributes={attributes}
+                  handleChange={handleChange}
+                />
               )}
             </div>
 
@@ -61,7 +66,14 @@ const GeneralInfo = props => {
             ) : (
               <div>
                 <InputLabel shrink>Difficulty: {difficulty}</InputLabel>
-                <DifficultySlider difficulty={difficulty} />
+                <Slider
+                  name="difficulty"
+                  value={difficulty}
+                  min={1}
+                  max={5}
+                  step={1}
+                  onChange={handleDifficultyChange}
+                />
               </div>
             )}
           </Grid>
