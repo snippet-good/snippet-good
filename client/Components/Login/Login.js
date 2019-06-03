@@ -15,11 +15,15 @@ const Login = ({ login, history }) => {
   const handleSubmit = ev => {
     ev.preventDefault()
     login(email, password)
-      .then(() => history.push('/home'))
-      .catch(response => {
-        console.log(response)
-        setError(response.response.data)
+      .then(user => {
+        const { userDetails } = user
+        if (userDetails.isAdmin) {
+          history.push('/admin')
+        } else {
+          history.push('/student')
+        }
       })
+      .catch(({ response: { data } }) => setError(data))
   }
   return (
     <div>

@@ -7,6 +7,7 @@ import AdminStretches from './AdminStretches'
 import AdminController from './AdminController'
 import StudentClosedStretchView from './StudentClosedStretchView'
 import CodeEditor from './CodeEditor'
+import StudentHomeView from './StudentHomeView'
 
 export {
   Home,
@@ -17,5 +18,6 @@ export {
   AdminStretches,
   AdminController,
   StudentClosedStretchView,
-  CodeEditor
+  CodeEditor,
+  StudentHomeView
 }
