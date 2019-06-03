@@ -18,6 +18,8 @@ import stretchAnswers from './stretch-answers/reducer'
 import cohortStretches from './cohort-stretches/reducer'
 import comments from './comments/reducer'
 
+import codeEditor from './codeEditor/reducer'
+
 const store = createStore(
   combineReducers({
     // Authentication state
@@ -33,7 +35,9 @@ const store = createStore(
     stretches,
     stretchAnswers,
     cohortStretches,
-    comments
+    comments,
+
+    codeEditor
   }),
   applyMiddleware(socketMiddleware, thunk, reduxLogger)
 )

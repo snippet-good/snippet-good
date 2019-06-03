@@ -1,4 +1,5 @@
 const configEditor = function(editor, editorSession, editorTheme) {
+  console.log(editorTheme)
   editor.setTheme(`ace/theme/${editorTheme}`)
   editorSession.setMode('ace/mode/javascript')
   editor.setShowPrintMargin(false)

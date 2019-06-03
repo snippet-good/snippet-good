@@ -73,6 +73,7 @@ Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
 StretchAnswer.getAnswersOfStudentsOfSingleAdmin =
   StretchAnswerMethods.getAnswersOfStudentsOfSingleAdmin
 Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
+Comment.createNewComment = CommentMethods.createNewComment
 
 module.exports = {
   initDb,

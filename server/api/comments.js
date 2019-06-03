@@ -10,4 +10,10 @@ router.get('/stretchAnswer/:stretchAnswerId', (req, res, next) => {
     .catch(next)
 })
 
+router.post('/', (req, res, next) => {
+  Comment.createNewComment(req.body)
+    .then(comment => res.json(comment))
+    .catch(next)
+})
+
 module.exports = router

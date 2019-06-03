@@ -27,14 +27,14 @@ const getRandomArrayEntry = arr => {
 
 const createUserObjects = () => {
   let users = []
-  for (let i = 0; i < 50; ++i) {
+  for (let i = 0; i < 51; ++i) {
     let newUser = {
       userName: userName(),
       firstName: firstName(),
       lastName: lastName(),
       email: email(),
       password: password(),
-      isAdmin: Math.random() <= 0.2
+      isAdmin: i < 3
     }
     users.push(newUser)
   }
@@ -62,18 +62,20 @@ const createCohortObjects = () => {
 }
 
 const createCohortUserObjects = (cohorts, users) => {
-  const instructors = users.filter(user => user.isAdmin).map(user => user.id)
-  const students = users.filter(user => !user.isAdmin).map(user => user.id)
+  let instructors = users.filter(user => user.isAdmin).map(user => user.id)
+  let students = users.filter(user => !user.isAdmin).map(user => user.id)
   let cohortUsers = []
-  for (let i = 0; i < cohorts.length; ++i) {
-    const cohortId = cohorts[i].id
-    cohortUsers.push({ cohortId, userId: getRandomArrayEntry(instructors) })
-    for (let j = 0; j < 10; ++j) {
-      let studentsTemp = [...students]
-      const studentId = getRandomArrayEntry(studentsTemp)
+  for (let k = 0; k < cohorts.length; ++k) {
+    const cohortId = cohorts[k].id
+    const instructor = getRandomArrayEntry(instructors)
+    cohortUsers.push({ cohortId, userId: instructor })
+    for (let j = 0; j < 17; ++j) {
+      const studentId = getRandomArrayEntry(students)
       cohortUsers.push({ cohortId, userId: studentId })
-      studentsTemp = studentsTemp.filter(s => s.id !== studentId)
+      students = students.filter(s => s.id !== studentId)
     }
+
+    instructors = instructors.filter(id => id !== instructor.id)
   }
   return cohortUsers
 }
@@ -99,23 +101,20 @@ const createStretchObjects = (userIds, categoryIds) => {
 const createCohortStretchObjects = (cohortIds, stretchIds) => {
   let cohortStretches = []
   for (let i = 0; i < 100; ++i) {
-    let statuses = ['open', 'closed']
     let cohortId = getRandomArrayEntry(cohortIds)
-    if (
-      !cohortStretches.some(
-        c => c.cohortId === cohortId && c.status === 'scheduled'
-      )
-    ) {
-      statuses.push('scheduled')
-    }
+    const stretchIdsBad = cohortStretches
+      .filter(cs => cs.cohortId === cohortId)
+      .map(cs => cs.stretchId)
 
     let cohortStretch = {
-      status: getRandomArrayEntry(statuses),
+      status: getRandomArrayEntry(['closed', 'open', 'scheduled']),
       allowAnswersToBeRun: Math.random() <= 0.3,
-      solution: Math.random() <= 0.7 ? paragraph() : null,
+      solution: paragraph(),
       minutes: getRandomArrayEntry([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
       cohortId,
-      stretchId: getRandomArrayEntry(stretchIds),
+      stretchId: getRandomArrayEntry(
+        stretchIds.filter(s => !stretchIdsBad.includes(s))
+      ),
       scheduledDate: new Date(
         2019,
         getRandomArrayEntry([8, 9, 10, 11]),
@@ -136,13 +135,21 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
 const createStretchAnswerObjects = (stretchIds, cohortUserIds) => {
   let stretchAnswers = []
   for (let i = 0; i < 150; ++i) {
+    const stretchId = getRandomArrayEntry(stretchIds)
+    const cohortUserIdsSubset = cohortUserIds.filter(
+      cu =>
+        !stretchAnswers
+          .filter(s => s.stretchId === stretchId)
+          .map(s => s.cohortUserId)
+          .includes(cu)
+    )
     let stretchAnswer = {
       body: paragraph(),
       isSolved: Math.random() <= 0.5 ? Math.random() <= 0.5 : null,
       rating:
         Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
-      cohortuserId: getRandomArrayEntry(cohortUserIds),
-      stretchId: getRandomArrayEntry(stretchIds),
+      cohortuserId: getRandomArrayEntry(cohortUserIdsSubset),
+      stretchId,
       timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10])
     }
     stretchAnswers.push(stretchAnswer)
@@ -209,7 +216,9 @@ const syncAndSeed = async () => {
     )
   )
 
-  const cohortStretchIds = createdCohortStretches.map(cs => cs.stretchId)
+  const cohortStretchIds = createdCohortStretches
+    .filter(cs => cs.status === 'closed')
+    .map(cs => cs.stretchId)
   const createdStretchAnswers = await createSeedInstances(
     StretchAnswer,
     createStretchAnswerObjects(
