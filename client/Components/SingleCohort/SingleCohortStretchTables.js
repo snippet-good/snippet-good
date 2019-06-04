@@ -115,7 +115,7 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {scheduledStretches.map(stretch => {
+                    {closedStretches.map(stretch => {
                         return (
                             <TableRow key={stretch.id}>
                                 <TableCell>
