@@ -237,7 +237,7 @@ class AdminStretches extends Component {
                 return (
                   <TableRow key={stretch.id}>
                     <TableCell>
-                      <Link to={`/admin/single-stretch/${stretch.id}`}>
+                      <Link to={`/admin/singleStretch/${stretch.id}`}>
                         {stretch.title}
                       </Link>
                     </TableCell>

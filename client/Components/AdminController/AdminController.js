@@ -23,7 +23,7 @@ class AdminController extends Component {
         {/* This route displays relevant information about a single stretch. */}
         <Route
           exact
-          path="/admin/single-stretch/:id"
+          path="/admin/singleStretch/:id"
           render={routeProps => <SingleStretch mode="read" {...routeProps} />}
         />
       </div>
