@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
+import SingleCohortStretchTables from './SingleCohortStretchTables'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,7 +40,7 @@ const SingleCohort = ({ cohort, cohortStudents }) => {
         </Tabs>
       </AppBar>
       {value === 'stretches' && (
-        <Typography component="div">stretches coming</Typography>
+        <SingleCohortStretchTables cohort={cohort}/>
       )}
       {value === 'students' && (
         <Typography component="div">
@@ -48,7 +49,7 @@ const SingleCohort = ({ cohort, cohortStudents }) => {
               <li key={student.id}>
                 <Link to={`/admin/student/${student.id}`}>{`${
                   student.firstName
-                } ${student.lastName}`}</Link>
+                  } ${student.lastName}`}</Link>
               </li>
             ))}
           </ul>
