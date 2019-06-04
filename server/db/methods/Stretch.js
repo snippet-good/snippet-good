@@ -1,7 +1,7 @@
 const models = require('../models')
 const { User, Stretch, Category } = models
 
-const getAllStretches = function() {
+const getAllStretches = function(method = 'findAll') {
   return Stretch.findAll({
     include: [
       Category,

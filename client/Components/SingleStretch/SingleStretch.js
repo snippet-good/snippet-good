@@ -22,7 +22,6 @@ class SingleStretch extends Component {
   state = {
     mode: 'read',
     title: 'Untitled',
-    id: '',
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
     codePrompt: 'This is an example code prompt.',
@@ -35,6 +34,7 @@ class SingleStretch extends Component {
   handleChange = event => {
     const { name, value } = event.target
     this.setState({ [name]: value })
+    console.log(this.state)
   }
 
   // This function is called when SingleStretch is in 'create' or 'update' mode.
@@ -68,6 +68,7 @@ class SingleStretch extends Component {
       attributes = stretches.find(s => s.id === params.id)
 
     this.setState({ mode, ...attributes })
+    console.log(this.state)
   }
 
   render() {
