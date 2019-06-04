@@ -13,17 +13,18 @@ class AdminController extends Component {
         {/* This route displays all of the admin's stretches. */}
         <Route path="/admin/stretches" exact component={AdminStretches} />
 
-        {/* This route displays relevant information about a single stretch. */}
-        <Route
-          path="/admin/stretches/:id"
-          render={routeProps => <SingleStretch mode="read" {...routeProps} />}
-        />
-
         {/* This route displays a form that creates a new stretch when successfully submitted. */}
         <Route
-          path="/admin/stretches/create"
           exact
+          path="/admin/stretches/create"
           render={routeProps => <SingleStretch mode="create" {...routeProps} />}
+        />
+
+        {/* This route displays relevant information about a single stretch. */}
+        <Route
+          exact
+          path="/admin/single-stretch/:id"
+          render={routeProps => <SingleStretch mode="read" {...routeProps} />}
         />
       </div>
     )

@@ -51,7 +51,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
-      this.props.createStretch(data)
+      this.props.createStretch({ ...data, authorId: this.props.userDetails.id })
       // Redirect to somewhere
     }
   }
@@ -128,7 +128,10 @@ SingleStretch.defaultProps = {
   stretch: {}
 }
 
-const mapStateToProps = ({ stretches }) => ({ stretches })
+const mapStateToProps = state => ({
+  userDetails: state.userDetails,
+  stretches: state.stretches
+})
 
 const mapDispatchToProps = dispatch => ({
   createStretch: newStretch => dispatch(createStretch(newStretch)),
