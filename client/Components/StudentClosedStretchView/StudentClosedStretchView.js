@@ -1,14 +1,19 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import GeneralInfo from './GeneralInfo'
-import CodeEditorsView from './CodeEditorsView'
-import CommentsSection from './CommentSection'
-import { GeneralInfoStyles as styles } from '../CreateStretch/styles'
 import { getCommentsOfStretchAnswerThunk } from '../../store/comments/actions'
 import {
   getStretchAnswerMetaData,
   checkIfAllDataExists
 } from './helperfunctions'
+
+import GeneralInfo from './GeneralInfo'
+import CodeEditorsView from './CodeEditorsView'
+import CommentsSection from './CommentSection'
+
+import { GeneralInfoStyles as styles } from '../CreateStretch/styles'
+import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import { useStyles } from './styles'
 
 const StudentClosedStretchView = ({
   stretchAnswerId,
@@ -16,16 +21,15 @@ const StudentClosedStretchView = ({
   stretchAnswer,
   allStretchAnswerRelatedData
 }) => {
+  const { textColor, textPromptSpacing, textPromptHeading } = useStyles()
   useEffect(() => {
     if (stretchAnswerId) {
       getCommentsOfStretchAnswer(stretchAnswerId)
     }
   }, [stretchAnswer])
-
   if (!allStretchAnswerRelatedData.stretchCode) {
     return <div>no stretch answer</div>
   }
-
   const { root } = styles
   const {
     stretchMetaData,
@@ -34,7 +38,18 @@ const StudentClosedStretchView = ({
   return (
     <div styles={root}>
       <GeneralInfo stretchMetaData={stretchMetaData} />
-      <div>{textPrompt}</div>
+      <Grid container justify="center" spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="subtitle2" className={textPromptHeading}>
+            Text Prompt
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body2" className={textPromptSpacing}>
+            {textPrompt}{' '}
+          </Typography>
+        </Grid>
+      </Grid>
       <CodeEditorsView {...{ studentAnswer, solutions }} />
       <CommentsSection stretchAnswerId={stretchAnswer.id} />
     </div>

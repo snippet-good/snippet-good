@@ -6,9 +6,11 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import { GeneralInfoStyles as styles } from '../CreateStretch/styles'
+import { useStyles } from './styles'
 
 const GeneralInfo = ({ stretchMetaData }) => {
   const { info } = styles
+  const { bottomMargin } = useStyles()
   const { scheduledDate, cohortName } = stretchMetaData
   const selectedFields = [
     { field: 'Title', dbColumn: 'title' },
@@ -23,9 +25,11 @@ const GeneralInfo = ({ stretchMetaData }) => {
   }, [])
   return (
     <div>
-      <div>
-        Completed on {scheduledDate} in {cohortName}
-      </div>
+      <Typography variant="subtitle2" className={bottomMargin}>
+        <i>
+          You completed this stretch on {scheduledDate} in {cohortName}
+        </i>
+      </Typography>
       <ExpansionPanel styles={info}>
         <ExpansionPanelSummary>
           <Grid container justify="center" alignItems="center" spacing={2}>

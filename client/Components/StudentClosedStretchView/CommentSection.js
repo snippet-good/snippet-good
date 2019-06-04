@@ -10,7 +10,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import AddIcon from '@material-ui/icons/Add'
 import IconButton from '@material-ui/core/IconButton'
 import Divider from '@material-ui/core/Divider'
-import useStyles from './styles'
+import { useStyles } from './styles'
 
 const CommentSection = ({
   userDetails,
@@ -34,10 +34,7 @@ const CommentSection = ({
       body: message,
       stretchanswerId: stretchAnswerId,
       userId: userDetails.id
-    }).then(() => {
-      console.log('to here')
-      message = ''
-    })
+    }).then(() => setMessage(''))
   }
   return (
     <div>

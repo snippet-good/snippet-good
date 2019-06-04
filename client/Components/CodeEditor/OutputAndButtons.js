@@ -3,11 +3,20 @@ import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
+import { makeStyles } from '@material-ui/core/styles'
 import {
   codeOutputStyles,
   codeOutputAndButtonsStyles,
   buttonsStyles
 } from './styles'
+
+const useStyles = makeStyles(() => {
+  return {
+    errorColor: {
+      color: 'red'
+    }
+  }
+})
 
 const OutputAndButtons = ({
   showRunButton,
@@ -18,6 +27,7 @@ const OutputAndButtons = ({
   saveButtonText,
   saveCodeToDatabase
 }) => {
+  const { errorColor } = useStyles()
   return (
     <Grid container style={codeOutputAndButtonsStyles.root}>
       <Grid item xs={3} style={buttonsStyles.root}>
@@ -74,7 +84,7 @@ const OutputAndButtons = ({
             ))}
 
           {codeError && (
-            <Typography component="p" color="red">
+            <Typography component="p" className={errorColor}>
               {codeError}
             </Typography>
           )}

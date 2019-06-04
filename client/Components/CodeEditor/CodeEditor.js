@@ -27,6 +27,9 @@ class AceEditor extends Component {
       curState => {
         const editor = ace.edit(curState.editorId)
         if (this.props.code) editor.setValue(this.props.code)
+        if (this.props.theme) {
+          editor.setTheme(`ace/theme/${this.props.theme}`)
+        }
         return { ...curState, editor }
       },
       function() {
@@ -40,6 +43,9 @@ class AceEditor extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.code !== this.props.code) {
       this.state.editor.setValue(this.props.code)
+    }
+    if (prevProps.theme !== this.props.theme) {
+      this.state.editor.setTheme(`ace/theme/${this.props.theme}`)
     }
   }
 
@@ -82,21 +88,23 @@ class AceEditor extends Component {
 
   render() {
     const { editorTheme, codeError, codeResponse, editorId } = this.state
-    const { showRunButton, saveButtonText } = this.props
+    const { showRunButton, saveButtonText, theme } = this.props
     const { runCode, clearCodeResults, saveCodeToDatabase } = this
     return (
       <div>
-        <Select
-          value={editorTheme}
-          onChange={this.handleChange}
-          input={<OutlinedInput name="editorTheme" />}
-        >
-          {['monokai', 'github', 'tomorrow', 'kuroir'].map(el => (
-            <MenuItem key={el} value={el}>
-              {el}
-            </MenuItem>
-          ))}
-        </Select>
+        {!theme && (
+          <Select
+            value={editorTheme}
+            onChange={this.handleChange}
+            input={<OutlinedInput name="editorTheme" />}
+          >
+            {['monokai', 'github', 'tomorrow', 'kuroir'].map(el => (
+              <MenuItem key={el} value={el}>
+                {el}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
 
         <div id={editorId} />
         <OutputAndButtons
