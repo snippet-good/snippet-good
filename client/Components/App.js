@@ -39,7 +39,11 @@ class App extends Component {
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
           <Route path="/student" exact component={StudentHomeView} />
-          <Route path="/student/:stretchId" exact component={OpenStretchView} />
+          <Route
+            path="/student/stretch/:stretchId"
+            exact
+            component={OpenStretchView}
+          />
           <AdminController />
         </Switch>
       </Router>

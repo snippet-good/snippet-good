@@ -22,6 +22,7 @@ class AceEditor extends Component {
     this.setState({ editor: ace.edit('ace') }, function() {
       const { editor } = this.state
       const editorSession = editor.getSession()
+      editor.setValue(this.props.codePrompt)
       this.configEditorBinded(editor, editorSession, this.state.editorTheme)
     })
   }
