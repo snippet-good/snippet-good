@@ -10,7 +10,6 @@ import OutputAndButtons from './OutputAndButtons'
 class AceEditor extends Component {
   constructor(props) {
     super(props)
-    console.log(props)
     this.state = {
       code: '',
       codeResponse: '',

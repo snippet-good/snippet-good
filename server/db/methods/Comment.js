@@ -6,7 +6,6 @@ const getCommentsOfStretchAnswer = stretchanswerId => {
     include: [{ model: User, attributes: ['firstName', 'lastName'] }],
     order: [['createdAt']]
   }).then(comments => {
-    console.log(comments)
     return comments.map(comment => {
       const values = comment.get()
       const { user, ...commentFields } = values

@@ -6,12 +6,6 @@ class Socket {
     console.log('two-way connection has been made!')
   }
 
-  /*connectUser(){
-    this.socket = io(`window.location.origin`)
-    this.connectUser.sock
-    console.log('two-way connection has been made!')
-  }*/
-
   disconnectUser() {
     this.socket.disconnect()
   }

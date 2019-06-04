@@ -27,9 +27,7 @@ export const getFilteredStretchesOfAdmin = (
   students,
   stretchAnswers
 ) => {
-  console.log('HEREEEEEEEEEEEEEEEEEEE')
   const numberOfStudentsPerCohorts = getNumberOfStudentsPerCohorts(students)
-  console.log('num', numberOfStudentsPerCohorts)
   const numberOfStretches = getNumberStretchesCompletedByGroup(stretchAnswers)
   const stretchesTitlesMap = stretches.reduce((obj, value) => {
     obj[value.id] = {
