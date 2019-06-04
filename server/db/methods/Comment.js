@@ -3,7 +3,8 @@ const { User, Comment } = require('../models')
 const getCommentsOfStretchAnswer = stretchanswerId => {
   return Comment.findAll({
     where: { stretchanswerId },
-    include: [{ model: User, attributes: ['firstName', 'lastName'] }]
+    include: [{ model: User, attributes: ['firstName', 'lastName'] }],
+    order: [['createdAt']]
   }).then(comments => {
     console.log(comments)
     return comments.map(comment => {

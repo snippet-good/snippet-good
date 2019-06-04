@@ -1,33 +1,33 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { createCommentThunk } from '../../store/comments/actions'
+import { groupCommentsByDate } from './helperfunctions'
 
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
-import InputBase from '@material-ui/core/InputBase'
-import { chatInputStyles, root } from './styles'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-
-import { connect } from 'react-redux'
-import { createCommentThunk } from '../../store/comments/actions'
-
-const useStyles = makeStyles(theme => ({
-  margin: {
-    margin: theme.spacing(1)
-  }
-}))
+import InputAdornment from '@material-ui/core/InputAdornment'
+import AddIcon from '@material-ui/icons/Add'
+import IconButton from '@material-ui/core/IconButton'
+import Divider from '@material-ui/core/Divider'
+import useStyles from './styles'
 
 const CommentSection = ({
-  comments,
   userDetails,
   stretchAnswerId,
-  createComment
+  createComment,
+  allComments
 }) => {
   let [message, setMessage] = useState('')
-  const { margin } = useStyles()
+  const {
+    textColor,
+    topDivider,
+    addComment,
+    timeClass,
+    singleComment,
+    inlineDivider,
+    dateAsStringStyle
+  } = useStyles()
 
   const sendMessage = () => {
     return createComment({
@@ -35,51 +35,80 @@ const CommentSection = ({
       stretchanswerId: stretchAnswerId,
       userId: userDetails.id
     }).then(() => {
+      console.log('to here')
       message = ''
     })
   }
   return (
-    <Grid container justify="center" alignItems="center" spacing={2}>
-      {comments.map(comment => {
-        return (
-          <Grid item xs={10} key={comment.id}>
-            <Typography>{comment.body}</Typography>
-          </Grid>
-        )
-      })}
+    <div>
+      <Divider className={topDivider} />
 
-      <Grid container style={root}>
-        <Grid item xs={9}>
-          <TextField
-            id="outlined-full-width"
-            placeholder="Comment on stretch"
-            fullWidth
-            variant="outlined"
-            value={message}
-            onChange={({ target }) => setMessage(target.value)}
-            inputProps={{
-              borderRadius: '0px'
-            }}
-            multiline={true}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Button
-            type="button"
-            variant="outlined"
-            onClick={sendMessage}
-            style={chatInputStyles}
-          >
-            +
-          </Button>
-        </Grid>
+      <Typography variant="h5" className={textColor}>
+        Comment Section
+      </Typography>
+      <Grid container className={addComment}>
+        {allComments.map(commentGroup => {
+          const { date, comments, dateAsString } = commentGroup
+          return (
+            <Grid container key={date}>
+              <Grid container>
+                <Grid item xs={4}>
+                  <Divider className={inlineDivider} />
+                </Grid>
+                <Grid item xs={1} className={dateAsStringStyle}>
+                  <Typography variant="subtitle2">{dateAsString}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Divider className={inlineDivider} />
+                </Grid>
+              </Grid>
+              {comments.map(comment => {
+                return (
+                  <Grid item xs={12} key={comment.id}>
+                    <Grid container>
+                      <span>
+                        <Typography variant="subtitle2">
+                          {comment.writerName}
+                        </Typography>
+                      </span>
+                      <span>
+                        <Typography variant="subtitle2" className={timeClass}>
+                          {comment.time}
+                        </Typography>
+                      </span>
+                    </Grid>
+                    <Typography variant="body2" className={singleComment}>
+                      {comment.body}
+                    </Typography>
+                  </Grid>
+                )
+              })}
+            </Grid>
+          )
+        })}
       </Grid>
-    </Grid>
+      <TextField
+        placeholder="Comment on stretch"
+        className={addComment}
+        value={message}
+        onChange={({ target }) => setMessage(target.value)}
+        multiline={true}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={sendMessage} edge="end">
+                <AddIcon />
+              </IconButton>
+            </InputAdornment>
+          )
+        }}
+      />
+    </div>
   )
 }
 
 const mapStateToProps = ({ comments, userDetails }) => ({
-  comments,
+  allComments: groupCommentsByDate(comments),
   userDetails
 })
 
