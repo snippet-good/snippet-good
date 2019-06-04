@@ -66,11 +66,14 @@ function initDb(force = false) {
 }
 
 User.getStudentsOfSingleAdmin = UserMethods.getStudentsOfSingleAdmin
-Stretch.getAllStretches = StretchMethods.getAllStretches
+
 CohortStretch.getAllCohortStretches = CohortStretchMethods.getAllCohortStretches
 Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
 StretchAnswer.getAnswersOfStudentsOfSingleAdmin =
   StretchAnswerMethods.getAnswersOfStudentsOfSingleAdmin
+
+// Leaving this here in case of future errors.
+// Stretch.getAllStretches = StretchMethods.getAllStretches
 
 module.exports = {
   initDb,

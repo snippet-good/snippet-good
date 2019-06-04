@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
 
 // POST, creates a new stretch in the database
 router.post('/', (req, res, next) => {
-  Stretch.create(req.body)
+  Stretch.createWithAdditionalAttributes(req.body)
     .then(newStretch => res.json(newStretch))
     .catch(next)
 })

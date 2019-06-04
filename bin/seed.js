@@ -208,6 +208,16 @@ const syncAndSeed = async () => {
     Comment,
     createCommentObjects(createdStreches.map(s => s.id), cohortUsersAdmin)
   )
+
+  await User.create({
+    userName: 'kevinhan',
+    firstName: 'Kevin',
+    lastName: 'Han',
+    email: '1',
+    password: '1',
+    isAdmin: true
+  })
+
   console.log('database successfully seeded!')
 }
 
