@@ -39,5 +39,8 @@ export const GeneralInfoStyles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  info: {
+    width: '98%'
   }
 }

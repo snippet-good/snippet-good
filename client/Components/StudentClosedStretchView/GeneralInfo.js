@@ -5,7 +5,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
-import { GeneralInfoStyles as styles } from '../CreateStretch/styles'
+import { GeneralInfoStyles as styles } from '../SingleStretch/styles'
 import { useStyles } from './styles'
 
 const GeneralInfo = ({ stretchMetaData }) => {
