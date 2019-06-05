@@ -6,9 +6,9 @@ import AdminStretches from './AdminStretches'
 import AdminController from './AdminController'
 import StudentClosedStretchView from './StudentClosedStretchView'
 import CodeEditor from './CodeEditor'
-//import StudentHomeView from './StudentHomeView'
 import OpenStretchView from './OpenStretchView'
 import StudentController from './StudentController'
+import Framework from './Framework'
 
 export {
   Home,
@@ -17,9 +17,9 @@ export {
   SingleCohort,
   AdminStretches,
   AdminController,
-  //StudentHomeView,
   OpenStretchView,
   StudentClosedStretchView,
   CodeEditor,
-  StudentController
+  StudentController,
+  Framework
 }

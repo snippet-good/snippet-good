@@ -17,7 +17,6 @@ import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
 import { Home, Login, AdminController, StudentController } from './index'
-console.log(StudentController)
 
 class App extends Component {
   componentDidMount() {
