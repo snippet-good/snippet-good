@@ -4,11 +4,13 @@ import axios from 'axios'
 // Action types
 
 export const GET_USER_DETAILS = 'GET_USER_DETAILS'
+export const LOGOUT = 'LOGOUT'
 
 // --------------------------------------------------
 // Action creators
 
 const getUser = userDetails => ({ type: GET_USER_DETAILS, userDetails })
+const logutUser = () => ({ type: LOGOUT })
 
 // --------------------------------------------------
 // Authentication thunks
@@ -33,6 +35,6 @@ export const checkIfUserLoggedInThunk = () => {
 
 export const logoutUserThunk = () => {
   return dispatch => {
-    return axios.delete('/api/auth').then(() => dispatch(getUser({})))
+    return axios.delete('/api/auth').then(() => dispatch(logutUser()))
   }
 }

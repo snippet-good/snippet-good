@@ -16,7 +16,13 @@ import { getAllStretchAnswers } from '../store/stretch-answers/actions'
 import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
-import { Home, Login, AdminController, StudentHomeView } from './index'
+import {
+  Home,
+  Login,
+  AdminController,
+  StudentClosedStretchView,
+  StudentHomeView
+} from './index'
 
 class App extends Component {
   componentDidMount() {
@@ -32,6 +38,11 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
+          <Route
+            path="/student/stretchAnswer/:stretchAnswerId"
+            exact
+            component={StudentClosedStretchView}
+          />
           <Route path="/student" exact component={StudentHomeView} />
           <AdminController />
         </Switch>

@@ -1,5 +1,4 @@
 const db = require('../db')
-const CohortStretch = require('./CohortStretch')
 
 const Stretch = db.define('stretch', {
   id: {
