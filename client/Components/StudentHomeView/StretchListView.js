@@ -24,8 +24,14 @@ function StretchListView(props) {
   function createOpenStretchData(id, title, categoryName, difficulty) {
     return { id, title, categoryName, difficulty }
   }
-  function createSubmittedStretchData(title, isSolved, rating, stretchId) {
-    return { title, isSolved, rating, stretchId }
+  function createSubmittedStretchData(
+    stretchAnswerId,
+    title,
+    isSolved,
+    rating,
+    stretchId
+  ) {
+    return { stretchAnswerId, title, isSolved, rating, stretchId }
   }
 
   const rows = []
@@ -44,6 +50,7 @@ function StretchListView(props) {
     for (let i = 0; i < props.submittedStretches.length; ++i) {
       rows.push(
         createSubmittedStretchData(
+          props.submittedStretches[i].id,
           props.submittedStretches[i].title,
           props.submittedStretches[i].isSolved,
           props.submittedStretches[i].rating,
@@ -88,7 +95,9 @@ function StretchListView(props) {
             {rows.map((row, indx) => (
               <TableRow key={indx}>
                 <TableCell component="th" scope="row">
-                  {row.title}
+                  <Link to={`/student/stretchAnswer/${row.stretchAnswerId}`}>
+                    {row.title}
+                  </Link>
                 </TableCell>
                 <TableCell align="right">
                   {row.isSolved ? 'submitted' : 'not submitted'}
