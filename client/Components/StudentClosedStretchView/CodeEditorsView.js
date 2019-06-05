@@ -44,7 +44,6 @@ const CodeEditorsView = ({ studentAnswer, solutions }) => {
           >
             {solutions.map(el => {
               const { dropdownTitle, solution } = el
-
               return (
                 <MenuItem key={dropdownTitle} value={solution}>
                   {dropdownTitle}
@@ -59,7 +58,6 @@ const CodeEditorsView = ({ studentAnswer, solutions }) => {
           code={studentAnswer}
           editorId="studentSolution"
           showRunButton={true}
-          saveButtonText="Update"
           theme={theme}
         />
       </Grid>
