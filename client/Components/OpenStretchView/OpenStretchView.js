@@ -68,7 +68,7 @@ const OpenStretchView = ({ myStretch, myCohortStretch }) => {
         </Typography>
       </Paper>
       <CodeEditor codePrompt={codePrompt} />
-      <Timer minutes={minutes} />
+      <Timer minutes={minutes} setMinutes={setMinutes} />
     </div>
   )
 }
