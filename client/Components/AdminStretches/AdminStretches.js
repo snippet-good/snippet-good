@@ -230,6 +230,7 @@ class AdminStretches extends Component {
                 <TableCell>Author</TableCell>
                 <TableCell>Category</TableCell>
                 <TableCell>Difficulty</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -244,6 +245,7 @@ class AdminStretches extends Component {
                     <TableCell>{stretch.authorName}</TableCell>
                     <TableCell>{stretch.categoryName}</TableCell>
                     <TableCell>{stretch.difficulty}</TableCell>
+                    <TableCell><Button color='secondary'>Schedule</Button></TableCell>
                   </TableRow>
                 )
               })}
