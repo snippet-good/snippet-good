@@ -1,5 +1,4 @@
 const db = require('../db')
-const CohortStretch = require('./CohortStretch')
 
 const Stretch = db.define('stretch', {
   id: {
@@ -29,13 +28,6 @@ const Stretch = db.define('stretch', {
     validate: {
       min: 1,
       max: 5
-    }
-  },
-  canBeCoded: {
-    type: db.Sequelize.BOOLEAN,
-    allowNull: false,
-    validate: {
-      notEmpty: true
     }
   }
 })

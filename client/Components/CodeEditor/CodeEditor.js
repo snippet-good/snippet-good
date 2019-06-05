@@ -1,36 +1,58 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import Select from '@material-ui/core/Select'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import MenuItem from '@material-ui/core/MenuItem'
-import configEditor from './EditorConfigFunction'
+import configEditor from './configeditor'
+import { runCodeResultThunk } from '../../store/codeEditor/actions'
+import { connect } from 'react-redux'
+import OutputAndButtons from './OutputAndButtons'
 
 class AceEditor extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       code: '',
       codeResponse: '',
       codeError: '',
       editor: {},
-      editorTheme: 'monokai'
+      editorTheme: 'monokai',
+      editorId: this.props.editorId ? `ace-${this.props.editorId}` : 'ace'
     }
     this.configEditorBinded = configEditor.bind(this)
   }
 
   componentDidMount() {
-    this.setState({ editor: ace.edit('ace') }, function() {
-      const { editor } = this.state
-      const editorSession = editor.getSession()
-      editor.setValue(this.props.codePrompt)
-      this.configEditorBinded(editor, editorSession, this.state.editorTheme)
-    })
+
+    this.setState(
+      curState => {
+        const editor = ace.edit(curState.editorId)
+        if (this.props.code) editor.setValue(this.props.code)
+        if (this.props.theme) {
+          editor.setTheme(`ace/theme/${this.props.theme}`)
+        }
+        return { ...curState, editor }
+      },
+      function() {
+        const { editor, editorTheme } = this.state
+        const editorSession = editor.getSession()
+        this.configEditorBinded(editor, editorSession, editorTheme)
+      }
+    )
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.code !== this.props.code) {
+      this.state.editor.setValue(this.props.code)
+    }
+    if (prevProps.theme !== this.props.theme) {
+      this.state.editor.setTheme(`ace/theme/${this.props.theme}`)
+    }
   }
 
   runCode = () => {
     this.setState({ codeResponse: '', codeError: '' }, () => {
-      return axios
-        .post('/api/code/runcode', { code: this.state.code })
+      return this.props
+        .runCodeResult(this.state.code)
         .then(({ data }) => {
           this.setState({
             codeResponse: String(data)
@@ -42,24 +64,18 @@ class AceEditor extends Component {
     })
   }
 
-  submit = () => {
-    const { editor } = this.state
-    axios.post('/api/code', { body: this.state.code }).then(() => {
+  clearCodeResults = () => {
+    this.setState({ codeResponse: '', codeError: '' })
+  }
+
+  saveCodeToDatabase = () => {
+    const { editor, code } = this.state
+    return this.props.saveItemWithCodeField(code).then(() => {
       editor.setValue('')
       this.setState({
         code: '',
         codeResponse: '',
         codeError: ''
-      })
-    })
-  }
-
-  showSavedCode = () => {
-    const { editor } = this.state
-
-    axios.get('/api/code').then(({ data: { body } }) => {
-      this.setState({ code: body }, () => {
-        editor.setValue(this.state.code)
       })
     })
   }
@@ -71,43 +87,49 @@ class AceEditor extends Component {
   }
 
   render() {
+    const { editorTheme, codeError, codeResponse, editorId } = this.state
+    const { showRunButton, saveButtonText, theme } = this.props
+    const { runCode, clearCodeResults, saveCodeToDatabase } = this
     return (
       <div>
-        <Select
-          value={this.state.editorTheme}
-          onChange={this.handleChange}
-          input={<OutlinedInput name="editorTheme" />}
-        >
-          {['monokai', 'github', 'tomorrow', 'kuroir'].map(el => (
-            <MenuItem key={el} value={el}>
-              {el}
-            </MenuItem>
-          ))}
-        </Select>
+        {!theme && (
+          <Select
+            value={editorTheme}
+            onChange={this.handleChange}
+            input={<OutlinedInput name="editorTheme" />}
+          >
+            {['monokai', 'github', 'tomorrow', 'kuroir'].map(el => (
+              <MenuItem key={el} value={el}>
+                {el}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
 
-        <div id="ace" style={this.props.style} />
-        {this.state.codeResponse &&
-          this.state.codeResponse
-            .split('\n')
-            .map((el, index) => <li key={index}>{el}</li>)}
-        {this.state.codeError && <div>{this.state.codeError}</div>}
-        <button type="button" onClick={this.runCode}>
-          run code
-        </button>
-
-        <button type="button" onClick={this.submit}>
-          submit
-        </button>
-        <button type="button" onClick={this.showSavedCode}>
-          test reshowing
-        </button>
+        <div id={editorId} />
+        <OutputAndButtons
+          {...{
+            codeResponse,
+            showRunButton,
+            runCode,
+            clearCodeResults,
+            codeError,
+            saveButtonText,
+            saveCodeToDatabase
+          }}
+        />
       </div>
     )
   }
 }
 
-AceEditor.defaultProps = {
-  style: { width: '50%' }
+const mapDispatchToProps = dispatch => {
+  return {
+    runCodeResult: code => runCodeResultThunk(code)
+  }
 }
 
-export default AceEditor
+export default connect(
+  null,
+  mapDispatchToProps
+)(AceEditor)

@@ -1,23 +1,34 @@
 const models = require('../models')
 const { User, Stretch, Category } = models
 
-const getAllStretches = function() {
-  return Stretch.findAll({
+// These are the default parameters to be passed in to the below Sequelize model methods.
+const defaults = {
+  modelParams: {
     include: [
       Category,
       { model: User, as: 'author', attributes: ['firstName', 'lastName'] }
     ]
-  }).then(stretches => {
-    return stretches.map(stretch => {
-      const data = stretch.get()
-      const { category, author, ...stretchFields } = data
-      return {
-        ...stretchFields,
-        categoryName: category.name,
-        authorName: `${author.firstName} ${author.lastName}`
-      }
-    })
-  })
+  }
 }
 
-module.exports = { getAllStretches }
+Stretch.getAllStretches = async function() {
+  const stretches = await Stretch.findAll(defaults.modelParams)
+  return stretches.map(s => s.format())
+}
+
+Stretch.prototype.format = function() {
+  const { category, author, ...stretchFields } = this.dataValues
+
+  return {
+    ...stretchFields,
+    categoryName: category.name,
+    authorName: `${author.firstName} ${author.lastName}`
+  }
+}
+
+// This function is used to reformat the Sequelize model instances,
+// particularly for creating and updating new instances.
+Stretch.prototype.addAssociations = async function(format = true) {
+  const stretch = await Stretch.findByPk(this.id, defaults.modelParams)
+  return format ? stretch.format() : stretch
+}
