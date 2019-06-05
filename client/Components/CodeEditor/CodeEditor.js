@@ -22,6 +22,7 @@ class AceEditor extends Component {
   }
 
   componentDidMount() {
+
     this.setState(
       curState => {
         const editor = ace.edit(curState.editorId)

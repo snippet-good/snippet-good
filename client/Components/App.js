@@ -20,8 +20,10 @@ import {
   Home,
   Login,
   AdminController,
-  StudentClosedStretchView,
-  StudentHomeView
+
+  StudentHomeView,
+  OpenStretchView,
+  StudentClosedStretchView
 } from './index'
 
 class App extends Component {
@@ -44,6 +46,11 @@ class App extends Component {
             component={StudentClosedStretchView}
           />
           <Route path="/student" exact component={StudentHomeView} />
+          <Route
+            path="/student/stretch/:stretchId"
+            exact
+            component={OpenStretchView}
+          />
           <AdminController />
         </Switch>
       </Router>
