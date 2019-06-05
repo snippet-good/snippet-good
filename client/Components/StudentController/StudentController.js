@@ -7,12 +7,17 @@ import StudentClosedStretchView from '../StudentClosedStretchView'
 const StudentController = () => {
   return (
     <Fragment>
+      {/* path to go to student's home view */}
       <Route path="/student" exact component={StudentHomeView} />
+
+      {/* path to go to view to complete stretch currently open */}
       <Route
         path="/student/stretch/:stretchId"
         exact
         component={OpenStretchView}
       />
+
+      {/* path to go to view of closed stretch to see official solution, etc.*/}
       <Route
         path="/student/stretchAnswer/:stretchAnswerId"
         exact
