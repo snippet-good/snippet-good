@@ -22,6 +22,9 @@ const StretchAnswer = db.define('stretchanswer', {
       min: 1,
       max: 5
     }
+  },
+  timeToSolve: {
+    type: db.Sequelize.INTEGER
   }
 })
 

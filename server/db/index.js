@@ -15,7 +15,8 @@ const {
   UserMethods,
   StretchMethods,
   CohortMethods,
-  StretchAnswerMethods
+  StretchAnswerMethods,
+  CommentMethods
 } = require('./methods')
 
 function initDb(force = false) {
@@ -29,9 +30,9 @@ function initDb(force = false) {
     CohortUser.belongsTo(User)
     User.hasMany(CohortUser)
 
-    // Comment belongs to CohortUser
-    Comment.belongsTo(CohortUser)
-    CohortUser.hasMany(Comment)
+    // Comment belongs to User
+    Comment.belongsTo(User)
+    User.hasMany(Comment)
 
     // StretchAnswer belongs to CohortUser
     StretchAnswer.belongsTo(CohortUser)
@@ -71,6 +72,8 @@ CohortStretch.getAllCohortStretches = CohortStretchMethods.getAllCohortStretches
 Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
 StretchAnswer.getAnswersOfStudentsOfSingleAdmin =
   StretchAnswerMethods.getAnswersOfStudentsOfSingleAdmin
+Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
+Comment.createNewComment = CommentMethods.createNewComment
 
 module.exports = {
   initDb,

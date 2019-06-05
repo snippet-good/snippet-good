@@ -36,7 +36,8 @@ describe('our Cohort Stretch model', () => {
             'function forEach(arr, fn) { for (let i = 0; i < arr.length; ++i) { fn(arr[i]) } }',
           minutes: 5,
           stretchId: stretch.id,
-          cohortId: cohort.id
+          cohortId: cohort.id,
+          scheduledDate: new Date(2019, 9, 1, 18, 40)
         })
       })
       .then(() => {
@@ -90,7 +91,8 @@ describe('our Cohort Stretch model', () => {
               'function forEach(arr, fn) { for (let i = 0; i < arr.length; ++i) { fn(arr[i]) } }',
             minutes: 10,
             stretchId: stretch.id,
-            cohortId: cohort.id
+            cohortId: cohort.id,
+            scheduledDate: new Date(2019, 9, 1, 18, 40)
           }),
 
           CohortUser.create({

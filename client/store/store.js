@@ -3,6 +3,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 // Redux middleware
 import thunk from 'redux-thunk'
 import reduxLogger from 'redux-logger'
+import socketMiddleware from './socket/middleware'
 
 // Reducers
 import userDetails from './auth/reducer' // Manages user authentication
@@ -15,6 +16,9 @@ import categories from './categories/reducer'
 import stretches from './stretches/reducer'
 import stretchAnswers from './stretch-answers/reducer'
 import cohortStretches from './cohort-stretches/reducer'
+import comments from './comments/reducer'
+
+import codeEditor from './codeEditor/reducer'
 
 const store = createStore(
   combineReducers({
@@ -30,9 +34,12 @@ const store = createStore(
     categories,
     stretches,
     stretchAnswers,
-    cohortStretches
+    cohortStretches,
+    comments,
+
+    codeEditor
   }),
-  applyMiddleware(thunk, reduxLogger)
+  applyMiddleware(socketMiddleware, thunk, reduxLogger)
 )
 
 export default store
