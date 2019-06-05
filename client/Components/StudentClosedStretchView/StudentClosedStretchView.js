@@ -10,7 +10,7 @@ import GeneralInfo from './GeneralInfo'
 import CodeEditorsView from './CodeEditorsView'
 import CommentsSection from './CommentSection'
 
-import { GeneralInfoStyles as styles } from '../CreateStretch/styles'
+import { GeneralInfoStyles as styles } from '../SingleStretch/styles'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { useStyles } from './styles'
