@@ -11,12 +11,11 @@ import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
 
-import Card from '@material-ui/core/Card';
+import Card from '@material-ui/core/Card'
 
-import Typography from '@material-ui/core/Typography';
-
+import Typography from '@material-ui/core/Typography'
 
 class AdminStretches extends Component {
   constructor() {
@@ -54,7 +53,9 @@ class AdminStretches extends Component {
   selectCategoryFilter = ({ target }) => {
     let { filterCategoryNames } = this.state
     if (filterCategoryNames.includes(target.value)) {
-      filterCategoryNames = filterCategoryNames.filter(cat => cat !== target.value)
+      filterCategoryNames = filterCategoryNames.filter(
+        cat => cat !== target.value
+      )
     } else {
       filterCategoryNames.push(target.value)
     }
@@ -69,7 +70,9 @@ class AdminStretches extends Component {
     if (filterCategoryNames.length === 0) {
       fetchStretches()
     } else {
-      const newStretches = stretches.filter(stretch => filterCategoryNames.includes(stretch.categoryName))
+      const newStretches = stretches.filter(stretch =>
+        filterCategoryNames.includes(stretch.categoryName)
+      )
       filterStretches(newStretches)
     }
   }
@@ -79,7 +82,7 @@ class AdminStretches extends Component {
     evt.preventDefault()
     const { fetchStretches } = this.props
     document.querySelectorAll('input[type=checkbox]').forEach(el => {
-      el.checked = false;
+      el.checked = false
     })
     this.setState({ filterCategoryNames: [] })
     fetchStretches()
@@ -95,7 +98,9 @@ class AdminStretches extends Component {
     evt.preventDefault()
     const { selectedAuthor } = this.state
     let { stretches, filterStretches } = this.props
-    const newStretches = stretches.filter(stretch => stretch.authorName === selectedAuthor)
+    const newStretches = stretches.filter(
+      stretch => stretch.authorName === selectedAuthor
+    )
     filterStretches(newStretches)
   }
 
@@ -139,7 +144,7 @@ class AdminStretches extends Component {
                 </div>
                 <Button type="submit" color="primary">
                   Search
-              </Button>
+                </Button>
                 <Button
                   type="submit"
                   color="secondary"
@@ -147,7 +152,7 @@ class AdminStretches extends Component {
                   className="btn btn-secondary"
                 >
                   Clear
-              </Button>
+                </Button>
               </div>
             </form>
 
@@ -164,30 +169,43 @@ class AdminStretches extends Component {
                       onChange={this.selectCategoryFilter}
                     />
                   </div>
-                );
+                )
               })}
               <div>
                 <Button type="submit" color="primary">
                   Apply Filter
-              </Button>
-                <Button type="reset" color="secondary" onClick={this.clearCategoryFilter}>
+                </Button>
+                <Button
+                  type="reset"
+                  color="secondary"
+                  onClick={this.clearCategoryFilter}
+                >
                   Clear Filter
-              </Button>
+                </Button>
               </div>
             </form>
 
             <Typography variant="h6">Filter by Author:</Typography>
             <form onSubmit={this.applyAuthorFilter}>
-              <select value={this.state.selectedAuthor} onChange={this.selectAuthorFilter}>
-                {authors.map(auth => <option value={auth}>{auth}</option>)}
+              <select
+                value={this.state.selectedAuthor}
+                onChange={this.selectAuthorFilter}
+              >
+                {authors.map(auth => (
+                  <option value={auth}>{auth}</option>
+                ))}
               </select>
               <div>
                 <Button type="submit" color="primary">
                   Apply Filter
-              </Button>
-                <Button type="reset" color="secondary" onClick={this.clearAuthorFilter}>
+                </Button>
+                <Button
+                  type="reset"
+                  color="secondary"
+                  onClick={this.clearAuthorFilter}
+                >
                   Clear Filter
-              </Button>
+                </Button>
               </div>
             </form>
           </div>
@@ -197,7 +215,10 @@ class AdminStretches extends Component {
 
         <div>
           <Link to="/admin/stretches/create">
-            <Button variant="contained" color="primary"> New Stretch </Button>
+            <Button variant="contained" color="primary">
+              {' '}
+              New Stretch{' '}
+            </Button>
           </Link>
           <Typography variant="h6" id="tableTitle">
             Stretch Inventory
@@ -209,7 +230,6 @@ class AdminStretches extends Component {
                 <TableCell>Author</TableCell>
                 <TableCell>Category</TableCell>
                 <TableCell>Difficulty</TableCell>
-
               </TableRow>
             </TableHead>
             <TableBody>

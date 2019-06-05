@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 
 // Redux middleware
 import thunk from 'redux-thunk'
-import reduxLogger from 'redux-logger'
+import { createLogger } from 'redux-logger'
 import socketMiddleware from './socket/middleware'
 
 // Reducers
@@ -19,6 +19,10 @@ import cohortStretches from './cohort-stretches/reducer'
 import comments from './comments/reducer'
 
 import codeEditor from './codeEditor/reducer'
+
+const logger = createLogger({
+  collapsed: true
+})
 
 const store = createStore(
   combineReducers({
@@ -39,7 +43,7 @@ const store = createStore(
 
     codeEditor
   }),
-  applyMiddleware(socketMiddleware, thunk, reduxLogger)
+  applyMiddleware(socketMiddleware, thunk, logger)
 )
 
 export default store
