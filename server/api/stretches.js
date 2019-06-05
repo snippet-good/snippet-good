@@ -12,7 +12,8 @@ router.get('/', (req, res, next) => {
 
 // POST, creates a new stretch in the database
 router.post('/', (req, res, next) => {
-  Stretch.createWithAdditionalAttributes(req.body)
+  Stretch.create(req.body)
+    .then(newStretch => newStretch.addAssociations())
     .then(newStretch => res.json(newStretch))
     .catch(next)
 })
@@ -21,6 +22,7 @@ router.post('/', (req, res, next) => {
 router.put('/:id', (req, res, next) => {
   Stretch.findByPk(req.params.id)
     .then(stretch => stretch.update(req.body))
+    .then(newStretch => newStretch.addAssociations())
     .then(stretch => res.json(stretch))
     .catch(next)
 })
