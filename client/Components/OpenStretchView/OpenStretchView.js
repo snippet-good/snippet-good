@@ -4,6 +4,7 @@ import { CodeEditor } from '../../Components/index'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
+import Timer from '../Timer/Timer'
 
 const checkIfAllDataExists = (cohortUsers, stretches, cohortStretches) => {
   const data = [cohortUsers, stretches, cohortStretches]
@@ -47,9 +48,13 @@ const useStyles = makeStyles(theme => ({
 const OpenStretchView = ({ myStretch, myCohortStretch }) => {
   const classes = useStyles()
   const [codePrompt, setCodePrompt] = useState('')
+  const [minutes, setMinutes] = useState(0)
   useEffect(() => {
     if (myStretch !== undefined) {
       setCodePrompt(myStretch.codePrompt)
+    }
+    if (myCohortStretch !== undefined) {
+      setMinutes(myCohortStretch.minutes)
     }
   })
   return (
@@ -63,6 +68,7 @@ const OpenStretchView = ({ myStretch, myCohortStretch }) => {
         </Typography>
       </Paper>
       <CodeEditor codePrompt={codePrompt} />
+      <Timer minutes={minutes} />
     </div>
   )
 }
