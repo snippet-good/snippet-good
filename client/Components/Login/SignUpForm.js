@@ -10,10 +10,10 @@ import Button from '@material-ui/core/Button'
 import TextInputGroup from './TextInputGroup'
 
 const SignUpForm = props => {
-  const { history } = props
-
+  // This state is used to catch any errors received from the server.
   const [errors, setErrors] = useState({})
 
+  // This state is used to store the user's information.
   const [userInformation, setUserInformation] = useState({
     userName: '',
     firstName: '',
@@ -22,25 +22,25 @@ const SignUpForm = props => {
     confirmEmail: '',
     password: '',
     confirmPassword: '',
-    isAdmin: false
+    isAdmin: true
   })
 
+  // This event handler is to update 'userInformation' state with
+  // the value of the various inputs in the sign up form.
   const handleChange = event => {
     const { name, value } = event.target
     setUserInformation({ ...userInformation, [name]: value })
   }
 
+  // This event handler is invoked when the user presses the submit button
+  // on the sign up page. The server will attempt to create a new user.
   const handleSubmit = event => {
     event.preventDefault()
 
     props
       .createUser(userInformation)
-      .then(userDetails => {
-        userDetails.isAdmin ? history.push('/admin') : history.push('/student')
-      })
-      .catch(err => {
-        setErrors(err.response.data.errors)
-      })
+      .then(() => props.redirect())
+      .catch(err => setErrors(err.response.data.errors))
   }
 
   return (

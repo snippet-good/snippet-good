@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+
+import { connect } from 'react-redux'
 
 import Paper from '@material-ui/core/Paper'
 import Tabs from '@material-ui/core/Tabs'
@@ -8,6 +10,15 @@ import LoginForm from './LoginForm'
 import SignUpForm from './SignUpForm'
 
 const Login = props => {
+  const { userDetails, history } = props
+
+  // This function will redirect the user if he/she is logged in.
+  const redirect = () =>
+    history.push(userDetails.isAdmin ? '/admin' : '/student')
+
+  // If the user is already logged in, redirect the user to the appropriate dashboard.
+  if (Object.keys(props.userDetails).length) redirect()
+
   // This state is used to update visual changes to the Tabs component.
   const [value, setValue] = useState(0)
   const handleValueChange = (event, value) => setValue(value)
@@ -27,8 +38,8 @@ const Login = props => {
         </Tabs>
 
         <div style={{ margin: '1em 2em 2em 2em', width: '40vw' }}>
-          {value === 0 && <LoginForm history={props.history} />}
-          {value === 1 && <SignUpForm history={props.history} />}
+          {value === 0 && <LoginForm redirect={redirect} />}
+          {value === 1 && <SignUpForm redirect={redirect} />}
         </div>
       </Paper>
     </div>
@@ -51,4 +62,4 @@ const styles = {
 
 const mapStateToProps = ({ userDetails }) => ({ userDetails })
 
-export default Login
+export default connect(mapStateToProps)(Login)

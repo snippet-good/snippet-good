@@ -8,21 +8,19 @@ import Button from '@material-ui/core/Button'
 import TextInputGroup from './TextInputGroup'
 
 const LoginForm = props => {
-  // This prop is used to redirect the user after successfully logging in.
-  const { history } = props
-
+  // This state is used to catch any errors received from the server.
   const [errors, setErrors] = useState({})
 
-  // This function handles the sign in submission on the form.
+  // This event handler is invoked when the user presses the submit button
+  // on the login page. The server will authenticate the user based on the
+  // credentials provided.
   const handleSubmit = event => {
     event.preventDefault()
 
     const { email, password } = event.target
     props
       .login({ email: email.value, password: password.value })
-      .then(userDetails =>
-        userDetails.isAdmin ? history.push('/admin') : history.push('/student')
-      )
+      .then(() => props.redirect())
       .catch(err => setErrors(err.response.data.errors))
   }
 
