@@ -17,7 +17,6 @@ import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
 import { Home, Login, AdminController, StudentController } from './index'
-console.log(StudentController)
 
 class App extends Component {
   componentDidMount() {
@@ -33,8 +32,10 @@ class App extends Component {
         <Fragment>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
-          <AdminController />
-          <StudentController />
+          <Route path="/admin" component={AdminController} />
+          <Route path="/student" component={StudentController} />
+          {/* <AdminController />*/}
+          {/*<StudentController />*/}
         </Fragment>
       </Router>
     )

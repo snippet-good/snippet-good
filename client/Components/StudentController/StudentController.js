@@ -3,12 +3,21 @@ import { Route } from 'react-router-dom'
 import StudentHomeView from '../StudentHomeView'
 import OpenStretchView from '../OpenStretchView'
 import StudentClosedStretchView from '../StudentClosedStretchView'
+import FrameworkHOC from '../FrameworkHOC'
+import StudentSidebar from '../StudentSidebar'
 
 const StudentController = () => {
   return (
     <Fragment>
       {/* path to go to student's home view */}
       <Route path="/student" exact component={StudentHomeView} />
+
+      {/* path to go to student's home view */}
+      <Route
+        path="/student/stretches/:status"
+        exact
+        component={StudentHomeView}
+      />
 
       {/* path to go to view to complete stretch currently open */}
       <Route
@@ -27,4 +36,4 @@ const StudentController = () => {
   )
 }
 
-export default StudentController
+export default FrameworkHOC(StudentController, StudentSidebar)

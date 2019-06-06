@@ -1,16 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import List from '@material-ui/core/List'
-import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import StretchListView from './StretchListView'
+
+const checkIfAllDataExists = (...args) => {
+  for (let i = 0; i < args.length; ++i) {
+    if (Array.isArray(args[i])) {
+      if (!args[i].length) return false
+    } else if (!args[i].id) {
+      return false
+    }
+  }
+  return true
+}
 
 const mapStateToProps = ({
   userDetails,
@@ -20,6 +23,17 @@ const mapStateToProps = ({
   cohortStretches,
   stretchAnswers
 }) => {
+  if (
+    !checkIfAllDataExists(
+      userDetails,
+      cohorts,
+      cohortUsers,
+      stretches,
+      cohortStretches,
+      stretchAnswers
+    )
+  )
+    return {}
   const student = userDetails
   const myCohortUser = cohortUsers.find(
     cohortUser => cohortUser.userId === student.id
@@ -68,24 +82,16 @@ const mapStateToProps = ({
   }
 }
 
-const StudentHomeView = ({ openStretches, submittedStretches }) => {
-  const drawerWidth = 240
+const StudentHomeView = ({
+  openStretches,
+  submittedStretches,
+  match: {
+    params: { status }
+  }
+}) => {
+  if (!openStretches) return <div>You have no open or submitted stretches</div>
 
   const useStyles = makeStyles(theme => ({
-    root: {
-      display: 'flex'
-    },
-    appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0
-    },
-    drawerPaper: {
-      width: drawerWidth
-    },
     toolbar: theme.mixins.toolbar,
     content: {
       flexGrow: 1,
@@ -95,53 +101,17 @@ const StudentHomeView = ({ openStretches, submittedStretches }) => {
   }))
 
   const classes = useStyles()
-  const [stretchesView, setStretchesView] = useState('')
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            Student Home View
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper
-        }}
-        anchor="left"
-      >
-        <div className={classes.toolbar} />
-        <Divider />
-        <List>
-          {['Open Stretches', 'Submitted Stretches'].map(text => (
-            <ListItem button key={text} onClick={() => setStretchesView(text)}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['Account Information', 'Logout'].map(text => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {stretchesView === 'Open Stretches' ? (
-          <StretchListView openStretches={openStretches} />
-        ) : (
-          <StretchListView submittedStretches={submittedStretches} />
-        )}
-      </main>
-    </div>
+    <main className={classes.content}>
+      {status === 'open' ? (
+        <StretchListView openStretches={openStretches} />
+      ) : status === 'submitted' ? (
+        <StretchListView submittedStretches={submittedStretches} />
+      ) : (
+        <Redirect to="/student/stretches/submitted" />
+      )}
+    </main>
   )
 }
 
