@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 
 import { connect } from 'react-redux'
 
@@ -10,24 +11,17 @@ import LoginForm from './LoginForm'
 import SignUpForm from './SignUpForm'
 
 class Login extends Component {
+  // This state is used to set the tabs to active.
   state = { value: 0 }
   handleValueChange = (event, value) => this.setState({ value })
 
-  // This function will redirect the user if he/she is logged in.
-  redirect = user =>
-    this.props.history.push(user.isAdmin ? '/admin' : '/student')
-
   render() {
-    const { state, props } = this
     const { handleValueChange, redirect } = this
-    const { value } = state
+    const { value } = this.state
+    const { userDetails } = this.props
 
-    // If the user is already logged in, redirect the user to the appropriate dashboard.
-
-    // NEED TO TAKE CARE OF THIS
-    // The following error pops up when successfully signing up:
-    // Cannot update during an existing state transition (such as within `render`). Render methods should be a pure function of props and state.
-    if (Object.keys(props.userDetails).length) redirect(props.userDetails)
+    if (userDetails.id)
+      return <Redirect to={`${userDetails.isAdmin ? '/admin' : '/student'}`} />
 
     return (
       <div style={styles.root}>
@@ -36,16 +30,16 @@ class Login extends Component {
             value={value}
             indicatorColor="primary"
             textColor="primary"
-            onChange={handleValueChange}
             variant="fullWidth"
+            onChange={handleValueChange}
           >
             <Tab label="Login" />
             <Tab label="Sign Up" />
           </Tabs>
 
-          <div style={{ margin: '1em 2em 2em 2em', width: '40vw' }}>
-            {value === 0 && <LoginForm />}
-            {value === 1 && <SignUpForm />}
+          <div style={styles.form}>
+            {value === 0 && <LoginForm redirect={redirect} />}
+            {value === 1 && <SignUpForm redirect={redirect} />}
           </div>
         </Paper>
       </div>
@@ -64,6 +58,10 @@ const styles = {
   paper: {
     position: 'fixed',
     top: '15vh'
+  },
+  form: {
+    margin: '1em 2em 2em 2em',
+    width: '40vw'
   }
 }
 

@@ -18,6 +18,7 @@ const LoginForm = props => {
     event.preventDefault()
 
     const { email, password } = event.target
+
     props
       .login({ email: email.value, password: password.value })
       .catch(err => setErrors(err.response.data.errors))
