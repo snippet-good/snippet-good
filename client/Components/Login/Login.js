@@ -2,56 +2,57 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { login } from '../../store/auth/actions'
 
-const mapDispatchToProps = dispatch => {
-  return {
-    login: (email, password) => dispatch(login(email, password))
-  }
-}
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import Button from '@material-ui/core/Button'
 
-const Login = ({ login, history }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const handleSubmit = ev => {
-    ev.preventDefault()
-    login(email, password)
-      .then(user => {
-        const { userDetails } = user
-        if (userDetails.isAdmin) {
-          history.push('/admin')
-        } else {
-          history.push('/student')
-        }
-      })
-      .catch(({ response: { data } }) => setError(data))
-  }
+import LoginForm from './LoginForm'
+import SignUpForm from './SignUpForm'
+
+const Login = props => {
+  // This state is used to update visual changes to the Tabs component.
+  const [value, setValue] = useState(0)
+  const handleValueChange = (event, value) => setValue(value)
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email:
-          <input
-            type="text"
-            value={email}
-            onChange={ev => setEmail(ev.target.value)}
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="text"
-            value={password}
-            onChange={ev => setPassword(ev.target.value)}
-          />
-        </label>
-        {error && <div>{error}</div>}
-        <button type="submit">Login</button>
-      </form>
+    <div style={styles.root}>
+      <Paper style={styles.paper}>
+        <Tabs
+          value={value}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleValueChange}
+          variant="fullWidth"
+        >
+          <Tab label="Login" />
+          <Tab label="Sign Up" />
+        </Tabs>
+
+        <div style={{ margin: '1em 2em 2em 2em', width: '40vw' }}>
+          {value === 0 && <LoginForm history={props.history} />}
+          {value === 1 && <SignUpForm />}
+        </div>
+      </Paper>
     </div>
   )
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Login)
+const styles = {
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100vw',
+    height: '100vh'
+  },
+  paper: {
+    position: 'fixed',
+    top: '15vh'
+  }
+}
+
+const mapStateToProps = ({ userDetails }) => ({ userDetails })
+
+export default Login
