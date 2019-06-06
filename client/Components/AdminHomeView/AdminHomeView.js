@@ -38,9 +38,6 @@ const AdminHomeView = ({
       <h2>Your Home Page</h2>
 
       <Grid container>
-        <Grid item xs={3}>
-          <Sidebar cohorts={cohorts} history={history} />
-        </Grid>
         <Grid item xs={9}>
           {openStretches.length && (
             <ul>

@@ -30,12 +30,9 @@ class App extends Component {
     return (
       <Router>
         <Fragment>
-          <p>sfdgh</p>
-          <p>sfdgh</p>
-          <p>sfdgh</p>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
-          <Route path="/admin" component={AdminController} />
+          <Route path="/admin" render={({history}) => <AdminController history={history} cohorts={[]}/>} />
           {/* <AdminController />*/}
           <StudentController />
         </Fragment>
