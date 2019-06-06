@@ -12,6 +12,14 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import StretchListView from './StretchListView'
 
+const checkIfAllDataExists = (...args) => {
+  for (let i = 0; i < args.length; ++i) {
+    if (Array.isArray(args[i]) && !args[i].length) return false
+    if (!args[i].id) return false
+  }
+  return true
+}
+
 const mapStateToProps = ({
   userDetails,
   cohorts,
@@ -20,6 +28,17 @@ const mapStateToProps = ({
   cohortStretches,
   stretchAnswers
 }) => {
+  if (
+    !checkIfAllDataExists(
+      userDetails,
+      cohorts,
+      cohortUsers,
+      stretches,
+      cohortStretches,
+      stretchAnswers
+    )
+  )
+    return {}
   const student = userDetails
   const myCohortUser = cohortUsers.find(
     cohortUser => cohortUser.userId === student.id
@@ -69,23 +88,9 @@ const mapStateToProps = ({
 }
 
 const StudentHomeView = ({ openStretches, submittedStretches }) => {
-  const drawerWidth = 240
+  if (!openStretches) return <div>You have no open or submitted stretches</div>
 
   const useStyles = makeStyles(theme => ({
-    root: {
-      display: 'flex'
-    },
-    appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0
-    },
-    drawerPaper: {
-      width: drawerWidth
-    },
     toolbar: theme.mixins.toolbar,
     content: {
       flexGrow: 1,
@@ -98,50 +103,14 @@ const StudentHomeView = ({ openStretches, submittedStretches }) => {
   const [stretchesView, setStretchesView] = useState('Submitted Stretches')
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            Student Home View
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper
-        }}
-        anchor="left"
-      >
-        <div className={classes.toolbar} />
-        <Divider />
-        <List>
-          {['Open Stretches', 'Submitted Stretches'].map(text => (
-            <ListItem button key={text} onClick={() => setStretchesView(text)}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['Account Information', 'Logout'].map(text => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {stretchesView === 'Open Stretches' ? (
-          <StretchListView openStretches={openStretches} />
-        ) : (
-          <StretchListView submittedStretches={submittedStretches} />
-        )}
-      </main>
-    </div>
+    <main className={classes.content}>
+      <div className={classes.toolbar} />
+      {stretchesView === 'Open Stretches' ? (
+        <StretchListView openStretches={openStretches} />
+      ) : (
+        <StretchListView submittedStretches={submittedStretches} />
+      )}
+    </main>
   )
 }
 

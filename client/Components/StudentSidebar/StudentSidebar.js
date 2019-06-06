@@ -11,17 +11,26 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const StudentSidebar = ({ setStretchesView, stretchesView }) => {
+const sidebarLinks = [
+  { text: 'Open Stretches', path: '/student/stretches/open' },
+  { text: 'Submitted Stretches', path: '/student/stretches/submitted' }
+]
+
+const StudentSidebar = ({ history, location: { pathname } }) => {
   const { activeItemColor } = useStyles()
 
   return (
     <Fragment>
       <List>
-        {['Open Stretches', 'Submitted Stretches'].map(text => (
-          <ListItem button key={text} onClick={() => setStretchesView(text)}>
+        {sidebarLinks.map(link => (
+          <ListItem
+            button
+            key={link.text}
+            onClick={() => history.push(link.path)}
+          >
             <ListItemText
-              primary={text}
-              className={stretchesView === text ? activeItemColor : ''}
+              primary={link.text}
+              className={pathname === link.path ? activeItemColor : ''}
             />
           </ListItem>
         ))}

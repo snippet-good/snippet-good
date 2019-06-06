@@ -4,6 +4,7 @@ import StudentHomeView from '../StudentHomeView'
 import OpenStretchView from '../OpenStretchView'
 import StudentClosedStretchView from '../StudentClosedStretchView'
 import FrameworkHOC from '../FrameworkHOC'
+import StudentSidebar from '../StudentSidebar'
 
 const StudentController = () => {
   return (
@@ -28,4 +29,4 @@ const StudentController = () => {
   )
 }
 
-export default StudentController
+export default FrameworkHOC(StudentController, StudentSidebar)
