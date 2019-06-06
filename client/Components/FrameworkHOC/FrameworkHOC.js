@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
@@ -14,6 +15,10 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
   const Framework = props => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
+    const {
+      userDetails: { isAdmin },
+      history
+    } = props
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -35,7 +40,11 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap>
+            <Typography
+              variant="h6"
+              noWrap
+              onClick={() => history.push(`/${isAdmin ? 'admin' : 'student'}`)}
+            >
               Modern Stretches
             </Typography>
           </Toolbar>
@@ -69,7 +78,9 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
     )
   }
 
-  return Framework
+  const mapStateToProps = ({ userDetails }) => ({ userDetails })
+
+  return connect(mapStateToProps)(Framework)
 }
 
 export default FrameworkHOC

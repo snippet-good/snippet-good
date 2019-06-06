@@ -25,7 +25,7 @@ const Sidebar = ({ cohorts, history }) => {
   return (
     <List>
       <ListItem button onClick={() => history.push('/admin/stretches')}>
-        All Stretches
+        <ListItemText primary="All Stretches" />
       </ListItem>
       <ListItem button onClick={handleClickCohorts}>
         <ListItemText primary="Cohorts" />
