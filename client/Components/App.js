@@ -30,9 +30,13 @@ class App extends Component {
     return (
       <Router>
         <Fragment>
+          <p>sfdgh</p>
+          <p>sfdgh</p>
+          <p>sfdgh</p>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
-          <AdminController />
+          <Route path="/admin" component={AdminController} />
+          {/* <AdminController />*/}
           <StudentController />
         </Fragment>
       </Router>

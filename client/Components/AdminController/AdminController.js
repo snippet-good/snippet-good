@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import { AdminStretches, AdminHomeView, SingleCohort } from '../../Components'
 import SingleStretch from '../SingleStretch/SingleStretch'
+import Framework from '../Framework'
 
 class AdminController extends Component {
   render() {
@@ -31,4 +32,4 @@ class AdminController extends Component {
   }
 }
 
-export default AdminController
+export default Framework(AdminController)

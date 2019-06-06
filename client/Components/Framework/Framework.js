@@ -10,58 +10,66 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import useStyles from './styles'
 
-const Framework = () => {
-  const classes = useStyles()
-  const [open, setOpen] = useState(false)
+const addFrameworkToComponent = MainComponent => {
+  const Framework = () => {
+    const classes = useStyles()
+    const [open, setOpen] = useState(false)
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={`${classes.appBar} ${
+            open ? `${classes.appBarShift}` : ''
+          }`}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={() => setOpen(true)}
+              edge="start"
+              className={`${classes.menuButton} ${
+                open ? `${classes.hide}` : ''
+              }`}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              Modern Stretches
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={open}
+          classes={{
+            paper: classes.drawerPaper
+          }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={() => setOpen(false)}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+        </Drawer>
+        <main
+          className={`${classes.content} ${
+            open ? `${classes.contentShift}` : ''
+          }`}
+        >
+          <div className={classes.drawerHeader} />
+          <Typography paragraph>hi</Typography>
+          <MainComponent />
+        </main>
+      </div>
+    )
+  }
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={`${classes.appBar} ${open ? `${classes.appBarShift}` : ''}`}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="Open drawer"
-            onClick={() => setOpen(true)}
-            edge="start"
-            className={`${classes.menuButton} ${open ? `${classes.hide}` : ''}`}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Modern Stretches
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={() => setOpen(false)}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-      </Drawer>
-      <main
-        className={`${classes.content} ${
-          open ? `${classes.contentShift}` : ''
-        }`}
-      >
-        <div className={classes.drawerHeader} />
-        <Typography paragraph>hi</Typography>
-      </main>
-    </div>
-  )
+  return Framework
 }
 
-export default Framework
+export default addFrameworkToComponent
