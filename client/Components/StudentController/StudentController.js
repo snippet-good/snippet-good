@@ -12,6 +12,13 @@ const StudentController = () => {
       {/* path to go to student's home view */}
       <Route path="/student" exact component={StudentHomeView} />
 
+      {/* path to go to student's home view */}
+      <Route
+        path="/student/stretches/:status"
+        exact
+        component={StudentHomeView}
+      />
+
       {/* path to go to view to complete stretch currently open */}
       <Route
         path="/student/stretch/:stretchId"

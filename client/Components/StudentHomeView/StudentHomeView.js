@@ -1,21 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import List from '@material-ui/core/List'
-import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import StretchListView from './StretchListView'
 
 const checkIfAllDataExists = (...args) => {
   for (let i = 0; i < args.length; ++i) {
-    if (Array.isArray(args[i]) && !args[i].length) return false
-    if (!args[i].id) return false
+    if (Array.isArray(args[i])) {
+      if (!args[i].length) return false
+    } else if (!args[i].id) {
+      return false
+    }
   }
   return true
 }
@@ -87,7 +82,13 @@ const mapStateToProps = ({
   }
 }
 
-const StudentHomeView = ({ openStretches, submittedStretches }) => {
+const StudentHomeView = ({
+  openStretches,
+  submittedStretches,
+  match: {
+    params: { status }
+  }
+}) => {
   if (!openStretches) return <div>You have no open or submitted stretches</div>
 
   const useStyles = makeStyles(theme => ({
@@ -100,15 +101,15 @@ const StudentHomeView = ({ openStretches, submittedStretches }) => {
   }))
 
   const classes = useStyles()
-  const [stretchesView, setStretchesView] = useState('Submitted Stretches')
 
   return (
     <main className={classes.content}>
-      <div className={classes.toolbar} />
-      {stretchesView === 'Open Stretches' ? (
+      {status === 'open' ? (
         <StretchListView openStretches={openStretches} />
-      ) : (
+      ) : status === 'submitted' ? (
         <StretchListView submittedStretches={submittedStretches} />
+      ) : (
+        <Redirect to="/student/stretches/submitted" />
       )}
     </main>
   )
