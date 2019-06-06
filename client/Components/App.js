@@ -33,8 +33,9 @@ class App extends Component {
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
           <Route path="/admin" component={AdminController} />
+          <Route path="/student" component={StudentController} />
           {/* <AdminController />*/}
-          <StudentController />
+          {/*<StudentController />*/}
         </Fragment>
       </Router>
     )

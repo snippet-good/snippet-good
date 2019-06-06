@@ -95,7 +95,7 @@ const StudentHomeView = ({ openStretches, submittedStretches }) => {
   }))
 
   const classes = useStyles()
-  const [stretchesView, setStretchesView] = useState('')
+  const [stretchesView, setStretchesView] = useState('Submitted Stretches')
 
   return (
     <div className={classes.root}>
