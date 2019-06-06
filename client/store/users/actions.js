@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getUser } from '../auth/actions'
 
 // --------------------------------------------------
 // Action types
@@ -12,7 +13,7 @@ export const DELETE_USER = 'DELETE_USER'
 // Action creators
 
 const getUsers = users => ({ type: GET_USERS, users })
-const createUser = newUser => ({ type: CREATE_USER, newUser })
+const addUser = newUser => ({ type: CREATE_USER, newUser })
 const replaceUser = updatedUser => ({ type: UPDATE_USER, updatedUser })
 const removeUser = userId => ({ type: DELETE_USER, userId })
 
@@ -32,7 +33,18 @@ export const getUsersOfSingleAdminThunk = adminId => {
   }
 }
 
-export const createNewUser = newUser => {}
+export const createUser = userInformation => {
+  return dispatch => {
+    return axios
+      .post('/api/users', userInformation)
+      .then(res => res.data)
+      .then(user => {
+        dispatch(addUser(user))
+        dispatch(getUser(user))
+        return user
+      })
+  }
+}
 
 export const updateUser = userInfo => {}
 
