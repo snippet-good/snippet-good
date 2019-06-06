@@ -32,7 +32,7 @@ class App extends Component {
         <Fragment>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
-          <Route path="/admin" render={({history}) => <AdminController history={history} cohorts={[]}/>} />
+          <Route path="/admin" exact component={AdminController} />
           {/* <AdminController />*/}
           <StudentController />
         </Fragment>

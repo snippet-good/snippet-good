@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import Typography from '@material-ui/core/Typography'
@@ -50,4 +51,6 @@ const Sidebar = ({ cohorts, history }) => {
   )
 }
 
-export default Sidebar
+const mapStateToProps = ({ cohorts }) => ({ cohorts })
+
+export default connect(mapStateToProps)(Sidebar)
