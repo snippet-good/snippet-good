@@ -1,52 +1,109 @@
-import React, { Fragment } from 'react'
-import TextField from '@material-ui/core/TextField'
+import React, { useState } from 'react'
+
+import { connect } from 'react-redux'
+import { createUser } from '../../store/users/actions'
+
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
 
+import TextInputGroup from './TextInputGroup'
+
 const SignUpForm = props => {
+  const { history } = props
+
+  const [errors, setErrors] = useState({})
+
+  const [userInformation, setUserInformation] = useState({
+    userName: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    confirmEmail: '',
+    password: '',
+    confirmPassword: '',
+    isAdmin: false
+  })
+
+  const handleChange = event => {
+    const { name, value } = event.target
+    setUserInformation({ ...userInformation, [name]: value })
+  }
+
+  const handleSubmit = event => {
+    event.preventDefault()
+
+    props
+      .createUser(userInformation)
+      .then(userDetails => {
+        userDetails.isAdmin ? history.push('/admin') : history.push('/student')
+      })
+      .catch(err => {
+        setErrors(err.response.data.errors)
+      })
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit} onChange={handleChange}>
       {/* Username text input */}
-      <TextField label="Username" margin="normal" fullWidth />
+      <TextInputGroup
+        name="userName"
+        label="Username"
+        fullWidth={true}
+        errors={errors.userName}
+      />
 
       {/* Personal information input section */}
       <div style={styles.inner}>
-        <TextField
+        <TextInputGroup
+          name="firstName"
           label="First Name"
-          margin="normal"
           style={styles.halfInput}
+          errors={errors.firstName}
         />
 
-        <TextField label="Last Name" margin="normal" style={styles.halfInput} />
+        <TextInputGroup
+          name="lastName"
+          label="Last Name"
+          style={styles.halfInput}
+          errors={errors.lastName}
+        />
       </div>
 
       {/* Password input section */}
       <div style={styles.inner}>
-        <TextField
+        <TextInputGroup
+          name="password"
           type="password"
           label="Password"
-          margin="normal"
           style={styles.halfInput}
+          errors={errors.password}
         />
-        <TextField
+        <TextInputGroup
+          name="confirmPassword"
           type="password"
           label="Confirm Password"
-          margin="normal"
           style={styles.halfInput}
+          errors={errors.confirmPassword}
         />
       </div>
 
       {/* Email input section */}
-      <TextField type="email" label="Email" margin="normal" fullWidth />
+      <TextInputGroup
+        name="email"
+        label="Email"
+        fullWidth={true}
+        errors={errors.email}
+      />
 
-      <TextField type="email" label="Confirm Email" margin="normal" fullWidth />
+      <TextInputGroup
+        name="confirmEmail"
+        label="Confirm Email"
+        fullWidth={true}
+        errors={errors.confirmEmail}
+      />
 
-      <Select>
-        <MenuItem>Teacher</MenuItem>
-        <MenuItem>Student</MenuItem>
-      </Select>
-
+      {/* Submit button */}
       <div style={{ margin: '2em 0' }}>
         <Button type="submit" variant="contained" color="primary">
           Sign Up
@@ -61,4 +118,11 @@ const styles = {
   halfInput: { width: '45%' }
 }
 
-export default SignUpForm
+const mapDispatchToProps = dispatch => ({
+  createUser: userInformation => dispatch(createUser(userInformation))
+})
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(SignUpForm)

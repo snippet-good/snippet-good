@@ -1,12 +1,8 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { login } from '../../store/auth/actions'
 
 import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import Button from '@material-ui/core/Button'
 
 import LoginForm from './LoginForm'
 import SignUpForm from './SignUpForm'
@@ -32,7 +28,7 @@ const Login = props => {
 
         <div style={{ margin: '1em 2em 2em 2em', width: '40vw' }}>
           {value === 0 && <LoginForm history={props.history} />}
-          {value === 1 && <SignUpForm />}
+          {value === 1 && <SignUpForm history={props.history} />}
         </div>
       </Paper>
     </div>

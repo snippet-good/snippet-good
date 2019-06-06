@@ -4,7 +4,7 @@ const {
   models: { User }
 } = require('../db/index')
 
-const loginValidations = require('../validations/auth/login')
+const loginValidations = require('../validations/login')
 
 // POST, authenticates user
 router.post('/', loginValidations, async (req, res, next) => {
