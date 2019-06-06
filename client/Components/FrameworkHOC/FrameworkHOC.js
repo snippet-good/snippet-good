@@ -10,7 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import useStyles from './styles'
 
-const addFrameworkToComponent = (MainComponent, Sidebar) => {
+const FrameworkHOC = (MainComponent, Sidebar) => {
   const Framework = props => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
@@ -72,4 +72,4 @@ const addFrameworkToComponent = (MainComponent, Sidebar) => {
   return Framework
 }
 
-export default addFrameworkToComponent
+export default FrameworkHOC

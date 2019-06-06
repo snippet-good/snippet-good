@@ -8,7 +8,7 @@ import StudentClosedStretchView from './StudentClosedStretchView'
 import CodeEditor from './CodeEditor'
 import OpenStretchView from './OpenStretchView'
 import StudentController from './StudentController'
-import Framework from './Framework'
+import FrameworkHOC from './FrameworkHOC'
 
 export {
   Home,
@@ -21,5 +21,5 @@ export {
   StudentClosedStretchView,
   CodeEditor,
   StudentController,
-  Framework
+  FrameworkHOC
 }
