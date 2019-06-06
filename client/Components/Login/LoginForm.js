@@ -20,7 +20,6 @@ const LoginForm = props => {
     const { email, password } = event.target
     props
       .login({ email: email.value, password: password.value })
-      .then(() => props.redirect())
       .catch(err => setErrors(err.response.data.errors))
   }
 

@@ -9,7 +9,7 @@ export const LOGOUT = 'LOGOUT'
 // --------------------------------------------------
 // Action creators
 
-const getUser = userDetails => ({ type: GET_USER_DETAILS, userDetails })
+export const getUser = userDetails => ({ type: GET_USER_DETAILS, userDetails })
 const logutUser = () => ({ type: LOGOUT })
 
 // --------------------------------------------------

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 
@@ -9,41 +9,48 @@ import Tab from '@material-ui/core/Tab'
 import LoginForm from './LoginForm'
 import SignUpForm from './SignUpForm'
 
-const Login = props => {
-  const { userDetails, history } = props
+class Login extends Component {
+  state = { value: 0 }
+  handleValueChange = (event, value) => this.setState({ value })
 
   // This function will redirect the user if he/she is logged in.
-  const redirect = () =>
-    history.push(userDetails.isAdmin ? '/admin' : '/student')
+  redirect = user =>
+    this.props.history.push(user.isAdmin ? '/admin' : '/student')
 
-  // If the user is already logged in, redirect the user to the appropriate dashboard.
-  if (Object.keys(props.userDetails).length) redirect()
+  render() {
+    const { state, props } = this
+    const { handleValueChange, redirect } = this
+    const { value } = state
 
-  // This state is used to update visual changes to the Tabs component.
-  const [value, setValue] = useState(0)
-  const handleValueChange = (event, value) => setValue(value)
+    // If the user is already logged in, redirect the user to the appropriate dashboard.
 
-  return (
-    <div style={styles.root}>
-      <Paper style={styles.paper}>
-        <Tabs
-          value={value}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={handleValueChange}
-          variant="fullWidth"
-        >
-          <Tab label="Login" />
-          <Tab label="Sign Up" />
-        </Tabs>
+    // NEED TO TAKE CARE OF THIS
+    // The following error pops up when successfully signing up:
+    // Cannot update during an existing state transition (such as within `render`). Render methods should be a pure function of props and state.
+    if (Object.keys(props.userDetails).length) redirect(props.userDetails)
 
-        <div style={{ margin: '1em 2em 2em 2em', width: '40vw' }}>
-          {value === 0 && <LoginForm redirect={redirect} />}
-          {value === 1 && <SignUpForm redirect={redirect} />}
-        </div>
-      </Paper>
-    </div>
-  )
+    return (
+      <div style={styles.root}>
+        <Paper style={styles.paper}>
+          <Tabs
+            value={value}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={handleValueChange}
+            variant="fullWidth"
+          >
+            <Tab label="Login" />
+            <Tab label="Sign Up" />
+          </Tabs>
+
+          <div style={{ margin: '1em 2em 2em 2em', width: '40vw' }}>
+            {value === 0 && <LoginForm />}
+            {value === 1 && <SignUpForm />}
+          </div>
+        </Paper>
+      </div>
+    )
+  }
 }
 
 const styles = {

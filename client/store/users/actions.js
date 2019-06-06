@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getUser } from '../auth/actions'
 
 // --------------------------------------------------
 // Action types
@@ -39,6 +40,7 @@ export const createUser = userInformation => {
       .then(res => res.data)
       .then(user => {
         dispatch(addUser(user))
+        dispatch(getUser(user))
         return user
       })
   }

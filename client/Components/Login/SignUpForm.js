@@ -22,7 +22,7 @@ const SignUpForm = props => {
     confirmEmail: '',
     password: '',
     confirmPassword: '',
-    isAdmin: true
+    isAdmin: false
   })
 
   // This event handler is to update 'userInformation' state with
@@ -39,7 +39,6 @@ const SignUpForm = props => {
 
     props
       .createUser(userInformation)
-      .then(() => props.redirect())
       .catch(err => setErrors(err.response.data.errors))
   }
 
