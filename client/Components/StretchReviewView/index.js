@@ -1,3 +1,3 @@
-import StretchReviewView from './StretrchReviewView'
+import StretchReviewView from './StretchReviewView'
 
-export default StrettchReviewView
+export default StretchReviewView
