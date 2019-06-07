@@ -17,4 +17,12 @@ router.get('/admin/:adminId', (req, res, next) => {
     .catch(next)
 })
 
+// POST student StretchAnswer
+router.post('/create', (req, res, next) => {
+  console.log(req.body.newStretchAnswer)
+  StretchAnswer.create({ body: req.body.newStretchAnswer })
+    .then(stretchAnswer => res.json(stretchAnswer))
+    .catch(next)
+})
+
 module.exports = router
