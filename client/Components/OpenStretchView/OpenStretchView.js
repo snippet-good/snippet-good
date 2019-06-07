@@ -4,7 +4,7 @@ import { CodeEditor } from '../../Components/index'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import Timer from '../Timer/Timer'
+import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
 
 const checkIfAllDataExists = (cohortUsers, stretches, cohortStretches) => {
   const data = [cohortUsers, stretches, cohortStretches]
@@ -15,6 +15,14 @@ const checkIfAllDataExists = (cohortUsers, stretches, cohortStretches) => {
   }
   return true
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    createStretchAnswer: stretchAnswer =>
+      dispatch(createStretchAnswerThunk(stretchAnswer))
+  }
+}
+
 const mapStateToProps = (
   { userDetails, cohortUsers, stretches, cohortStretches },
   { match }
@@ -38,23 +46,48 @@ const mapStateToProps = (
   }
   return {}
 }
-
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3, 2)
   }
 }))
 
-const OpenStretchView = ({ myStretch, myCohortStretch }) => {
+const OpenStretchView = ({
+  myStretch,
+  myCohortStretch,
+  createStretchAnswer
+}) => {
   const classes = useStyles()
   const [codePrompt, setCodePrompt] = useState('')
-  const [minutes, setMinutes] = useState(0)
+  const [remainingTime, setRemainingTime] = useState(0)
+  const [displayMinutes, setDisplayMinutes] = useState(0)
+  const [displaySeconds, setDisplaySeconds] = useState(59)
+  const [stretchAnswer, setStretchAnswer] = useState('')
   useEffect(() => {
-    if (myStretch !== undefined) {
+    if (myStretch) {
       setCodePrompt(myStretch.codePrompt)
     }
-    if (myCohortStretch !== undefined) {
-      setMinutes(myCohortStretch.minutes)
+    if (myCohortStretch && !remainingTime) {
+      setDisplayMinutes(myCohortStretch.minutes - 1)
+      setRemainingTime(myCohortStretch.minutes * 60)
+    }
+    if (myCohortStretch && remainingTime) {
+      const timer = setTimeout(() => {
+        setRemainingTime(remainingTime - 1)
+        if (displaySeconds > 0) {
+          setDisplaySeconds(displaySeconds - 1)
+        } else {
+          setDisplaySeconds(59)
+          setDisplayMinutes(displayMinutes - 1)
+        }
+      }, 1000)
+      if (remainingTime === 1) {
+        clearTimeout(timer)
+        createStretchAnswer({
+          body: stretchAnswer,
+          timeToSolve: myCohortStretch.minutes * 60 - remainingTime
+        })
+      }
     }
   })
   return (
@@ -66,11 +99,19 @@ const OpenStretchView = ({ myStretch, myCohortStretch }) => {
         <Typography component="p">
           {myStretch === undefined ? 'loading...' : `${myStretch.textPrompt}`}
         </Typography>
+        <Paper>
+          <Typography variant="h3" component="h3">
+            Time Remaining: {displayMinutes}:{' '}
+            {displaySeconds < 10 ? `0${displaySeconds}` : `${displaySeconds}`}
+          </Typography>
+        </Paper>
       </Paper>
-      <CodeEditor codePrompt={codePrompt} />
-      <Timer minutes={minutes} setMinutes={setMinutes} />
+      <CodeEditor codePrompt={codePrompt} setStretchAnswer={setStretchAnswer} />
     </div>
   )
 }
 
-export default connect(mapStateToProps)(OpenStretchView)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OpenStretchView)
