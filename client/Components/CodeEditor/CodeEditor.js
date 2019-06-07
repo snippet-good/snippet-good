@@ -129,7 +129,7 @@ class AceEditor extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    runCodeResult: code => runCodeResultThunk(code)
+    runCodeResult: code => dispatch(runCodeResultThunk(code))
   }
 }
 

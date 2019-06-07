@@ -1,57 +1,70 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
+
 import { connect } from 'react-redux'
-import { login } from '../../store/auth/actions'
 
-const mapDispatchToProps = dispatch => {
-  return {
-    login: (email, password) => dispatch(login(email, password))
+import Paper from '@material-ui/core/Paper'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+
+import LoginForm from './LoginForm'
+import SignUpForm from './SignUpForm'
+
+class Login extends Component {
+  // This state is used to set the tabs to active.
+  state = { value: 0 }
+  handleValueChange = (event, value) => this.setState({ value })
+
+  render() {
+    const { handleValueChange, redirect } = this
+    const { value } = this.state
+    const { userDetails } = this.props
+
+    if (userDetails.id)
+      return <Redirect to={`${userDetails.isAdmin ? '/admin' : '/student'}`} />
+
+    return (
+      <div style={styles.root}>
+        <Paper style={styles.paper}>
+          <Tabs
+            value={value}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            onChange={handleValueChange}
+          >
+            <Tab label="Login" />
+            <Tab label="Sign Up" />
+          </Tabs>
+
+          <div style={styles.form}>
+            {value === 0 && <LoginForm redirect={redirect} />}
+            {value === 1 && <SignUpForm redirect={redirect} />}
+          </div>
+        </Paper>
+      </div>
+    )
   }
 }
 
-const Login = ({ login, history }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const handleSubmit = ev => {
-    ev.preventDefault()
-    login(email, password)
-      .then(user => {
-        const { userDetails } = user
-        if (userDetails.isAdmin) {
-          history.push('/admin')
-        } else {
-          history.push('/student')
-        }
-      })
-      .catch(({ response: { data } }) => setError(data))
+const styles = {
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100vw',
+    height: '100vh'
+  },
+  paper: {
+    position: 'fixed',
+    top: '15vh'
+  },
+  form: {
+    margin: '1em 2em 2em 2em',
+    width: '40vw'
   }
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email:
-          <input
-            type="text"
-            value={email}
-            onChange={ev => setEmail(ev.target.value)}
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="text"
-            value={password}
-            onChange={ev => setPassword(ev.target.value)}
-          />
-        </label>
-        {error && <div>{error}</div>}
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  )
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Login)
+const mapStateToProps = ({ userDetails }) => ({ userDetails })
+
+export default connect(mapStateToProps)(Login)
