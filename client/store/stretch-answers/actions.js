@@ -46,3 +46,10 @@ export const getStretchAnswersOfSingleAdminThunk = adminId => dispatch => {
     .get(`/api/stretch-answers/admin/${adminId}`)
     .then(res => dispatch(getStretchAnswers(res.data)))
 }
+
+export const createStretchAnswerThunk = newStretchAnswer => dispatch => {
+  return axios
+    .post(`/api/stretch-answers/create`, { newStretchAnswer })
+    .then(res => res.data)
+    .then(stretchAnswer => dispatch(createStretchAnswer(stretchAnswer)))
+}
