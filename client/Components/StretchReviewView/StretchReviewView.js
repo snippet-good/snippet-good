@@ -3,10 +3,31 @@ import { connect } from 'react-redux'
 import GeneralInfo from '../SingleStretch/GeneralInfo'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 
+import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import useStyles from './styles'
+
 const StretchReviewView = ({ attributes, currentCohortStretch }) => {
   if (!attributes) return <div>Data still loading</div>
-
-  return <GeneralInfo attributes={attributes} />
+  const { textPrompt, ...otherStretchFields } = attributes
+  const { textPromptHeading, textPromptSpacing } = useStyles()
+  return (
+    <div>
+      <GeneralInfo attributes={otherStretchFields} />
+      <Grid container justify="center" spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="subtitle2" className={textPromptHeading}>
+            Text Prompt
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body2" className={textPromptSpacing}>
+            {textPrompt}{' '}
+          </Typography>
+        </Grid>
+      </Grid>
+    </div>
+  )
 }
 
 const mapStateToProps = (
