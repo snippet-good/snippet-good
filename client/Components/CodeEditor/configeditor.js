@@ -42,6 +42,7 @@ const configEditor = function(
       handleCodeChange(editorSession.getValue())
     } else {
       this.setState({ code: editorSession.getValue() })
+      this.props.setStretchAnswer(this.state.code)
     }
   })
 }

@@ -51,6 +51,10 @@ class AceEditor extends Component {
     if (prevProps.theme !== this.props.theme) {
       this.state.editor.setTheme(`ace/theme/${this.props.theme}`)
     }
+    if (prevProps.submitStretch !== this.props.submitStretch) {
+      const { code } = this.state
+      this.props.createStretchAnswer(code)
+    }
   }
 
   runCode = () => {
@@ -91,6 +95,7 @@ class AceEditor extends Component {
   }
 
   render() {
+    console.log(this.state.code)
     const { editorTheme, codeError, codeResponse, editorId } = this.state
     const { showRunButton, saveButtonText, theme } = this.props
     const { runCode, clearCodeResults, saveCodeToDatabase } = this
@@ -129,7 +134,8 @@ class AceEditor extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    runCodeResult: code => runCodeResultThunk(code)
+    runCodeResult: code => runCodeResultThunk(code),
+    createStretchAnswer: code => dispatch(createStretchAnswerThunk(code))
   }
 }
 
