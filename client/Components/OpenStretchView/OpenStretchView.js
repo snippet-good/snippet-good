@@ -106,7 +106,7 @@ const OpenStretchView = ({
           </Typography>
         </Paper>
       </Paper>
-      <CodeEditor codePrompt={codePrompt} setStretchAnswer={setStretchAnswer} />
+      <CodeEditor code={codePrompt} setStretchAnswer={setStretchAnswer} />
     </div>
   )
 }
