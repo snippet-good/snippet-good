@@ -29,6 +29,14 @@ const Stretch = db.define('stretch', {
       min: 1,
       max: 5
     }
+  },
+  solution: {
+    type: db.Sequelize.TEXT,
+    defaultValue: `const solution = console.log('You did it!')`,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   }
 })
 

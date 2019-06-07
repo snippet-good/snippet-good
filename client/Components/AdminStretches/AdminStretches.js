@@ -17,13 +17,18 @@ import Card from '@material-ui/core/Card'
 
 import Typography from '@material-ui/core/Typography'
 
+import StretchScheduler from './StretchScheduler'
+
 class AdminStretches extends Component {
   constructor() {
     super()
     this.state = {
       searchTerm: '',
       filterCategoryNames: [],
-      selectedAuthor: ''
+      selectedAuthor: '',
+      // The below two keys are for the StretchScheduler modal.
+      modalIsOpen: false,
+      selectedStretch: {}
     }
   }
 
@@ -112,6 +117,11 @@ class AdminStretches extends Component {
     fetchStretches()
   }
 
+  // StretchScheduler modal event handlers
+  handleModalClose = () => this.setState({ modalIsOpen: false })
+  handleModalOpen = selectedStretch =>
+    this.setState({ modalIsOpen: true, selectedStretch })
+
   render() {
     const { searchTerm } = this.state
     const { stretches } = this.props
@@ -124,8 +134,18 @@ class AdminStretches extends Component {
     stretches.map(stretch => allAuthors.push(stretch.authorName))
     const authors = [...new Set(allAuthors)]
 
+    // StretchScheduler modal variables
+    const { modalIsOpen } = this.state
+    const { handleModalOpen, handleModalClose } = this
+
     return (
       <div className="stretches-page">
+        <StretchScheduler
+          open={modalIsOpen}
+          onClose={handleModalClose}
+          attributes={this.state.selectedStretch}
+        />
+
         <Card>
           <div className="stretches-filter">
             <form onSubmit={this.applySearch}>
@@ -191,8 +211,10 @@ class AdminStretches extends Component {
                 value={this.state.selectedAuthor}
                 onChange={this.selectAuthorFilter}
               >
-                {authors.map(auth => (
-                  <option value={auth}>{auth}</option>
+                {authors.map((auth, index) => (
+                  <option key={index} value={auth}>
+                    {auth}
+                  </option>
                 ))}
               </select>
               <div>
@@ -216,8 +238,7 @@ class AdminStretches extends Component {
         <div>
           <Link to="/admin/stretches/create">
             <Button variant="contained" color="primary">
-              {' '}
-              New Stretch{' '}
+              New Stretch
             </Button>
           </Link>
           <Typography variant="h6" id="tableTitle">
@@ -230,7 +251,7 @@ class AdminStretches extends Component {
                 <TableCell>Author</TableCell>
                 <TableCell>Category</TableCell>
                 <TableCell>Difficulty</TableCell>
-                <TableCell></TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -245,7 +266,14 @@ class AdminStretches extends Component {
                     <TableCell>{stretch.authorName}</TableCell>
                     <TableCell>{stretch.categoryName}</TableCell>
                     <TableCell>{stretch.difficulty}</TableCell>
-                    <TableCell><Button color='secondary'>Schedule</Button></TableCell>
+                    <TableCell>
+                      <Button
+                        color="secondary"
+                        onClick={() => handleModalOpen(stretch)}
+                      >
+                        Schedule
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 )
               })}
