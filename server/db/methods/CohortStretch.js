@@ -34,7 +34,7 @@ CohortStretch.prototype.format = function() {
   const { cohort, ...remainingFields } = this.dataValues
 
   return {
-    adminIds: cohort.cohortusers.map(cu => cu.id),
+    adminIds: cohort.cohortusers.map(cu => cu.userId),
     cohortName: cohort.name,
     ...remainingFields
   }
