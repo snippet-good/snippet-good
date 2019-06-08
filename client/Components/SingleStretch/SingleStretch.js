@@ -58,7 +58,20 @@ class SingleStretch extends Component {
     if (this.state.mode === 'update') {
       this.props
         .updateStretch({ ...data, id: this.state.id })
-        .then(() => this.setState({ mode: 'read' }))
+        .then(updatedStretch => {
+          const { title, categoryId, categoryName } = updatedStretch
+          const { difficulty, textPrompt, codePrompt } = updatedStretch
+
+          this.setState({
+            mode: 'read',
+            title,
+            categoryId,
+            categoryName,
+            difficulty,
+            textPrompt,
+            codePrompt
+          })
+        })
     }
 
     if (this.state.mode === 'create') {

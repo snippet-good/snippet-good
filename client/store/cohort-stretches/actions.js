@@ -39,7 +39,9 @@ export const getAllCohortStretches = () => dispatch => {
 
 export const createCohortStretch = data => {
   return dispatch => {
-    return axios.post('/api/cohort-stretches', data)
+    return axios
+      .post('/api/cohort-stretches', data)
+      .then(res => dispatch(addCohortStretch(res.data)))
   }
 }
 

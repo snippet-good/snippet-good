@@ -34,7 +34,6 @@ const StretchScheduler = props => {
       })
       .then(() => {
         onClose() // Close modal
-        console.log()
         // Display a message saying 'Stretch scheduled successfully!'
       })
   }

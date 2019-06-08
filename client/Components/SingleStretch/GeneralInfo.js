@@ -47,6 +47,7 @@ const GeneralInfo = props => {
 
               {/* Category select/display */}
               <div>
+                {mode === 'read' && <InputLabel shrink>Category</InputLabel>}
                 {mode === 'read' ? (
                   <Typography variant="subtitle2">{categoryName}</Typography>
                 ) : (
