@@ -233,15 +233,6 @@ const syncAndSeed = async () => {
     createCommentObjects(createdStretchAnswers.map(s => s.id), adminIds)
   )
 
-  await User.create({
-    userName: 'kevinhan',
-    firstName: 'Kevin',
-    lastName: 'Han',
-    email: '1',
-    password: '1',
-    isAdmin: true
-  })
-
   console.log('database successfully seeded!')
 }
 

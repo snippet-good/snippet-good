@@ -38,8 +38,8 @@ const CohortStretch = db.define('cohortstretch', {
     validate: {
       notEmpty: true,
       afterCurrentDate(value) {
-        if (value <= Date.now())
-          throw new Error('Can not schedule stretch for before right now')
+        // if (value < Date.now())
+        // throw new Error('Can not schedule stretch for before right now')
       }
     }
   }

@@ -73,7 +73,7 @@ class SingleStretch extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log(prevProps)
+    // console.log(prevProps)
     // if (prevProps.match.params.id !== this.) this.setStretchDetails()
   }
 

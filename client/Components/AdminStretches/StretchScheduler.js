@@ -9,12 +9,16 @@ import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 
 import DateAndTimePicker from '../_shared/DateAndTimePicker'
+import CohortSelect from '../_shared/CohortSelect'
 
 const StretchScheduler = props => {
   const { attributes, open, onClose } = props
   const { id } = attributes
 
   const [scheduledDate, setScheduledDate] = useState(new Date())
+  const [selectedCohortId, setSelectedCohortId] = useState('')
+
+  const handleCohortIdChange = event => setSelectedCohortId(event.target.value)
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -25,11 +29,13 @@ const StretchScheduler = props => {
         scheduledDate,
         minutes: 5,
         allowAnswersToBeRun: false,
-        stretchId: id
+        stretchId: id,
+        cohortId: selectedCohortId
       })
       .then(() => {
         onClose() // Close modal
-        // Maybe display a message saying 'Stretch scheduled successfully!'
+        console.log()
+        // Display a message saying 'Stretch scheduled successfully!'
       })
   }
 
@@ -43,12 +49,22 @@ const StretchScheduler = props => {
       <Paper style={{ padding: '2em' }}>
         <form onSubmit={handleSubmit}>
           <Grid container>
+            {/* Date and time picker for scheduling the stretch */}
             <Grid item xs={12} style={styles.center}>
               <DateAndTimePicker
                 name="scheduledDate"
                 label="Scheduled Date"
                 value={scheduledDate}
                 handleChange={setScheduledDate}
+              />
+            </Grid>
+
+            <Grid item xs={12} style={{ height: '20px' }} />
+
+            <Grid item xs={12}>
+              <CohortSelect
+                cohortId={selectedCohortId}
+                handleChange={handleCohortIdChange}
               />
             </Grid>
 
