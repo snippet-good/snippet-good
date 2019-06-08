@@ -22,7 +22,7 @@ router.post('/', (req, res, next) => {
 router.put('/:id', (req, res, next) => {
   Stretch.findByPk(req.params.id)
     .then(stretch => stretch.update(req.body))
-    .then(newStretch => newStretch.addAssociations())
+    .then(stretch => stretch.addAssociations())
     .then(stretch => res.json(stretch))
     .catch(next)
 })
