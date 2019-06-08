@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import { AdminStretches, AdminHomeView, SingleCohort } from '../../Components'
 import SingleStretch from '../SingleStretch/SingleStretch'
+import Sidebar from '../Sidebar'
+import FrameworkHOC from '../FrameworkHOC'
 
 class AdminController extends Component {
   render() {
@@ -31,4 +33,4 @@ class AdminController extends Component {
   }
 }
 
-export default AdminController
+export default FrameworkHOC(AdminController, Sidebar)

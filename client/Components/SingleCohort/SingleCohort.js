@@ -8,7 +8,7 @@ import Tab from '@material-ui/core/Tab'
 import { makeStyles } from '@material-ui/core/styles'
 import SingleCohortStretchTables from './SingleCohortStretchTables'
 import { getAllCohortUsers } from '../../store/cohort-users/actions'
-import {CohortStudents} from './CohortStudents'
+import { CohortStudents } from './CohortStudents'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,10 +49,11 @@ const SingleCohort = ({ cohort, cohortStudents, cohortUsers, users }) => {
       )}
       {value === 'students' && (
         <CohortStudents cohortStudents={cohortStudents} />
-  )}
-  </div>
-)}
-      
+      )}
+    </div>
+  )
+}
+
 
 const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
   cohortStudents: users.filter(student =>

@@ -22,20 +22,24 @@ class AceEditor extends Component {
   }
 
   componentDidMount() {
-
+    const { code, theme, handleCodeChange } = this.props
     this.setState(
       curState => {
         const editor = ace.edit(curState.editorId)
-        if (this.props.code) editor.setValue(this.props.code)
-        if (this.props.theme) {
-          editor.setTheme(`ace/theme/${this.props.theme}`)
-        }
+        if (code) editor.setValue(code)
+        if (theme) editor.setTheme(`ace/theme/${theme}`)
         return { ...curState, editor }
       },
       function() {
         const { editor, editorTheme } = this.state
         const editorSession = editor.getSession()
-        this.configEditorBinded(editor, editorSession, editorTheme)
+        this.configEditorBinded(
+          editor,
+          editorSession,
+          editorTheme,
+          !theme,
+          handleCodeChange
+        )
       }
     )
   }
@@ -125,7 +129,7 @@ class AceEditor extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    runCodeResult: code => runCodeResultThunk(code)
+    runCodeResult: code => dispatch(runCodeResultThunk(code))
   }
 }
 

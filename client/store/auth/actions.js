@@ -9,18 +9,21 @@ export const LOGOUT = 'LOGOUT'
 // --------------------------------------------------
 // Action creators
 
-const getUser = userDetails => ({ type: GET_USER_DETAILS, userDetails })
+export const getUser = userDetails => ({ type: GET_USER_DETAILS, userDetails })
 const logutUser = () => ({ type: LOGOUT })
 
 // --------------------------------------------------
 // Authentication thunks
 
-export const login = (email, password) => {
+export const login = credentials => {
   return dispatch => {
     return axios
-      .post('/api/auth', { email, password })
+      .post('/api/auth', credentials)
       .then(res => res.data)
-      .then(user => dispatch(getUser(user)))
+      .then(user => {
+        dispatch(getUser(user))
+        return user
+      })
   }
 }
 

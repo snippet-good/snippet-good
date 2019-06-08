@@ -5,7 +5,6 @@ import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers
 import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import { getFilteredStretchesOfAdmin } from './helperfunctions'
 import ScheduledCohortStretchesList from '../ScheduledCohortStretchesList'
-import Sidebar from '../Sidebar'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Button from '@material-ui/core/Button'
@@ -13,7 +12,6 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 
 const AdminHomeView = ({
-  cohorts,
   userId,
   getCohortsOfAdmin,
   getStudentsOfSingleAdmin,
@@ -38,9 +36,6 @@ const AdminHomeView = ({
       <h2>Your Home Page</h2>
 
       <Grid container>
-        <Grid item xs={3}>
-          <Sidebar cohorts={cohorts} history={history} />
-        </Grid>
         <Grid item xs={9}>
           {openStretches.length && (
             <ul>

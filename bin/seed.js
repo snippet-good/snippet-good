@@ -100,7 +100,7 @@ const createStretchObjects = (userIds, categoryIds) => {
 
 const createCohortStretchObjects = (cohortIds, stretchIds) => {
   let cohortStretches = []
-  for (let i = 0; i < 100; ++i) {
+  for (let i = 0; i < 50; ++i) {
     let cohortId = getRandomArrayEntry(cohortIds)
     const stretchIdsBad = cohortStretches
       .filter(cs => cs.cohortId === cohortId)
