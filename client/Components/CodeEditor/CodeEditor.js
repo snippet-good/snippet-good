@@ -7,6 +7,8 @@ import { runCodeResultThunk } from '../../store/codeEditor/actions'
 import { connect } from 'react-redux'
 import OutputAndButtons from './OutputAndButtons'
 
+import Grid from '@material-ui/core/Grid'
+
 class AceEditor extends Component {
   constructor(props) {
     super(props)
@@ -110,18 +112,25 @@ class AceEditor extends Component {
           </Select>
         )}
 
-        <div id={editorId} />
-        <OutputAndButtons
-          {...{
-            codeResponse,
-            showRunButton,
-            runCode,
-            clearCodeResults,
-            codeError,
-            saveButtonText,
-            saveCodeToDatabase
-          }}
-        />
+        <Grid container>
+          <Grid item xs={6}>
+            <div id={editorId} />
+          </Grid>
+          <Grid item xs={6}>
+            {' '}
+            <OutputAndButtons
+              {...{
+                codeResponse,
+                showRunButton,
+                runCode,
+                clearCodeResults,
+                codeError,
+                saveButtonText,
+                saveCodeToDatabase
+              }}
+            />
+          </Grid>
+        </Grid>
       </div>
     )
   }

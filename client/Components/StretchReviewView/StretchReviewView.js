@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import GeneralInfo from '../SingleStretch/GeneralInfo'
+import CodeSection from './CodeSection'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 
 import Grid from '@material-ui/core/Grid'
@@ -25,6 +26,7 @@ const StretchReviewView = ({ attributes, currentCohortStretch }) => {
             {textPrompt}{' '}
           </Typography>
         </Grid>
+        <CodeSection />
       </Grid>
     </div>
   )
