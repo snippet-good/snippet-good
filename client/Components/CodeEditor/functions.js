@@ -1,7 +1,7 @@
 //import { runCodeResultThunk } from '../../store/codeEditor/actions'
 import axios from 'axios'
 
-export const runCode = code => {
+const runCode = code => {
   return axios
     .post('/api/code/runcode', code)
     .then(({ data }) => {
@@ -15,6 +15,8 @@ export const runCode = code => {
     })
 }
 
-export const clearCodeResults = () => {
+const clearCodeResults = () => {
   this.setState({ codeResponse: '', codeError: '' })
 }
+
+export default {runCode, clearCodeResults}

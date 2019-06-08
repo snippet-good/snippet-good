@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { runCodeResultThunk } from '../../store/codeEditor/actions'
 
-class RunCodeButton extends Component {
+/*class RunCodeButton extends Component {
   /*runCode = () => {
     return this.props
       .runCodeResult(this.props.code)
@@ -16,29 +16,47 @@ class RunCodeButton extends Component {
       .catch(({ response: { data } }) => {
         this.setState({ codeError: data, codeResponse: '' })
       })
-  }*/
+  }
 
   render() {
     const { variant, size, color, runCode, code } = this.props
+    console.log(this.props)
+    console.log(this.props.variant)
     return (
       <Button
-        variant={variant}
-        size={size}
+        variant={variant || 'text'}
+        size={size || 'small'}
         color={color}
         type="button"
         onClick={() => runCode(code)}
       />
     )
   }
+}*/
+
+const RunCodeButton = ({ variant, size, color, runCode, code }) => {
+  return (
+    <Button
+      variant={variant || 'text'}
+      size={size || 'small'}
+      color={color}
+      type="button"
+      onClick={() => runCode(code)}
+    >
+      Run Code
+    </Button>
+  )
 }
 
-const mapDispatchToProps = dispatch => {
+/*const mapDispatchToProps = dispatch => {
   return {
     runCodeResult: code => dispatch(runCodeResultThunk(code))
   }
-}
+}*/
 
-export default connect(
+export default RunCodeButton
+
+/*export default connect(
   null,
   mapDispatchToProps
-)(RunCodeButton)
+)(RunCodeButton)*/

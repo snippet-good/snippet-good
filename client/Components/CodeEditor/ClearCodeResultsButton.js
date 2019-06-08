@@ -5,12 +5,14 @@ const ClearCodeResultsButton = props => {
   const { variant, size, color, clearCodeResults } = props
   return (
     <Button
-      variant={variant}
-      size={size}
+      variant={variant || 'text'}
+      size={size || 'small'}
       color={color}
       type="button"
       onClick={clearCodeResults}
-    />
+    >
+      Clear Results
+    </Button>
   )
 }
 
