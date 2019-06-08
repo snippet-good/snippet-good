@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
-import Select from '@material-ui/core/Select'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
-import MenuItem from '@material-ui/core/MenuItem'
 import configEditor from './configeditor'
-import { runCodeResultThunk } from '../../store/codeEditor/actions'
+//import { runCodeThunk } from '../../store/codeOutput/actions'
 import { connect } from 'react-redux'
 import OutputAndButtons from './OutputAndButtons'
 
@@ -24,12 +21,12 @@ class AceEditor extends Component {
   }
 
   componentDidMount() {
-    const { code, theme, handleCodeChange } = this.props
+    const { code, editorTheme, handleCodeChange } = this.props
     this.setState(
       curState => {
         const editor = ace.edit(curState.editorId)
         if (code) editor.setValue(code)
-        if (theme) editor.setTheme(`ace/theme/${theme}`)
+        if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)
         return { ...curState, editor }
       },
       function() {
@@ -39,7 +36,7 @@ class AceEditor extends Component {
           editor,
           editorSession,
           editorTheme,
-          !theme,
+          false,
           handleCodeChange
         )
       }
@@ -47,11 +44,15 @@ class AceEditor extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.code !== this.props.code) {
-      this.state.editor.setValue(this.props.code)
+    const { code, showSavedCode } = this.props
+    if (showSavedCode && prevProps.code !== code) {
+      console.log('uodate')
+      console.log(prevProps.code)
+      console.log(this.props.code)
+      this.state.editor.setValue(code)
     }
-    if (prevProps.theme !== this.props.theme) {
-      this.state.editor.setTheme(`ace/theme/${this.props.theme}`)
+    if (prevProps.editorTheme !== this.props.editorTheme) {
+      this.state.editor.setTheme(`ace/theme/${this.props.editorTheme}`)
     }
   }
 
@@ -96,49 +97,13 @@ class AceEditor extends Component {
     const { editorTheme, codeError, codeResponse, editorId } = this.state
     const { showRunButton, saveButtonText, theme } = this.props
     const { runCode, clearCodeResults, saveCodeToDatabase } = this
-    return (
-      <div>
-        {!theme && (
-          <Select
-            value={editorTheme}
-            onChange={this.handleChange}
-            input={<OutlinedInput name="editorTheme" />}
-          >
-            {['monokai', 'github', 'tomorrow', 'kuroir'].map(el => (
-              <MenuItem key={el} value={el}>
-                {el}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
-
-        <Grid container>
-          <Grid item xs={6}>
-            <div id={editorId} />
-          </Grid>
-          <Grid item xs={6}>
-            {' '}
-            <OutputAndButtons
-              {...{
-                codeResponse,
-                showRunButton,
-                runCode,
-                clearCodeResults,
-                codeError,
-                saveButtonText,
-                saveCodeToDatabase
-              }}
-            />
-          </Grid>
-        </Grid>
-      </div>
-    )
+    return <div id={editorId} />
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    runCodeResult: code => dispatch(runCodeResultThunk(code))
+    runCodeResult: code => dispatch({})
   }
 }
 

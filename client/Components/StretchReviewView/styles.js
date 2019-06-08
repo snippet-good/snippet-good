@@ -1,19 +1,26 @@
-//import { palette } from '@material-ui/system'
-
-//console.log(palette)
-//const color = palette.primary.main
-
-const styles = {
-  textPromptSpacing: {
+const textPromptStyles = {
+  spacing: {
     width: '80%',
-    margin: '0 auto'
+    margin: '0 auto 10px'
   },
-  textPromptHeading: {
+  heading: {
     textAlign: 'center',
     marginTop: '20px',
-    //color,
     fontSize: '1rem'
   }
 }
 
-export default styles
+const codeSectionStyles = {
+  controls: {
+    textAlign: 'center'
+  },
+  button: {
+    textAlign: 'end',
+    marginRight: '10px'
+  },
+  start: {
+    textAlign: 'start'
+  }
+}
+
+export { textPromptStyles, codeSectionStyles }

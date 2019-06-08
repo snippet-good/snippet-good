@@ -39,7 +39,10 @@ const configEditor = function(
   editorSession.on('change', () => {
     addClosingCurlyBracket(editor, editorSession)
     if (typeof handleCodeChange === 'function') {
-      handleCodeChange(editorSession.getValue())
+      console.log('in here')
+      handleCodeChange({
+        target: { name: 'code', value: editorSession.getValue() }
+      })
     } else {
       this.setState({ code: editorSession.getValue() })
       this.props.setStretchAnswer(this.state.code)
