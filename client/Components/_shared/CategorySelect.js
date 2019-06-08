@@ -8,12 +8,6 @@ import InputLabel from '@material-ui/core/InputLabel'
 
 // This is a dropdown menu displaying all of the categories.
 
-// This component accepts the following props:
-
-// @param {object} props.attributes -
-//    @param {string} attributes.id -
-// @param {object} props.style      -
-
 const CategorySelect = props => {
   const { categories, categoryId, style } = props
   const { handleChange } = props
