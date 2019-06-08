@@ -25,7 +25,8 @@ class SingleStretch extends Component {
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
     codePrompt: '// This is an example code prompt.',
-    difficulty: 3
+    difficulty: 3,
+    isLoaded: false
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
@@ -86,8 +87,10 @@ class SingleStretch extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // console.log(prevProps)
-    // if (prevProps.match.params.id !== this.) this.setStretchDetails()
+    if (!this.state.isLoaded) {
+      this.setStretchDetails()
+      this.setState({ isLoaded: true })
+    }
   }
 
   render() {
