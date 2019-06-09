@@ -21,10 +21,10 @@ const addCohortStretch = newCohortStretch => ({
   newCohortStretch
 })
 
-const updateCohortStretch = (cohortStretchId, updatedItemFrontEnd) => ({
+const updateCohortStretch = (cohortStretchId, updatedCohortStretch) => ({
   type: UPDATE_COHORT_STRETCH,
   cohortStretchId,
-  updatedItemFrontEnd
+  updatedCohortStretch
 })
 
 // --------------------------------------------------
@@ -45,16 +45,12 @@ export const createCohortStretch = data => {
   }
 }
 
-export const updateCohortStretchThunk = (
-  cohortStretchId,
-  updatedFields,
-  updatedItemFrontEnd
-) => {
+export const updateCohortStretchThunk = (cohortStretchId, updatedFields) => {
   return dispatch => {
     return axios
       .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
-      .then(() =>
-        dispatch(updateCohortStretch(cohortStretchId, updatedItemFrontEnd))
+      .then(({data}) =>
+        dispatch(updateCohortStretch(cohortStretchId, data))
       )
   }
 }

@@ -14,7 +14,7 @@ export default (state = [], action) => {
 
     case UPDATE_COHORT_STRETCH:
       return state.map(item =>
-        item.id === action.cohortStretchId ? action.updatedItemFrontEnd : item
+        item.id === action.cohortStretchId ? action.updatedCohortStretch : item
       )
     default:
       return state

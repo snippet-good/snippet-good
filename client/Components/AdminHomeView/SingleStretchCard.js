@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
-import {parseDateTime} from './helperfunctions'
+import { parseDateTime } from './helperfunctions'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
@@ -9,8 +9,7 @@ import CardActions from '@material-ui/core/CardActions'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-
-
+import styles from './styles'
 
 const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
   const {
@@ -23,7 +22,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
     scheduledDate
   } = stretch
   return (
-    <Card>
+    <Card style={styles.singleCard}>
       <CardContent>
         <Typography variant="subtitle2" color="primary">
           {title}
@@ -38,10 +37,11 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
               <i>Category: </i>
               {category}
             </Typography>
-            {status==='scheduled' &&
-               <Typography variant="body2" component="p">
-                   {parseDateTime(scheduledDate)}
-                </Typography>}
+            {status === 'scheduled' && (
+              <Typography variant="body2" component="p">
+                {parseDateTime(scheduledDate)}
+              </Typography>
+            )}
           </Grid>
 
           {status === 'open' && (
@@ -62,11 +62,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
                 <Button
                   color="primary"
                   onClick={() =>
-                    updateCohortStretch(
-                      id,
-                      { status: 'open' },
-                      { ...cohortStretch, status: 'open' }
-                    )
+                    updateCohortStretch(stretch.id, { status: 'open' })
                   }
                 >
                   Open stretch

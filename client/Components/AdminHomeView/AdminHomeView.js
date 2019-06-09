@@ -56,8 +56,8 @@ const AdminHomeView = ({
           })}
         </Grid>
       ) : (
-        <Typography variant="body1">
-          You have no stretches currently open
+        <Typography variant="body2">
+          <i>You have no stretches currently open</i>
         </Typography>
       )}
 
@@ -68,13 +68,13 @@ const AdminHomeView = ({
         Open a Scheduled Stretch
       </Typography>
       {showScheduled && !scheduledStretches.length && (
-        <Typography variant="body1">
-          You have no stretches currently scheduled
+        <Typography variant="body2">
+          <i>You have no stretches currently scheduled</i>
         </Typography>
       )}
-      {showScheduled && scheduledStretches.length && (
+      {showScheduled && scheduledStretches.length ? (
         <Grid container style={styles.stretchesGrid}>
-          {openStretches.map(stretch => {
+          {scheduledStretches.map(stretch => {
             console.log(stretch)
             return (
               <Grid item xs={5} key={stretch.id}>
@@ -83,6 +83,8 @@ const AdminHomeView = ({
             )
           })}
         </Grid>
+      ) : (
+        ''
       )}
     </div>
   )
