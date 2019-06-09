@@ -4,9 +4,9 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 
-const ThemeSelector = ({ editorTheme, handleChange }) => {
+const ThemeSelector = ({ editorTheme, handleChange, style }) => {
   return (
-    <FormControl>
+    <FormControl style={style || {}}>
       <InputLabel shrink htmlFor="editor-theme">
         Editor Theme
       </InputLabel>

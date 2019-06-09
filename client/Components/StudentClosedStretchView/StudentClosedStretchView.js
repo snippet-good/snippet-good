@@ -7,7 +7,7 @@ import {
 } from './helperfunctions'
 
 import GeneralInfo from './GeneralInfo'
-import CodeEditorsView from './CodeEditorsView'
+import CodeSection from './CodeSection'
 import CommentsSection from './CommentSection'
 
 import { GeneralInfoStyles as styles } from '../SingleStretch/styles'
@@ -50,7 +50,7 @@ const StudentClosedStretchView = ({
           </Typography>
         </Grid>
       </Grid>
-      <CodeEditorsView {...{ studentAnswer, solutions }} />
+      <CodeSection {...{ studentAnswer, solutions }} />
       <CommentsSection stretchAnswerId={stretchAnswer.id} />
     </div>
   )

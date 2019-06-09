@@ -33,11 +33,11 @@ class CodeSection extends Component {
   handleChange = ({ target }) => {
     let objectChange = { [target.name]: target.value }
     if (target.name === 'code') objectChange.showSavedCode = false
-    this.setState(objectChange, () => console.log(this.state))
+    this.setState(objectChange)
   }
 
   showSolution = () => {
-    this.setState({ showSavedCode: true }, () => console.log(this.state))
+    this.setState({ showSavedCode: true })
   }
 
   render() {
