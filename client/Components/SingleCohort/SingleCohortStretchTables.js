@@ -102,7 +102,7 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
             </Table>
 
             <Typography variant="h6" id="tableTitle">
-                Scheduled Stretches
+                Closed Stretches
           </Typography>
             <Table>
                 <TableHead>
@@ -149,4 +149,5 @@ const mapStateToProps = state => {
         cohortStretches, stretches
     }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(SingleCohortStretchTables)
