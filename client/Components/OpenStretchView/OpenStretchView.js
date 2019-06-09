@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { CodeEditor } from '../../Components/index'
+import CodeEditor, { AuxillaryComponents } from '../CodeEditor'
+const { ThemeSelector } = AuxillaryComponents
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
@@ -63,6 +64,7 @@ const OpenStretchView = ({
   const [displayMinutes, setDisplayMinutes] = useState(0)
   const [displaySeconds, setDisplaySeconds] = useState(59)
   const [stretchAnswer, setStretchAnswer] = useState('')
+  const [editorTheme, setEditorTheme] = useState('monokai')
   useEffect(() => {
     if (myStretch) {
       setCodePrompt(myStretch.codePrompt)
@@ -106,7 +108,16 @@ const OpenStretchView = ({
           </Typography>
         </Paper>
       </Paper>
-      <CodeEditor code={codePrompt} setStretchAnswer={setStretchAnswer} />
+      <ThemeSelector
+        editorTheme={editorTheme}
+        handleChange={({ target }) => setEditorTheme(target.value)}
+      />
+      <CodeEditor
+        codeTargetName="code"
+        initialCode={codePrompt}
+        editorTheme={editorTheme}
+        handleCodeChange={({ target }) => setStretchAnswer(target.value)}
+      />
     </div>
   )
 }

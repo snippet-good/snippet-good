@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography'
 
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
-import CodeEditor from '../CodeEditor/CodeEditor'
+import CodeEditor from '../CodeEditor'
 
 import { SingleStretchStyles as styles } from './styles'
 import { GeneralInfoStyles } from './styles'
@@ -35,11 +35,11 @@ class SingleStretch extends Component {
   setStretchDetails = () => {
     const { match, mode, stretches } = this.props
 
-    let attributes
-    if (match.params.id && stretches)
+    let attributes = {}
+    if (match.params.id && stretches.length)
       attributes = stretches.find(s => s.id === match.params.id)
 
-    this.setState({ mode, ...attributes })
+    this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
   }
 
   handleChange = event => {
@@ -87,7 +87,8 @@ class SingleStretch extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!this.state.isLoaded) {
+    const { stretches } = this.props
+    if (prevProps.stretches !== stretches && stretches.length) {
       this.setStretchDetails()
       this.setState({ isLoaded: true })
     }
@@ -96,9 +97,8 @@ class SingleStretch extends Component {
   render() {
     const { state } = this
     const { handleSubmit, changeMode } = this
-    const { handleChange, handleCodeChange } = this
+    const { handleChange } = this
     const { mode } = state
-
     return (
       <form onSubmit={handleSubmit}>
         <div style={styles.root}>
@@ -139,9 +139,10 @@ class SingleStretch extends Component {
 
             <Grid item xs={12}>
               <CodeEditor
-                code={state.codePrompt}
-                style={{ width: '100%' }}
-                handleCodeChange={handleCodeChange}
+                initialCode={state.initialCode}
+                codeTargetName="codePrompt"
+                handleCodeChange={handleChange}
+                readOnly={mode === 'read'}
               />
             </Grid>
           </Grid>

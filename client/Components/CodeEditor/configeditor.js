@@ -20,11 +20,9 @@ const addClosingCurlyBracket = (editor, editorSession) => {
 const configEditor = function(
   editor,
   editorSession,
-  editorTheme,
-  themeFromState,
-  handleCodeChange
+  handleCodeChange,
+  codeTargetName
 ) {
-  if (themeFromState) editor.setTheme(`ace/theme/${editorTheme}`)
   editorSession.setMode('ace/mode/javascript')
   editor.setShowPrintMargin(false)
   editor.setOptions({ minLines: 15 })
@@ -38,12 +36,9 @@ const configEditor = function(
 
   editorSession.on('change', () => {
     addClosingCurlyBracket(editor, editorSession)
-    if (typeof handleCodeChange === 'function') {
-      handleCodeChange(editorSession.getValue())
-    } else {
-      this.setState({ code: editorSession.getValue() })
-      this.props.setStretchAnswer(this.state.code)
-    }
+    handleCodeChange({
+      target: { name: codeTargetName, value: editorSession.getValue() }
+    })
   })
 }
 

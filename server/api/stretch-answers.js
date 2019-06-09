@@ -19,7 +19,7 @@ router.get('/admin/:adminId', (req, res, next) => {
 
 // POST student StretchAnswer
 router.post('/create', (req, res, next) => {
-  StretchAnswer.create({ body: req.body.newStretchAnswer })
+  StretchAnswer.create(req.body.newStretchAnswer)
     .then(stretchAnswer => res.json(stretchAnswer))
     .catch(next)
 })

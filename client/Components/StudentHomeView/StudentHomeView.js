@@ -3,17 +3,7 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import StretchListView from './StretchListView'
-
-const checkIfAllDataExists = (...args) => {
-  for (let i = 0; i < args.length; ++i) {
-    if (Array.isArray(args[i])) {
-      if (!args[i].length) return false
-    } else if (!args[i].id) {
-      return false
-    }
-  }
-  return true
-}
+import { checkIfAllDataExists } from '../../utilityfunctions'
 
 const mapStateToProps = ({
   userDetails,

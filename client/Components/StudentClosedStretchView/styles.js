@@ -45,18 +45,28 @@ const useStyles = makeStyles(theme => {
   }
 })
 
-const editorsStyles = makeStyles(() => {
+const editorsStyles = () => {
   const select = {
     width: '15%',
     marginTop: '3px'
   }
   return {
     center: {
-      textAlign: 'center'
+      textAlign: 'center',
+      marginTop: '10px'
     },
     select,
-    solutionSelect: { ...select, marginLeft: '20px' }
+    solutionSelect: { ...select, marginLeft: '20px' },
+    root: {
+      marginTop: '10px'
+    }
   }
-})
+}
 
-export { useStyles, editorsStyles }
+const buttonsStyles = {
+  singleButton: {
+    marginBottom: '10px'
+  }
+}
+
+export { useStyles, editorsStyles, buttonsStyles }
