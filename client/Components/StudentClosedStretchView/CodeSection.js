@@ -59,14 +59,14 @@ class CodeSection extends Component {
         <Grid container>
           <Grid item xs={6}>
             <SingleCodeComponent
-              code={studentAnswer}
+              savedCode={studentAnswer}
               editorId="student"
               {...{ editorTheme, handleChange }}
             />
           </Grid>
           <Grid item xs={6}>
             <SingleCodeComponent
-              code={solution}
+              savedCode={solution}
               editorId="admin"
               {...{ editorTheme, handleChange }}
             />

@@ -72,7 +72,6 @@ class SingleStretch extends Component {
     const { state } = this
     const { handleSubmit, handleChange, changeMode } = this
     const { mode } = state
-
     return (
       <form onSubmit={handleSubmit}>
         <div style={styles.root}>
@@ -114,7 +113,6 @@ class SingleStretch extends Component {
             <Grid item xs={12}>
               <CodeEditor
                 initialCode={state.initialCode}
-                code={state.codePrompt}
                 codeTargetName="codePrompt"
                 handleCodeChange={handleChange}
                 readOnly={mode === 'read'}

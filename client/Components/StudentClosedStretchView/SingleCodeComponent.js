@@ -16,39 +16,30 @@ import { buttonsStyles, editorsStyles } from './styles'
 class SingleCodeComponent extends Component {
   constructor(props) {
     super(props)
-    let initialState = {
-      code: this.props.code || '',
+    this.state = {
+      code: this.props.savedCode || '',
+      savedCode: this.props.savedCode || '',
       codeResponse: '',
       codeError: ''
     }
-    if (this.props.editorId === 'admin') {
-      initialState.showSavedCode = true
-    }
-    this.state = initialState
     this.runCodeBinded = runCode.bind(this)
     this.clearCodeResultsBinded = clearCodeResults.bind(this)
   }
 
   handleChange = ({ target }) => {
-    let objectChange = { [target.name]: target.value }
-    if (target.name === 'code' && this.state.showSavedCode !== undefined) {
-      objectChange.showSavedCode = false
-    }
-    this.setState(objectChange)
+    this.setState({ [target.name]: target.value })
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.code !== this.props.code) {
-      let objectChange = { code: this.props.code }
-      if (this.state.showSavedCode !== undefined)
-        objectChange.showSavedCode = true
-      this.setState(objectChange)
+    const { savedCode } = this.props
+    if (prevProps.savedCode !== savedCode && savedCode !== '') {
+      this.setState({ savedCode })
     }
   }
 
   render() {
     const { runCodeBinded, clearCodeResultsBinded, handleChange } = this
-    const { code, codeResponse, codeError, showSavedCode } = this.state
+    const { code, codeResponse, codeError, savedCode } = this.state
     const { editorTheme, editorId } = this.props
     const { root } = editorsStyles()
     return (
@@ -56,11 +47,10 @@ class SingleCodeComponent extends Component {
         <Grid item xs={12}>
           <CodeEditor
             codeTargetName="code"
-            code={code}
             editorTheme={editorTheme}
             handleCodeChange={handleChange}
             editorId={editorId}
-            showSavedCode={showSavedCode}
+            initialCode={savedCode}
           />
         </Grid>
         <Grid item xs={12} style={root}>

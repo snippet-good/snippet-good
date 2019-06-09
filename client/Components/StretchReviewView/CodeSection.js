@@ -16,13 +16,12 @@ import Button from '@material-ui/core/Button'
 import { codeSectionStyles } from './styles'
 
 class CodeSection extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       editorTheme: 'monokai',
       code: '',
-      solution: this.props.solution,
-      showSavedCode: false,
+      solution: '',
       codeResponse: '',
       codeError: ''
     }
@@ -32,23 +31,16 @@ class CodeSection extends Component {
 
   handleChange = ({ target }) => {
     let objectChange = { [target.name]: target.value }
-    if (target.name === 'code') objectChange.showSavedCode = false
+    if (target.name === 'code') objectChange.solution = ''
     this.setState(objectChange)
   }
 
   showSolution = () => {
-    this.setState({ showSavedCode: true })
+    this.setState({ solution: this.props.solution })
   }
 
   render() {
-    const {
-      editorTheme,
-      code,
-      codeResponse,
-      codeError,
-      showSavedCode,
-      solution
-    } = this.state
+    const { editorTheme, code, codeResponse, codeError, solution } = this.state
     const {
       runCodeBinded,
       clearCodeResultsBinded,
@@ -91,8 +83,7 @@ class CodeSection extends Component {
           <Grid item xs={6}>
             <CodeEditor
               codeTargetName="code"
-              code={showSavedCode ? solution : code}
-              showSavedCode={showSavedCode}
+              initialCode={solution}
               editorTheme={editorTheme}
               handleCodeChange={handleChange}
             />
