@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography'
 
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
-import CodeEditor from '../CodeEditor/CodeEditor'
+import CodeEditor from '../CodeEditor'
 
 import { SingleStretchStyles as styles } from './styles'
 import { GeneralInfoStyles } from './styles'
@@ -113,7 +113,10 @@ class SingleStretch extends Component {
             </Grid>
 
             <Grid item xs={12}>
-              <CodeEditor style={{ width: '100%' }} />
+              <CodeEditor
+                codeTargetName="codePrompt"
+                handleCodeChange={handleChange}
+              />
             </Grid>
           </Grid>
         </div>

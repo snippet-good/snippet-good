@@ -21,7 +21,7 @@ class AceEditor extends Component {
   }
 
   componentDidMount() {
-    const { code, editorTheme, handleCodeChange } = this.props
+    const { code, editorTheme, handleCodeChange, codeTargetName } = this.props
     this.setState(
       curState => {
         const editor = ace.edit(curState.editorId)
@@ -37,7 +37,8 @@ class AceEditor extends Component {
           editorSession,
           editorTheme,
           false,
-          handleCodeChange
+          handleCodeChange,
+          codeTargetName
         )
       }
     )

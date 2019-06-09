@@ -22,7 +22,8 @@ const configEditor = function(
   editorSession,
   editorTheme,
   themeFromState,
-  handleCodeChange
+  handleCodeChange,
+  codeTargetName
 ) {
   if (themeFromState) editor.setTheme(`ace/theme/${editorTheme}`)
   editorSession.setMode('ace/mode/javascript')
@@ -41,10 +42,10 @@ const configEditor = function(
     if (typeof handleCodeChange === 'function') {
       console.log('in here')
       handleCodeChange({
-        target: { name: 'code', value: editorSession.getValue() }
+        target: { name: codeTargetName, value: editorSession.getValue() }
       })
     } else {
-      this.setState({ code: editorSession.getValue() })
+      this.setState({ [codeTargetName]: editorSession.getValue() })
       this.props.setStretchAnswer(this.state.code)
     }
   })
