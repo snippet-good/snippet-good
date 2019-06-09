@@ -55,9 +55,7 @@ export const getFilteredStretchesOfAdmin = (
       ...cs,
       ...stretchesTitlesMap[cs.stretchId],
       cohortSize: numberOfStudentsPerCohorts[cs.cohortId],
-      completedStretches: numberOfStretches[cs.cohortId]
-        ? numberOfStretches[cs.cohortId][cs.stretchId] || 0
-        : 0
+      completedStretches: numberOfStretches[cs.id] || 0
     }))
     .reduce(
       (obj, value) => {

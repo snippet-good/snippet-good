@@ -145,16 +145,19 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
   return cohortStretches
 }
 
+// eslint-disable-next-line complexity
 const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
   let stretchAnswers = []
   let obj = {}
+  let studentsIndex
+  const csClosed = cohortStretchs.filter(cs => cs.status === 'closed')
 
-  for (let i = 0; i < cohortStretchs.length; ++i) {
+  for (let i = 0; i < csClosed.length; ++i) {
     const { cohortId } = cohortStretchs[i]
     const students = cohortUsers
       .filter(cu => cu.cohortId === cohortId)
       .map(cu => cu.userId)
-    let studentsIndex
+
     if (!obj[cohortId]) {
       studentsIndex = [0, 1, 2]
       obj[cohortId] = true
@@ -168,7 +171,34 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
         rating:
           Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
         userId: students[studentsIndex[j]],
-        cohortstretchId: cohortStretchs[i].id,
+        cohortstretchId: csClosed[i].id,
+        timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10])
+      }
+      stretchAnswers.push(stretchAnswer)
+    }
+  }
+
+  const csOpen = cohortStretchs.filter(cs => cs.status === 'open')
+  for (let i = 0; i < csOpen.length; ++i) {
+    const { cohortId } = cohortStretchs[i]
+    const students = cohortUsers
+      .filter(cu => cu.cohortId === cohortId)
+      .map(cu => cu.userId)
+    if (i === 0) {
+      studentsIndex = [0, 2]
+    } else if (i === 1) {
+      studentsIndex = [1]
+    } else {
+      studentsIndex = [3, 1]
+    }
+    for (let j = 0; j < studentsIndex.length; ++j) {
+      let stretchAnswer = {
+        body: paragraph(),
+        isSolved: Math.random() <= 0.5 ? Math.random() <= 0.5 : null,
+        rating:
+          Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
+        userId: students[studentsIndex[j]],
+        cohortstretchId: csOpen[i].id,
         timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10])
       }
       stretchAnswers.push(stretchAnswer)
@@ -260,7 +290,7 @@ const syncAndSeed = async () => {
   )
 
   const cohortStretchs = createdCohortStretches.filter(
-    cs => cs.status === 'closed'
+    cs => cs.status !== 'scheduled'
   )
   const createdStretchAnswers = await createSeedInstances(
     StretchAnswer,

@@ -13,9 +13,10 @@ export default (state = [], action) => {
       return [...state, action.newCohortStretch]
 
     case UPDATE_COHORT_STRETCH:
-      return state.map(item =>
-        item.id === action.cohortStretchId ? action.updatedCohortStretch : item
-      )
+      return [
+        action.updatedCohortStretch,
+        ...state.filter(cs => cs.id !== action.cohortStretchId)
+      ]
     default:
       return state
   }

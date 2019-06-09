@@ -1,5 +1,5 @@
 const { Op } = require('sequelize')
-const { User, CohortUser, StretchAnswer } = require('../models')
+const { User, CohortStretch, CohortUser, StretchAnswer } = require('../models')
 
 const getAnswersOfStudentsOfSingleAdmin = function(adminId) {
   return User.findOne({
@@ -8,10 +8,11 @@ const getAnswersOfStudentsOfSingleAdmin = function(adminId) {
   })
     .then(user => user.cohortusers.map(cu => cu.cohortId))
     .then(cohortIds => {
+      console.log(cohortIds)
       return StretchAnswer.findAll({
         include: [
           {
-            model: CohortUser,
+            model: CohortStretch,
             attributes: ['cohortId'],
             where: { cohortId: { [Op.in]: cohortIds } }
           }
@@ -22,7 +23,7 @@ const getAnswersOfStudentsOfSingleAdmin = function(adminId) {
       return stretchAnswers.map(s => {
         const values = s.get()
         const {
-          cohortuser: { cohortId },
+          cohortstretch: { cohortId },
           ...itemValues
         } = values
         return {
