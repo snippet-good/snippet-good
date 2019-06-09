@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
-import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
-import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import { getFilteredStretchesOfAdmin } from './helperfunctions'
 import SingleStretchCard from './SingleStretchCard'
 
@@ -11,24 +8,7 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import styles from './styles'
 
-const AdminHomeView = ({
-  userId,
-  getCohortsOfAdmin,
-  getStudentsOfSingleAdmin,
-  getStretchAnswersOfSingleAdmin,
-  openStretches,
-  scheduledStretches,
-  history
-}) => {
-  useEffect(() => {
-    if (userId) {
-      Promise.all([
-        getCohortsOfAdmin(userId),
-        getStretchAnswersOfSingleAdmin(userId),
-        getStudentsOfSingleAdmin(userId)
-      ])
-    }
-  }, [userId])
+const AdminHomeView = ({ openStretches, scheduledStretches, history }) => {
   const [showScheduled, setShowScheduled] = useState(false)
 
   return (
@@ -113,17 +93,4 @@ const mapStateToProps = ({
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getCohortsOfAdmin: adminId => dispatch(getCohortsOfAdminThunk(adminId)),
-    getStretchAnswersOfSingleAdmin: adminId =>
-      dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
-    getStudentsOfSingleAdmin: adminId =>
-      dispatch(getUsersOfSingleAdminThunk(adminId))
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AdminHomeView)
+export default connect(mapStateToProps)(AdminHomeView)

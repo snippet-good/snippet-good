@@ -28,7 +28,11 @@ const SingleCohort = ({ cohort, cohortStudents, cohortUsers, users }) => {
 
   return (
     <div className={root}>
-      <Typography variant="h5" gutterBottom onClick={() => modalStatus = true}>
+      <Typography
+        variant="h5"
+        gutterBottom
+        onClick={() => (modalStatus = true)}
+      >
         {name}
       </Typography>
 
@@ -44,16 +48,13 @@ const SingleCohort = ({ cohort, cohortStudents, cohortUsers, users }) => {
           <Tab value="students" label="Students" />
         </Tabs>
       </AppBar>
-      {value === 'stretches' && (
-        <SingleCohortStretchTables cohort={cohort} />
-      )}
+      {value === 'stretches' && <SingleCohortStretchTables cohort={cohort} />}
       {value === 'students' && (
         <CohortStudents cohortStudents={cohortStudents} />
       )}
     </div>
   )
 }
-
 
 const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
   cohortStudents: users.filter(student =>
@@ -62,11 +63,13 @@ const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
   cohort: cohorts.find(cohort => cohort.id === params.id) || {}
 })
 
-
 const mapDispatchToProps = dispatch => {
   return {
     getAllCohortUsers: () => dispatch(getAllCohortUsers())
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingleCohort)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SingleCohort)
