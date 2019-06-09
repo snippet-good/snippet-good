@@ -4,12 +4,12 @@ import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import { getFilteredStretchesOfAdmin } from './helperfunctions'
-import ScheduledCohortStretchesList from '../ScheduledCohortStretchesList'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
+import SingleStretchCard from './SingleStretchCard'
+
 import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import styles from './styles'
 
 const AdminHomeView = ({
   userId,
@@ -33,64 +33,57 @@ const AdminHomeView = ({
 
   return (
     <div>
-      <h2>Your Home Page</h2>
+      <Button
+        color="primary"
+        variant="contained"
+        size="small"
+        onClick={() => history.push('/admin/stretches/create')}
+      >
+        Create new stretch
+      </Button>
+      <Typography variant="subtitle1" style={styles.openStretchesHeading}>
+        Your Open Stretches
+      </Typography>
 
-      <Grid container>
-        <Grid item xs={9}>
-          {openStretches.length && (
-            <ul>
-              {openStretches.map(stretch => {
-                const {
-                  title,
-                  id,
-                  minutes,
-                  category,
-                  cohortName,
-                  cohortSize,
-                  completedStretches
-                } = stretch
-                return (
-                  <Card key={id}>
-                    <CardContent>
-                      <Typography
-                        component="h3"
-                        onClick={() => history.push(`/cohortstretch/${id}`)}
-                      >
-                        {title}
-                      </Typography>
-                      <Typography variant="body2" component="p">
-                        {cohortName}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="p"
-                      >{`${minutes}:00`}</Typography>
-                      <Typography variant="body2" component="p">
-                        {category}
-                      </Typography>
-                      <Typography variant="body2" component="p">
-                        {`${completedStretches} out of ${cohortSize} students are done`}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </ul>
-          )}
-
-          <Button onClick={() => setShowScheduled(!showScheduled)}>
-            Open scheduled stretch
-          </Button>
-          {showScheduled && (
-            <ScheduledCohortStretchesList
-              scheduledCohortStretches={scheduledStretches}
-            />
-          )}
-          <Button onClick={() => history.push('/admin/stretches/create')}>
-            Add new stretch
-          </Button>
+      {openStretches.length ? (
+        <Grid container style={styles.stretchesGrid}>
+          {openStretches.map(stretch => {
+            return (
+              <Grid item xs={5} key={stretch.id}>
+                <SingleStretchCard stretch={stretch} status="open" />
+              </Grid>
+            )
+          })}
         </Grid>
-      </Grid>
+      ) : (
+        <Typography variant="body1">
+          You have no stretches currently open
+        </Typography>
+      )}
+
+      <Typography
+        variant="subtitle1"
+        onClick={() => setShowScheduled(!showScheduled)}
+      >
+        Open a Scheduled Stretch
+      </Typography>
+      {showScheduled && !scheduledStretches.length && (
+        <Typography variant="body1">
+          You have no stretches currently scheduled
+        </Typography>
+      )}
+      {showScheduled && scheduledStretches.length && (
+        <Grid container style={styles.stretchesGrid}>
+          {openStretches.map(stretch => {
+            console.log(stretch)
+            return (
+              <Grid item xs={5} key={stretch.id}>
+                <SingleStretchCard stretch={stretch} status="scheduled" />
+              </Grid>
+            )
+          })}
+        </Grid>
+      )}
     </div>
   )
 }
