@@ -31,11 +31,10 @@ export const getAllStretches = () => dispatch => {
 
 // Redux thunk for creating a new stretch
 export const createStretch = newStretch => dispatch => {
-  return axios
-    .post('/api/stretches', newStretch)
-    .then(res =>
-      console.log('Axios POST to /api/stretches was successful:', res.data)
-    )
+  return axios.post('/api/stretches', newStretch).then(res => {
+    console.log('Axios POST to /api/stretches was successful:', res.data)
+    dispatch(addStretch(res.data))
+  })
 }
 
 export const updateStretch = updatedStretch => dispatch => {
@@ -44,6 +43,7 @@ export const updateStretch = updatedStretch => dispatch => {
     .then(res => {
       console.log('Axios PUT to /api/stretches was successful:', res.data)
       dispatch(replaceStretch(res.data))
+      return res.data
     })
 }
 

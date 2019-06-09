@@ -16,7 +16,7 @@ const getCohortStretches = cohortStretches => ({
   cohortStretches
 })
 
-const createCohortStretch = newCohortStretch => ({
+const addCohortStretch = newCohortStretch => ({
   type: CREATE_COHORT_STRETCH,
   newCohortStretch
 })
@@ -35,6 +35,14 @@ export const getAllCohortStretches = () => dispatch => {
   return axios
     .get('/api/cohort-stretches')
     .then(res => dispatch(getCohortStretches(res.data)))
+}
+
+export const createCohortStretch = data => {
+  return dispatch => {
+    return axios
+      .post('/api/cohort-stretches', data)
+      .then(res => dispatch(addCohortStretch(res.data)))
+  }
 }
 
 export const updateCohortStretchThunk = (

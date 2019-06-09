@@ -24,17 +24,30 @@ class SingleStretch extends Component {
     title: 'Untitled',
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
-    codePrompt: 'This is an example code prompt.',
-    difficulty: 3
+    codePrompt: '// This is an example code prompt.',
+    difficulty: 3,
+    isLoaded: false
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
   changeMode = mode => this.setState({ mode })
 
+  setStretchDetails = () => {
+    const { match, mode, stretches } = this.props
+
+    let attributes
+    if (match.params.id && stretches)
+      attributes = stretches.find(s => s.id === match.params.id)
+
+    this.setState({ mode, ...attributes })
+  }
+
   handleChange = event => {
     const { name, value } = event.target
     this.setState({ [name]: value })
   }
+
+  handleCodeChange = codePrompt => this.setState({ codePrompt })
 
   // This function is called when SingleStretch is in 'create' or 'update' mode.
   handleSubmit = event => {
@@ -46,32 +59,44 @@ class SingleStretch extends Component {
     if (this.state.mode === 'update') {
       this.props
         .updateStretch({ ...data, id: this.state.id })
-        .then(() => this.setState({ mode: 'read' }))
+        .then(updatedStretch => {
+          const { title, categoryId, categoryName } = updatedStretch
+          const { difficulty, textPrompt, codePrompt } = updatedStretch
+
+          this.setState({
+            mode: 'read',
+            title,
+            categoryId,
+            categoryName,
+            difficulty,
+            textPrompt,
+            codePrompt
+          })
+        })
     }
 
     if (this.state.mode === 'create') {
-      this.props.createStretch({ ...data, authorId: this.props.userDetails.id })
-      // Redirect to somewhere
+      this.props
+        .createStretch({ ...data, authorId: this.props.userDetails.id })
+        .then(() => this.props.history.push('/admin/stretches'))
     }
   }
 
   componentDidMount() {
-    const {
-      match: { params },
-      mode,
-      stretches
-    } = this.props
+    this.setStretchDetails()
+  }
 
-    let attributes
-    if (params.id && stretches)
-      attributes = stretches.find(s => s.id === params.id)
-
-    this.setState({ mode, ...attributes })
+  componentDidUpdate(prevProps) {
+    if (!this.state.isLoaded) {
+      this.setStretchDetails()
+      this.setState({ isLoaded: true })
+    }
   }
 
   render() {
     const { state } = this
-    const { handleSubmit, handleChange, changeMode } = this
+    const { handleSubmit, changeMode } = this
+    const { handleChange, handleCodeChange } = this
     const { mode } = state
 
     return (
@@ -113,7 +138,11 @@ class SingleStretch extends Component {
             </Grid>
 
             <Grid item xs={12}>
-              <CodeEditor style={{ width: '100%' }} />
+              <CodeEditor
+                code={state.codePrompt}
+                style={{ width: '100%' }}
+                handleCodeChange={handleCodeChange}
+              />
             </Grid>
           </Grid>
         </div>
