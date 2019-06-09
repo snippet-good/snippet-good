@@ -86,8 +86,9 @@ class SingleStretch extends Component {
     this.setStretchDetails()
   }
 
-  componentDidUpdate() {
-    if (!this.state.isLoaded) {
+  componentDidUpdate(prevProps) {
+    const { stretches } = this.props
+    if (prevProps.stretches !== stretches && stretches.length) {
       this.setStretchDetails()
       this.setState({ isLoaded: true })
     }
