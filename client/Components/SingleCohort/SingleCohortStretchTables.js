@@ -12,10 +12,6 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
 const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
-  useEffect(() => {
-    getAllCohortStretches()
-  })
-
   const thisCohortStretches =
     cohortStretches.filter(
       cohortStretch => cohortStretch.cohortId === cohort.id
@@ -25,9 +21,12 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
       cohortStretches => cohortStretches.status === 'open'
     ) || []
   const closedCohortStretches =
-    thisCohortStretches.filter(
-      cohortStretches => cohortStretches.status === 'closed'
-    ) || []
+    thisCohortStretches
+      .filter(cohortStretches => cohortStretches.status === 'closed')
+      .map(cs => ({
+        ...cs,
+        stretch: stretches.find(s => s.id === cs.stretchId)
+      })) || []
   const scheduledCohortStretches =
     thisCohortStretches.filter(
       cohortStretches => cohortStretches.status === 'scheduled'
@@ -36,10 +35,6 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
   const openCohortStretchIds = openCohortStretches.map(
     stretch => stretch.stretchId
   )
-  const closedStretches = closedCohortStretches.map(cs => ({
-    ...cs,
-    stretch: stretches.find(s => s.id == cs.stretchId)
-  }))
   const scheduledCohortStretchIds = scheduledCohortStretches.map(
     stretch => stretch.stretchId
   )
@@ -142,7 +137,7 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {closedStretches.map(cs => {
+          {closedCohortStretches.map(cs => {
             const { id, stretch } = cs
             return (
               <TableRow key={id}>
@@ -173,21 +168,9 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
   )
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getAllCohortStretches: () => dispatch(getAllCohortStretches())
-  }
-}
+const mapStateToProps = ({ cohortStretches, stretches }) => ({
+  cohortStretches,
+  stretches
+})
 
-const mapStateToProps = state => {
-  const { cohortStretches, stretches } = state
-  return {
-    cohortStretches,
-    stretches
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SingleCohortStretchTables)
+export default connect(mapStateToProps)(SingleCohortStretchTables)

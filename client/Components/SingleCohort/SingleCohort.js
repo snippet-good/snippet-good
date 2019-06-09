@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 
@@ -7,7 +7,6 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { makeStyles } from '@material-ui/core/styles'
 import SingleCohortStretchTables from './SingleCohortStretchTables'
-import { getAllCohortUsers } from '../../store/cohort-users/actions'
 import { CohortStudents } from './CohortStudents'
 
 const useStyles = makeStyles(theme => ({
@@ -17,21 +16,16 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const SingleCohort = ({ cohort, cohortStudents, cohortUsers, users }) => {
+const SingleCohort = ({ cohort, cohortStudents }) => {
   const { root } = useStyles()
   const { name } = cohort
   const [value, setValue] = useState('stretches')
-
-  useEffect(() => {
-    getAllCohortUsers()
-  })
 
   return (
     <div className={root}>
       <Typography
         variant="h5"
         gutterBottom
-        onClick={() => (modalStatus = true)}
       >
         {name}
       </Typography>
@@ -63,13 +57,8 @@ const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
   cohort: cohorts.find(cohort => cohort.id === params.id) || {}
 })
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getAllCohortUsers: () => dispatch(getAllCohortUsers())
-  }
-}
+
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(SingleCohort)
