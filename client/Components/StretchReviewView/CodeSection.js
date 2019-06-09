@@ -90,6 +90,7 @@ class CodeSection extends Component {
         <Grid container>
           <Grid item xs={6}>
             <CodeEditor
+              codeTargetName="code"
               code={showSavedCode ? solution : code}
               showSavedCode={showSavedCode}
               editorTheme={editorTheme}

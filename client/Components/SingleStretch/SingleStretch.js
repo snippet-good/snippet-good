@@ -25,7 +25,8 @@ class SingleStretch extends Component {
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
     codePrompt: 'This is an example code prompt.',
-    difficulty: 3
+    difficulty: 3,
+    showSavedCode:true
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
@@ -66,7 +67,7 @@ class SingleStretch extends Component {
     if (params.id && stretches)
       attributes = stretches.find(s => s.id === params.id)
 
-    this.setState({ mode, ...attributes })
+    this.setState({ mode, ...attributes }, () => console.log(this.state))
   }
 
   render() {
@@ -114,6 +115,8 @@ class SingleStretch extends Component {
 
             <Grid item xs={12}>
               <CodeEditor
+                code={state.codePrompt}
+                showSavedCode={true}
                 codeTargetName="codePrompt"
                 handleCodeChange={handleChange}
               />

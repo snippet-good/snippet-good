@@ -44,6 +44,7 @@ const configEditor = function(
       handleCodeChange({
         target: { name: codeTargetName, value: editorSession.getValue() }
       })
+      handleCodeChange({ target: 'showSavedCode', value: false })
     } else {
       this.setState({ [codeTargetName]: editorSession.getValue() })
       this.props.setStretchAnswer(this.state.code)

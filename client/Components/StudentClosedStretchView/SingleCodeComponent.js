@@ -55,6 +55,7 @@ class SingleCodeComponent extends Component {
       <Grid container>
         <Grid item xs={12}>
           <CodeEditor
+            codeTargetName="code"
             code={code}
             editorTheme={editorTheme}
             handleCodeChange={handleChange}

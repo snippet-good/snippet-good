@@ -25,6 +25,7 @@ class AceEditor extends Component {
     this.setState(
       curState => {
         const editor = ace.edit(curState.editorId)
+        console.log(code)
         if (code) editor.setValue(code)
         if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)
         return { ...curState, editor }
