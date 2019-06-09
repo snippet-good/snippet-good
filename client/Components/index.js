@@ -1,4 +1,3 @@
-import Home from './Home'
 import Login from './Login'
 import AdminHomeView from './AdminHomeView'
 import SingleCohort from './SingleCohort'
@@ -11,7 +10,6 @@ import StudentController from './StudentController'
 import FrameworkHOC from './FrameworkHOC'
 
 export {
-  Home,
   Login,
   AdminHomeView,
   SingleCohort,
