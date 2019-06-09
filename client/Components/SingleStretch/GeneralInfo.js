@@ -8,14 +8,14 @@ import Grid from '@material-ui/core/Grid'
 
 import InputLabel from '@material-ui/core/InputLabel'
 import TextField from '@material-ui/core/TextField'
-import CategorySelect from '../StretchForm/CategorySelect'
+import CategorySelect from '../_shared/CategorySelect'
 import Slider from '@material-ui/lab/Slider'
 
 import { GeneralInfoStyles as styles } from './styles'
 
 const GeneralInfo = props => {
   const { attributes, handleChange } = props
-  const { mode, title, categoryName, difficulty } = attributes
+  const { mode, title, categoryName, categoryId, difficulty } = attributes
 
   const handleDifficultyChange = (event, value) =>
     handleChange({ target: { name: 'difficulty', value } })
@@ -47,12 +47,12 @@ const GeneralInfo = props => {
 
               {/* Category select/display */}
               <div>
-                <InputLabel shrink>Category</InputLabel>
+                {mode === 'read' && <InputLabel shrink>Category</InputLabel>}
                 {mode === 'read' ? (
                   <Typography variant="subtitle2">{categoryName}</Typography>
                 ) : (
                   <CategorySelect
-                    attributes={attributes}
+                    categoryId={categoryId}
                     handleChange={handleChange}
                   />
                 )}

@@ -11,9 +11,7 @@ const {
 } = require('./models')
 
 const {
-  CohortStretchMethods,
   UserMethods,
-  StretchMethods,
   CohortMethods,
   StretchAnswerMethods,
   CommentMethods
@@ -67,16 +65,11 @@ function initDb(force = false) {
 }
 
 User.getStudentsOfSingleAdmin = UserMethods.getStudentsOfSingleAdmin
-
-CohortStretch.getAllCohortStretches = CohortStretchMethods.getAllCohortStretches
 Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
 StretchAnswer.getAnswersOfStudentsOfSingleAdmin =
   StretchAnswerMethods.getAnswersOfStudentsOfSingleAdmin
 Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
 Comment.createNewComment = CommentMethods.createNewComment
-
-// Leaving this here in case of future errors.
-// Stretch.getAllStretches = StretchMethods.getAllStretches
 
 module.exports = {
   initDb,
