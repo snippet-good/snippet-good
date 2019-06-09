@@ -21,12 +21,19 @@ class AceEditor extends Component {
   }
 
   componentDidMount() {
-    const { code, editorTheme, handleCodeChange, codeTargetName } = this.props
+    const {
+      code,
+      editorTheme,
+      handleCodeChange,
+      codeTargetName,
+      readOnly,
+      initalCode
+    } = this.props
     this.setState(
       curState => {
         const editor = ace.edit(curState.editorId)
-        console.log(code)
-        if (code) editor.setValue(code)
+        console.log('in didmount editor', this.props)
+        if (initalCode) editor.setValue(initalCode)
         if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)
         return { ...curState, editor }
       },
@@ -39,22 +46,27 @@ class AceEditor extends Component {
           editorTheme,
           false,
           handleCodeChange,
-          codeTargetName
+          codeTargetName,
+          readOnly
         )
       }
     )
   }
 
   componentDidUpdate(prevProps) {
-    const { code, showSavedCode } = this.props
-    if (showSavedCode && prevProps.code !== code) {
-      console.log('uodate')
-      console.log(prevProps.code)
-      console.log(this.props.code)
-      this.state.editor.setValue(code)
+    const {
+      editorTheme,
+      readOnly,
+      initialCode
+    } = this.props
+    if (prevProps.initialCode !== initialCode) {
+      this.state.editor.setValue(initialCode)
     }
-    if (prevProps.editorTheme !== this.props.editorTheme) {
-      this.state.editor.setTheme(`ace/theme/${this.props.editorTheme}`)
+    if (prevProps.editorTheme !== editorTheme) {
+      this.state.editor.setTheme(`ace/theme/${editorTheme}`)
+    }
+    if (prevProps.readOnly !== readOnly) {
+      this.state.editor.setReadOnly(!!readOnly)
     }
   }
 

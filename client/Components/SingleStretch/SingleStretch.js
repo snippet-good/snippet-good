@@ -25,8 +25,7 @@ class SingleStretch extends Component {
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
     codePrompt: 'This is an example code prompt.',
-    difficulty: 3,
-    showSavedCode:true
+    difficulty: 3
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
@@ -57,17 +56,16 @@ class SingleStretch extends Component {
   }
 
   componentDidMount() {
-    const {
-      match: { params },
-      mode,
-      stretches
-    } = this.props
+    const { mode, attributes } = this.props
 
-    let attributes
-    if (params.id && stretches)
-      attributes = stretches.find(s => s.id === params.id)
+    this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
+  }
 
-    this.setState({ mode, ...attributes }, () => console.log(this.state))
+  componentDidUpdate(prevProps) {
+    const { attributes } = this.props
+    if (prevProps.attributes !== attributes && Object.keys(attributes).length) {
+      this.setState({ ...attributes, initialCode: attributes.codePrompt })
+    }
   }
 
   render() {
@@ -115,10 +113,11 @@ class SingleStretch extends Component {
 
             <Grid item xs={12}>
               <CodeEditor
+                initialCode={state.initialCode}
                 code={state.codePrompt}
-                showSavedCode={true}
                 codeTargetName="codePrompt"
                 handleCodeChange={handleChange}
+                readOnly={mode === 'read'}
               />
             </Grid>
           </Grid>
@@ -133,10 +132,12 @@ SingleStretch.defaultProps = {
   stretch: {}
 }
 
-const mapStateToProps = state => ({
-  userDetails: state.userDetails,
-  stretches: state.stretches
-})
+const mapStateToProps = ({ userDetails, stretches }, { match: { params } }) => {
+  let attributes = {}
+  if (params.id && stretches.length)
+    attributes = stretches.find(s => s.id === params.id)
+  return { userDetails, attributes }
+}
 
 const mapDispatchToProps = dispatch => ({
   createStretch: newStretch => dispatch(createStretch(newStretch)),

@@ -23,7 +23,8 @@ const configEditor = function(
   editorTheme,
   themeFromState,
   handleCodeChange,
-  codeTargetName
+  codeTargetName,
+  readOnly
 ) {
   if (themeFromState) editor.setTheme(`ace/theme/${editorTheme}`)
   editorSession.setMode('ace/mode/javascript')
@@ -36,15 +37,14 @@ const configEditor = function(
     fontSize: 18,
     enableSnippets: true
   })
+  editor.setReadOnly(!!readOnly)
 
   editorSession.on('change', () => {
     addClosingCurlyBracket(editor, editorSession)
     if (typeof handleCodeChange === 'function') {
-      console.log('in here')
       handleCodeChange({
         target: { name: codeTargetName, value: editorSession.getValue() }
       })
-      handleCodeChange({ target: 'showSavedCode', value: false })
     } else {
       this.setState({ [codeTargetName]: editorSession.getValue() })
       this.props.setStretchAnswer(this.state.code)
