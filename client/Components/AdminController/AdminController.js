@@ -5,6 +5,7 @@ import SingleStretch from '../SingleStretch/SingleStretch'
 import Sidebar from '../Sidebar'
 import FrameworkHOC from '../FrameworkHOC'
 import StretchReviewView from '../StretchReviewView'
+import StudentClosedStretchView from '../StudentClosedStretchView'
 
 class AdminController extends Component {
   render() {
@@ -35,6 +36,13 @@ class AdminController extends Component {
           exact
           path="/admin/stretchReview/:cohortStretchId"
           component={StretchReviewView}
+        />
+
+        {/* path to go to view student's stretchAnswer to see their oslution, comments*/}
+        <Route
+          path="/admin/stretchAnswer/:stretchAnswerId"
+          exact
+          component={StudentClosedStretchView}
         />
       </div>
     )
