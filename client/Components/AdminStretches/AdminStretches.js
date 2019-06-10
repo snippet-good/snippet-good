@@ -3,8 +3,6 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getAllCategories } from '../../store/categories/actions'
 import { getAllStretches } from '../../store/stretches/actions'
-import { searchStretches } from '../../store/stretches/actions'
-import { filterStretches } from '../../store/stretches/actions'
 
 import Table from '@material-ui/core/Table'
 import TableHead from '@material-ui/core/TableHead'
@@ -20,16 +18,23 @@ import Typography from '@material-ui/core/Typography'
 import StretchScheduler from './StretchScheduler'
 
 class AdminStretches extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       searchTerm: '',
       filterCategoryNames: [],
       selectedAuthor: '',
+      currentStretches: [],
+
       // The below two keys are for the StretchScheduler modal.
       modalIsOpen: false,
       selectedStretch: {}
     }
+  }
+
+  componentDidMount = () => {
+    this.props.fetchCategories()
+    this.props.fetchStretches()
   }
 
   //enter search term
@@ -41,7 +46,7 @@ class AdminStretches extends Component {
   clearSearch = evt => {
     evt.preventDefault()
     const { fetchStretches } = this.props
-    this.setState({ searchTerm: '' })
+    this.setState({ searchTerm: '', currentStretches: [] })
     fetchStretches()
   }
 
@@ -49,9 +54,10 @@ class AdminStretches extends Component {
   applySearch = evt => {
     evt.preventDefault()
     const { searchTerm } = this.state
-    const { searchStretches } = this.props
-    searchStretches(searchTerm)
-    console.log(searchTerm)
+    const searchStretches = this.props.stretches.filter(stretch =>
+      stretch.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    this.setState({ currentStretches: searchStretches })
   }
 
   //filter by category tick box
@@ -75,10 +81,10 @@ class AdminStretches extends Component {
     if (filterCategoryNames.length === 0) {
       fetchStretches()
     } else {
-      const newStretches = stretches.filter(stretch =>
+      const catStretches = stretches.filter(stretch =>
         filterCategoryNames.includes(stretch.categoryName)
       )
-      filterStretches(newStretches)
+      this.setState({ currentStretches: catStretches })
     }
   }
 
@@ -89,7 +95,7 @@ class AdminStretches extends Component {
     document.querySelectorAll('input[type=checkbox]').forEach(el => {
       el.checked = false
     })
-    this.setState({ filterCategoryNames: [] })
+    this.setState({ filterCategoryNames: [], currentStretches: [] })
     fetchStretches()
   }
 
@@ -103,17 +109,17 @@ class AdminStretches extends Component {
     evt.preventDefault()
     const { selectedAuthor } = this.state
     let { stretches, filterStretches } = this.props
-    const newStretches = stretches.filter(
+    const authorStretches = stretches.filter(
       stretch => stretch.authorName === selectedAuthor
     )
-    filterStretches(newStretches)
+    this.setState({ currentStretches: authorStretches })
   }
 
   // clear filter
   clearAuthorFilter = evt => {
     evt.preventDefault()
     const { fetchStretches } = this.props
-    this.setState({ selectedAuthor: '' })
+    this.setState({ selectedAuthor: '', currentStretches: [] })
     fetchStretches()
   }
 
@@ -125,6 +131,7 @@ class AdminStretches extends Component {
   render() {
     const { searchTerm } = this.state
     const { stretches } = this.props
+    const currentStretches = this.state.currentStretches.length > 0 ? this.state.currentStretches : stretches
 
     const allCategories = []
     stretches.map(stretch => allCategories.push(stretch.categoryName))
@@ -208,7 +215,6 @@ class AdminStretches extends Component {
             <Typography variant="h6">Filter by Author:</Typography>
             <form onSubmit={this.applyAuthorFilter}>
               <select
-                value={this.state.selectedAuthor}
                 onChange={this.selectAuthorFilter}
               >
                 {authors.map((auth, index) => (
@@ -233,8 +239,6 @@ class AdminStretches extends Component {
           </div>
         </Card>
 
-        {/* TODO: add filter on category and cohort */}
-
         <div>
           <Link to="/admin/stretches/create">
             <Button variant="contained" color="primary">
@@ -255,7 +259,7 @@ class AdminStretches extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {stretches.map(stretch => {
+              {currentStretches.map(stretch => {
                 return (
                   <TableRow key={stretch.id}>
                     <TableCell>
@@ -297,8 +301,6 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchCategories: () => dispatch(getAllCategories()),
     fetchStretches: () => dispatch(getAllStretches()),
-    searchStretches: searchTerm => dispatch(searchStretches(searchTerm)),
-    filterStretches: newStretches => dispatch(filterStretches(newStretches))
   }
 }
 export default connect(
