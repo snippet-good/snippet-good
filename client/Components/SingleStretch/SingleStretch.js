@@ -26,6 +26,7 @@ class SingleStretch extends Component {
     textPrompt: 'This is an example text prompt.',
     codePrompt: '// This is an example code prompt.',
     difficulty: 3,
+    minutes: '',
     isLoaded: false
   }
 
