@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
+import { checkIfUserLoggedInThunk } from '../../store/auth/actions'
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
@@ -18,7 +19,17 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
   const Framework = props => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
-    const { userDetails, history, loadAdminRelatedData } = props
+    const {
+      userDetails,
+      history,
+      loadAdminRelatedData,
+      checkIfUserLoggedIn
+    } = props
+    useEffect(() => {
+      if (!userDetails.id) {
+        checkIfUserLoggedIn(history)
+      }
+    })
     useEffect(() => {
       if (userDetails.id) {
         loadAdminRelatedData(userDetails.id)
@@ -90,6 +101,8 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
 
   const mapDispatchToProps = dispatch => {
     return {
+      checkIfUserLoggedIn: history =>
+        dispatch(checkIfUserLoggedInThunk(history)),
       loadAdminRelatedData: adminId => {
         return Promise.all([
           dispatch(getCohortsOfAdminThunk(adminId)),

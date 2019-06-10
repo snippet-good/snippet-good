@@ -4,7 +4,6 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 
 // Redux imports
 import { connect } from 'react-redux'
-import { checkIfUserLoggedInThunk } from '../store/auth/actions'
 
 import { getAllCohorts } from '../store/cohorts/actions'
 import { getAllCohortUsers } from '../store/cohort-users/actions'
@@ -18,7 +17,6 @@ import { Login, AdminController, StudentController } from './index'
 
 class App extends Component {
   componentDidMount() {
-    this.props.checkIfUserLoggedIn()
     this.props.load()
   }
 
@@ -37,8 +35,6 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
-
     load: () => {
       dispatch(getAllCohorts())
       dispatch(getAllCohortUsers())

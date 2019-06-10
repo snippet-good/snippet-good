@@ -27,12 +27,13 @@ export const login = credentials => {
   }
 }
 
-export const checkIfUserLoggedInThunk = () => {
+export const checkIfUserLoggedInThunk = history => {
   return dispatch => {
     return axios
       .get('/api/auth')
       .then(res => res.data)
       .then(user => dispatch(getUser(user)))
+      .catch(() => history.push('/'))
   }
 }
 
