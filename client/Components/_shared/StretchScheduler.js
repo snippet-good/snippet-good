@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
 
 import { connect } from 'react-redux'
-import { createCohortStretch } from '../../store/cohort-stretches/actions'
+import {
+  createCohortStretch,
+  updateCohortStretchThunk
+} from '../../store/cohort-stretches/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Modal from '@material-ui/core/Modal'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 
-import DateAndTimePicker from '../_shared/DateAndTimePicker'
-import CohortSelect from '../_shared/CohortSelect'
+import DateAndTimePicker from './DateAndTimePicker'
+import CohortSelect from './CohortSelect'
 
 const StretchScheduler = props => {
-  const { attributes, open, onClose } = props
+  const { attributes, open, onClose, mode } = props
   const { id } = attributes
 
   const [scheduledDate, setScheduledDate] = useState(new Date())
@@ -20,11 +23,11 @@ const StretchScheduler = props => {
 
   const handleCohortIdChange = event => setSelectedCohortId(event.target.value)
 
-  const handleSubmit = event => {
-    event.preventDefault()
-
-    props
-      .scheduleStretch({
+  const updateData = () => {
+    if (mode === 'update') {
+      return props.updateScheduledDate(id, { scheduledDate })
+    } else {
+      return props.scheduleStretch({
         status: 'scheduled',
         scheduledDate,
         minutes: 5,
@@ -32,10 +35,16 @@ const StretchScheduler = props => {
         stretchId: id,
         cohortId: selectedCohortId
       })
-      .then(() => {
-        onClose() // Close modal
-        // Display a message saying 'Stretch scheduled successfully!'
-      })
+    }
+  }
+
+  const handleSubmit = event => {
+    event.preventDefault()
+
+    updateData().then(() => {
+      onClose() // Close modal
+      // Display a message saying 'Stretch scheduled successfully!'
+    })
   }
 
   return (
@@ -59,16 +68,16 @@ const StretchScheduler = props => {
             </Grid>
 
             <Grid item xs={12} style={{ height: '20px' }} />
-
-            <Grid item xs={12}>
-              <CohortSelect
-                cohortId={selectedCohortId}
-                handleChange={handleCohortIdChange}
-              />
-            </Grid>
+            {mode === 'create' && (
+              <Grid item xs={12}>
+                <CohortSelect
+                  cohortId={selectedCohortId}
+                  handleChange={handleCohortIdChange}
+                />
+              </Grid>
+            )}
 
             <Grid item xs={12} style={{ height: '20px' }} />
-
             <Grid item xs={12} style={styles.center}>
               <Button type="submit" variant="contained" color="primary">
                 Schedule
@@ -96,7 +105,9 @@ const styles = {
 const mapStateToProps = ({ cohorts }) => ({ cohorts })
 
 const mapDispatchToProps = dispatch => ({
-  scheduleStretch: data => dispatch(createCohortStretch(data))
+  scheduleStretch: data => dispatch(createCohortStretch(data)),
+  updateScheduledDate: (cohortStretchId, updatedFields) =>
+    dispatch(updateCohortStretchThunk(cohortStretchId, updatedFields))
 })
 
 export default connect(

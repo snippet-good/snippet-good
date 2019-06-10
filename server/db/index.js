@@ -32,9 +32,9 @@ function initDb(force = false) {
     Comment.belongsTo(User)
     User.hasMany(Comment)
 
-    // StretchAnswer belongs to CohortUser
-    StretchAnswer.belongsTo(CohortUser)
-    CohortUser.hasMany(StretchAnswer)
+    // StretchAnswer belongs to User
+    StretchAnswer.belongsTo(User)
+    User.hasMany(StretchAnswer)
 
     // Stretch belongs to User
     Stretch.belongsTo(User, { as: 'author' })
@@ -52,9 +52,9 @@ function initDb(force = false) {
     Stretch.belongsTo(Category)
     Category.hasMany(Stretch)
 
-    //StretchAnswer belongs to Stretch
-    StretchAnswer.belongsTo(Stretch)
-    Stretch.hasMany(StretchAnswer)
+    //StretchAnswer belongs to CohortStretch
+    StretchAnswer.belongsTo(CohortStretch)
+    CohortStretch.hasMany(StretchAnswer)
 
     //Comment belongs to StretchAnswer
     Comment.belongsTo(StretchAnswer)
