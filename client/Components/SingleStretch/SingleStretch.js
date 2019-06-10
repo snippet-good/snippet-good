@@ -27,6 +27,7 @@ class SingleStretch extends Component {
     codePrompt: '// This is an example code prompt.',
     difficulty: 3,
     minutes: '',
+    authorId: '',
     isLoaded: false
   }
 
@@ -99,13 +100,17 @@ class SingleStretch extends Component {
     const { state } = this
     const { handleSubmit, changeMode } = this
     const { handleChange } = this
-    const { mode } = state
+    const { mode, authorId } = state
     return (
       <form onSubmit={handleSubmit}>
         <div style={styles.root}>
           <Grid container spacing={2} style={styles.sub}>
             <Grid item xs={12}>
-              <Controls mode={mode} changeMode={changeMode} />
+              <Controls
+                mode={mode}
+                changeMode={changeMode}
+                authorId={authorId}
+              />
             </Grid>
 
             <Grid item xs={12}>
