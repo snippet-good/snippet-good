@@ -10,12 +10,7 @@ const {
   CohortStretch
 } = require('./models')
 
-const {
-  UserMethods,
-  CohortMethods,
-  StretchAnswerMethods,
-  CommentMethods
-} = require('./methods')
+const { UserMethods, CohortMethods, CommentMethods } = require('./methods')
 
 function initDb(force = false) {
   return db.authenticate().then(() => {
@@ -66,8 +61,6 @@ function initDb(force = false) {
 
 User.getStudentsOfSingleAdmin = UserMethods.getStudentsOfSingleAdmin
 Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
-StretchAnswer.getAnswersOfStudentsOfSingleAdmin =
-  StretchAnswerMethods.getAnswersOfStudentsOfSingleAdmin
 Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
 Comment.createNewComment = CommentMethods.createNewComment
 

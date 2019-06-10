@@ -21,8 +21,13 @@ const useStyles = makeStyles(theme => ({
 
 function StretchListView(props) {
   const classes = useStyles()
-  function createOpenStretchData(id, title, categoryName, difficulty) {
-    return { id, title, categoryName, difficulty }
+  function createOpenStretchData(
+    cohortStretchId,
+    title,
+    categoryName,
+    difficulty
+  ) {
+    return { cohortStretchId, title, categoryName, difficulty }
   }
   function createSubmittedStretchData(
     stretchAnswerId,
@@ -33,20 +38,20 @@ function StretchListView(props) {
   ) {
     return { stretchAnswerId, title, isSolved, rating, stretchId }
   }
-
+  console.log(props)
   const rows = []
   if (props.openStretches) {
     for (let i = 0; i < props.openStretches.length; ++i) {
       rows.push(
         createOpenStretchData(
-          props.openStretches[i].id,
+          props.openStretches[i].cohortStretchId,
           props.openStretches[i].title,
           props.openStretches[i].categoryName,
           props.openStretches[i].difficulty
         )
       )
     }
-  } else {
+  } else if (props.submittedStretches) {
     for (let i = 0; i < props.submittedStretches.length; ++i) {
       rows.push(
         createSubmittedStretchData(
@@ -74,7 +79,9 @@ function StretchListView(props) {
             {rows.map((row, indx) => (
               <TableRow key={indx}>
                 <TableCell component="th" scope="row">
-                  <Link to={`/student/stretch/${row.id}`}>{row.title}</Link>
+                  <Link to={`/student/stretch/${row.cohortStretchId}`}>
+                    {row.title}
+                  </Link>
                 </TableCell>
                 <TableCell align="right">{row.categoryName}</TableCell>
                 <TableCell align="right">{row.difficulty}</TableCell>

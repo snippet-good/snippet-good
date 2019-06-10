@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
-import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
+import {
+  getStretchAnswersOfSingleAdminThunk,
+  getStretchAnswersOfStudentThunk
+} from '../../store/stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import {
   checkIfUserLoggedInThunk,
   logoutUserThunk
 } from '../../store/auth/actions'
+import { getStudentCohortUsersThunk } from '../../store/cohort-users/actions'
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
@@ -27,6 +31,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       userDetails,
       history,
       loadAdminRelatedData,
+      loadStudentRelatedData,
       checkIfUserLoggedIn,
       logoutUser
     } = props
@@ -36,8 +41,11 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       }
     })
     useEffect(() => {
-      if (userDetails.id) {
+      if (userDetails.id && userDetails.isAdmin) {
         loadAdminRelatedData(userDetails.id)
+      }
+      if (userDetails.id && !userDetails.isAdmin) {
+        loadStudentRelatedData(userDetails.id)
       }
     }, [userDetails])
 
@@ -117,6 +125,12 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
           dispatch(getCohortsOfAdminThunk(adminId)),
           dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
           dispatch(getUsersOfSingleAdminThunk(adminId))
+        ])
+      },
+      loadStudentRelatedData: studentId => {
+        return Promise.all([
+          dispatch(getStretchAnswersOfStudentThunk(studentId)),
+          dispatch(getStudentCohortUsersThunk(studentId))
         ])
       }
     }

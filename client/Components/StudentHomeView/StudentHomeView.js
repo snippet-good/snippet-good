@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import StretchListView from './StretchListView'
 import { checkIfAllDataExists } from '../../utilityfunctions'
+import { getStretchAnswersOfStudentThunk } from '../../store/stretch-answers/actions'
+import { getStudentCohortUsersThunk } from '../../store/cohort-users/actions'
 
 const mapStateToProps = ({
   userDetails,
-  cohorts,
   cohortUsers,
   stretches,
   cohortStretches,
@@ -16,81 +16,75 @@ const mapStateToProps = ({
   if (
     !checkIfAllDataExists(
       userDetails,
-      cohorts,
       cohortUsers,
       stretches,
       cohortStretches,
       stretchAnswers
     )
   )
-    return {}
-  const student = userDetails
-  const myCohortUser = cohortUsers.find(
-    cohortUser => cohortUser.userId === student.id
-  )
-  const myCohort = cohorts.reduce((acc, cohort) => {
-    for (let i = 0; i < cohortUsers.length; ++i) {
-      if (
-        cohortUsers[i].userId === student.id &&
-        cohortUsers[i].cohortId === cohort.id
-      ) {
-        acc.push(cohort)
+    return { userDetails }
+  const studentCohorts = cohortUsers.map(cu => cu.cohortId)
+
+  const openStretches = cohortStretches
+    .filter(cs => studentCohorts.includes(cs.cohortId) && cs.status === 'open')
+    .map(cs => {
+      const stretch = stretches.find(s => s.id === cs.stretchId)
+      const { id, ...stretchFields } = stretch
+      const { allowAnswersToBeRun } = cs
+      return {
+        ...stretchFields,
+        stretchId: id,
+        cohortStretchId: cs.id,
+        allowAnswersToBeRun
       }
-    }
-    return acc
-  }, [])
-  const myStretches = stretches.reduce(
-    (acc, stretch) => {
-      for (let i = 0; i < cohortStretches.length; ++i) {
-        if (
-          cohortStretches[i].stretchId === stretch.id &&
-          cohortStretches[i].cohortId === myCohort[0].id
-        ) {
-          if (cohortStretches[i].status === 'open') {
-            acc.openStretches.push(stretch)
-          } else {
-            const myStretchAnswer = stretchAnswers.find(
-              stretchAnswer =>
-                stretchAnswer.cohortuserId === myCohortUser.id &&
-                stretchAnswer.stretchId === stretch.id
-            )
-            if (myStretchAnswer) {
-              myStretchAnswer.title = stretch.title
-              acc.submittedStretches.push(myStretchAnswer)
-            }
-          }
-        }
-      }
-      return acc
-    },
-    { openStretches: [], submittedStretches: [] }
-  )
-  const { openStretches, submittedStretches } = myStretches
+    })
+
+  const submittedStretches = stretchAnswers.map(sa => {
+    const { title } = stretches.find(s => s.id === sa.stretchId)
+    return { ...sa, title }
+  })
+
   return {
     openStretches,
-    submittedStretches
+    submittedStretches,
+    userDetails
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loadStudentRelatedData: studentId => {
+      return Promise.all([
+        dispatch(getStretchAnswersOfStudentThunk(studentId)),
+        dispatch(getStudentCohortUsersThunk(studentId))
+      ])
+    }
+  }
+}
+
+const useStyles = makeStyles(theme => ({
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3)
+  }
+}))
 
 const StudentHomeView = ({
   openStretches,
   submittedStretches,
   match: {
     params: { status }
-  }
+  },
+  loadStudentRelatedData,
+  userDetails
 }) => {
-  if (!openStretches) return <div>You have no open or submitted stretches</div>
-
-  const useStyles = makeStyles(theme => ({
-    toolbar: theme.mixins.toolbar,
-    content: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-      padding: theme.spacing(3)
-    }
-  }))
-
   const classes = useStyles()
+  /*useEffect(() => {
+    if (userDetails.id) {
+      loadStudentRelatedData(userDetails.id)
+    }
+  }, [userDetails])*/
 
   return (
     <main className={classes.content}>
@@ -99,10 +93,13 @@ const StudentHomeView = ({
       ) : status === 'submitted' ? (
         <StretchListView submittedStretches={submittedStretches} />
       ) : (
-        <Redirect to="/student/stretches/submitted" />
+        <div />
       )}
     </main>
   )
 }
 
-export default connect(mapStateToProps)(StudentHomeView)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StudentHomeView)

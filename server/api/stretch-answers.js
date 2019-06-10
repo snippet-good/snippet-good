@@ -17,9 +17,17 @@ router.get('/admin/:adminId', (req, res, next) => {
     .catch(next)
 })
 
+// GET all StrecthAnswers of studentId
+router.get('/student/:studentId', (req, res, next) => {
+  StretchAnswer.getAnswersOfStudent(req.params.studentId)
+    .then(stretchAnswers => res.json(stretchAnswers))
+    .catch(next)
+})
+
 // POST student StretchAnswer
 router.post('/create', (req, res, next) => {
   StretchAnswer.create(req.body.newStretchAnswer)
+    .then(stretchAnswer => stretchAnswer.addAssociations())
     .then(stretchAnswer => res.json(stretchAnswer))
     .catch(next)
 })
