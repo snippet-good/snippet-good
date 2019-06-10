@@ -64,7 +64,6 @@ const mapStateToProps = (
     }
   }
 ) => {
-  console.log('here')
   const stretchAnswer = stretchAnswers.find(sa => sa.id === stretchAnswerId)
   const data = [stretchAnswer, stretches, cohortStretches, cohorts, cohortUsers]
   const allStretchAnswerRelatedData = checkIfAllDataExists(...data)

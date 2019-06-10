@@ -9,7 +9,6 @@ import StudentClosedStretchView from '../StudentClosedStretchView'
 
 class AdminController extends Component {
   render() {
-    console.log('in render')
     return (
       <div>
         <Route path="/admin" exact component={AdminHomeView} />

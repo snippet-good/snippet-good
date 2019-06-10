@@ -55,7 +55,6 @@ const AdminHomeView = ({ openStretches, scheduledStretches, history }) => {
       {showScheduled && scheduledStretches.length ? (
         <Grid container style={styles.stretchesGrid}>
           {scheduledStretches.map(stretch => {
-            console.log(stretch)
             return (
               <Grid item xs={5} key={stretch.id}>
                 <SingleStretchCard stretch={stretch} status="scheduled" />

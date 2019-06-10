@@ -21,8 +21,6 @@ export const getStretchAnswerMetaData = (
       return { ...cs, cohortName: name }
     })
 
-  console.log(selectedCohortStretches)
-  console.log(cohortId)
   const { scheduledDate } = selectedCohortStretches.find(
     cs => cs.cohortId === cohortId
   )

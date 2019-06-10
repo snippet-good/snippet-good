@@ -8,7 +8,6 @@ const getAnswersOfStudentsOfSingleAdmin = function(adminId) {
   })
     .then(user => user.cohortusers.map(cu => cu.cohortId))
     .then(cohortIds => {
-      console.log(cohortIds)
       return StretchAnswer.findAll({
         include: [
           {
