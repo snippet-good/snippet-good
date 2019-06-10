@@ -59,11 +59,11 @@ const OpenStretchView = ({
       setCodePrompt(myStretch.codePrompt)
       setStretchAnswer(myStretch.codePrompt)
     }
-    if (myCohortStretch && !remainingTime) {
-      setDisplayMinutes(myCohortStretch.minutes - 1)
-      setRemainingTime(myCohortStretch.minutes * 60)
+    if (myStretch && !remainingTime) {
+      setDisplayMinutes(myStretch.minutes - 1)
+      setRemainingTime(myStretch.minutes * 60)
     }
-    if (myCohortStretch && remainingTime) {
+    if (myStretch && remainingTime) {
       const timer = setTimeout(() => {
         setRemainingTime(remainingTime - 1)
         if (displaySeconds > 0) {
@@ -77,7 +77,7 @@ const OpenStretchView = ({
         clearTimeout(timer)
         createStretchAnswer({
           body: stretchAnswer,
-          timeToSolve: myCohortStretch.minutes * 60 - remainingTime,
+          timeToSolve: myStretch.minutes * 60 - remainingTime,
           cohortstretchId: myCohortStretch.id,
           userId: userDetails.id
         })
@@ -119,7 +119,7 @@ const OpenStretchView = ({
         onClick={() =>
           createStretchAnswer({
             body: stretchAnswer,
-            timeToSolve: myCohortStretch.minutes * 60 - remainingTime,
+            timeToSolve: myStretch.minutes * 60 - remainingTime,
             cohortstretchId: myCohortStretch.id,
             userId: userDetails.id
           })

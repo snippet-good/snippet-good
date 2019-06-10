@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import StretchListView from './StretchListView'
 import { checkIfAllDataExists } from '../../utilityfunctions'
-import { getStretchAnswersOfStudentThunk } from '../../store/stretch-answers/actions'
-import { getStudentCohortUsersThunk } from '../../store/cohort-users/actions'
 
 const mapStateToProps = ({
   userDetails,
@@ -51,17 +49,6 @@ const mapStateToProps = ({
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    loadStudentRelatedData: studentId => {
-      return Promise.all([
-        dispatch(getStretchAnswersOfStudentThunk(studentId)),
-        dispatch(getStudentCohortUsersThunk(studentId))
-      ])
-    }
-  }
-}
-
 const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
@@ -75,16 +62,9 @@ const StudentHomeView = ({
   submittedStretches,
   match: {
     params: { status }
-  },
-  loadStudentRelatedData,
-  userDetails
+  }
 }) => {
   const classes = useStyles()
-  /*useEffect(() => {
-    if (userDetails.id) {
-      loadStudentRelatedData(userDetails.id)
-    }
-  }, [userDetails])*/
 
   return (
     <main className={classes.content}>
@@ -99,7 +79,4 @@ const StudentHomeView = ({
   )
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StudentHomeView)
+export default connect(mapStateToProps)(StudentHomeView)
