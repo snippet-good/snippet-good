@@ -21,10 +21,8 @@ const StudentClosedStretchView = ({
 }) => {
   const { textPromptSpacing, textPromptHeading } = useStyles()
   useEffect(() => {
-    if (stretchAnswerId) {
-      getCommentsOfStretchAnswer(stretchAnswerId)
-    }
-  }, [stretchAnswer])
+    getCommentsOfStretchAnswer(stretchAnswerId)
+  }, [stretchAnswerId])
   if (!allStretchAnswerRelatedData.stretchCode) {
     return <div>no stretch answer</div>
   }
