@@ -3,7 +3,10 @@ import { connect } from 'react-redux'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
-import { checkIfUserLoggedInThunk } from '../../store/auth/actions'
+import {
+  checkIfUserLoggedInThunk,
+  logoutUserThunk
+} from '../../store/auth/actions'
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
@@ -11,6 +14,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import useStyles from './styles'
@@ -23,7 +27,8 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       userDetails,
       history,
       loadAdminRelatedData,
-      checkIfUserLoggedIn
+      checkIfUserLoggedIn,
+      logoutUser
     } = props
     useEffect(() => {
       if (!userDetails.id) {
@@ -66,6 +71,9 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
             >
               Modern Stretches
             </Typography>
+            <Button color="inherit" onClick={() => logoutUser(history)}>
+              Logout
+            </Button>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -103,6 +111,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
     return {
       checkIfUserLoggedIn: history =>
         dispatch(checkIfUserLoggedInThunk(history)),
+      logoutUser: history => dispatch(logoutUserThunk(history)),
       loadAdminRelatedData: adminId => {
         return Promise.all([
           dispatch(getCohortsOfAdminThunk(adminId)),
