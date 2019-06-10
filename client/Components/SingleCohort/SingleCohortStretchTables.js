@@ -71,7 +71,7 @@ const SingleCohortStretchTables = ({
   // StretchScheduler modal event handlers
   const handleRescheduleModalClose = () => setRescheduleModalOpen(false)
   const handleRescheduleModalOpen = selectedCohortStretch => {
-    rescheduleModalOpen(true)
+    setRescheduleModalOpen(true)
     setCohortStretch(selectedCohortStretch)
   }
 

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import moment from 'moment'
 
 import { connect } from 'react-redux'
 import {
@@ -18,8 +17,6 @@ import CohortSelect from './CohortSelect'
 const StretchScheduler = props => {
   const { attributes, open, onClose, mode } = props
   const { id } = attributes
-  console.log(attributes.scheduledDate)
-  console.log(!!attributes.scheduledDate)
 
   const [scheduledDate, setScheduledDate] = useState(new Date())
   const [selectedCohortId, setSelectedCohortId] = useState('')
@@ -49,7 +46,7 @@ const StretchScheduler = props => {
       // Display a message saying 'Stretch scheduled successfully!'
     })
   }
-  console.log(scheduledDate)
+
   return (
     <Modal
       open={open}
