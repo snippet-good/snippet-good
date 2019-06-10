@@ -152,7 +152,7 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
   const csClosed = cohortStretchs.filter(cs => cs.status === 'closed')
 
   for (let i = 0; i < csClosed.length; ++i) {
-    const { cohortId } = cohortStretchs[i]
+    const { cohortId } = csClosed[i]
     const students = cohortUsers
       .filter(cu => cu.cohortId === cohortId)
       .map(cu => cu.userId)
@@ -179,7 +179,7 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
 
   const csOpen = cohortStretchs.filter(cs => cs.status === 'open')
   for (let i = 0; i < csOpen.length; ++i) {
-    const { cohortId } = cohortStretchs[i]
+    const { cohortId } = csOpen[i]
     const students = cohortUsers
       .filter(cu => cu.cohortId === cohortId)
       .map(cu => cu.userId)

@@ -32,13 +32,13 @@ function StretchListView(props) {
   function createSubmittedStretchData(
     stretchAnswerId,
     title,
-    isSolved,
+    cohortName,
     rating,
     stretchId
   ) {
-    return { stretchAnswerId, title, isSolved, rating, stretchId }
+    return { stretchAnswerId, title, cohortName, rating, stretchId }
   }
-  console.log(props)
+
   const rows = []
   if (props.openStretches) {
     for (let i = 0; i < props.openStretches.length; ++i) {
@@ -57,7 +57,7 @@ function StretchListView(props) {
         createSubmittedStretchData(
           props.submittedStretches[i].id,
           props.submittedStretches[i].title,
-          props.submittedStretches[i].isSolved,
+          props.submittedStretches[i].cohortName,
           props.submittedStretches[i].rating,
           props.submittedStretches[i].stretchId
         )
@@ -94,8 +94,8 @@ function StretchListView(props) {
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
-              <TableCell align="right">Status</TableCell>
               <TableCell align="right">Rating</TableCell>
+              <TableCell align="right">Cohort</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -106,10 +106,9 @@ function StretchListView(props) {
                     {row.title}
                   </Link>
                 </TableCell>
-                <TableCell align="right">
-                  {row.isSolved ? 'submitted' : 'not submitted'}
-                </TableCell>
+
                 <TableCell align="right">{row.rating}</TableCell>
+                <TableCell align="right">{row.cohortName}</TableCell>
               </TableRow>
             ))}
           </TableBody>
