@@ -14,7 +14,7 @@ import { getAllStretchAnswers } from '../store/stretch-answers/actions'
 import { getAllCohortStretches } from '../store/cohort-stretches/actions'
 
 // React sub-components
-import { Home, Login, AdminController, StudentController } from './index'
+import { Login, AdminController, StudentController } from './index'
 
 class App extends Component {
   componentDidMount() {
@@ -26,8 +26,7 @@ class App extends Component {
     return (
       <Router>
         <Fragment>
-          <Route path="/" exact component={Home} />
-          <Route path="/login" exact component={Login} />
+          <Route path="/" exact component={Login} />
           <Route path="/admin" component={AdminController} />
           <Route path="/student" component={StudentController} />
         </Fragment>

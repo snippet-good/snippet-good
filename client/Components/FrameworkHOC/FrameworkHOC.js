@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
+import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
+import { getStretchAnswersOfSingleAdminThunk } from '../../store/stretch-answers/actions'
+import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
@@ -15,10 +18,13 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
   const Framework = props => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
-    const {
-      userDetails: { isAdmin },
-      history
-    } = props
+    const { userDetails, history, loadAdminRelatedData } = props
+    useEffect(() => {
+      if (userDetails.id) {
+        loadAdminRelatedData(userDetails.id)
+      }
+    }, [userDetails])
+
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -43,7 +49,9 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
             <Typography
               variant="h6"
               noWrap
-              onClick={() => history.push(`/${isAdmin ? 'admin' : 'student'}`)}
+              onClick={() =>
+                history.push(`/${userDetails.isAdmin ? 'admin' : 'student'}`)
+              }
             >
               Modern Stretches
             </Typography>
@@ -80,7 +88,22 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
 
   const mapStateToProps = ({ userDetails }) => ({ userDetails })
 
-  return connect(mapStateToProps)(Framework)
+  const mapDispatchToProps = dispatch => {
+    return {
+      loadAdminRelatedData: adminId => {
+        return Promise.all([
+          dispatch(getCohortsOfAdminThunk(adminId)),
+          dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
+          dispatch(getUsersOfSingleAdminThunk(adminId))
+        ])
+      }
+    }
+  }
+
+  return connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Framework)
 }
 
 export default FrameworkHOC

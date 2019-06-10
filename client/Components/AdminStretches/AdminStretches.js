@@ -15,7 +15,7 @@ import Card from '@material-ui/core/Card'
 
 import Typography from '@material-ui/core/Typography'
 
-import StretchScheduler from './StretchScheduler'
+import StretchScheduler from '../_shared/StretchScheduler'
 
 class AdminStretches extends Component {
   constructor(props) {
@@ -151,6 +151,7 @@ class AdminStretches extends Component {
           open={modalIsOpen}
           onClose={handleModalClose}
           attributes={this.state.selectedStretch}
+          mode="create"
         />
 
         <Card>

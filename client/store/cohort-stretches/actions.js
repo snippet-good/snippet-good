@@ -21,10 +21,15 @@ const addCohortStretch = newCohortStretch => ({
   newCohortStretch
 })
 
-const updateCohortStretch = (cohortStretchId, updatedItemFrontEnd) => ({
+const updateCohortStretch = (cohortStretchId, updatedCohortStretch) => ({
   type: UPDATE_COHORT_STRETCH,
   cohortStretchId,
-  updatedItemFrontEnd
+  updatedCohortStretch
+})
+
+const deleteCohortStretch = cohortStretchId => ({
+  type: DELETE_COHORT_STRETCH,
+  cohortStretchId
 })
 
 // --------------------------------------------------
@@ -45,16 +50,18 @@ export const createCohortStretch = data => {
   }
 }
 
-export const updateCohortStretchThunk = (
-  cohortStretchId,
-  updatedFields,
-  updatedItemFrontEnd
-) => {
+export const updateCohortStretchThunk = (cohortStretchId, updatedFields) => {
   return dispatch => {
     return axios
       .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
-      .then(() =>
-        dispatch(updateCohortStretch(cohortStretchId, updatedItemFrontEnd))
-      )
+      .then(({ data }) => dispatch(updateCohortStretch(cohortStretchId, data)))
+  }
+}
+
+export const deleteCohortStretchThunk = cohortStretchId => {
+  return dispatch => {
+    return axios
+      .delete(`/api/cohort-stretches/${cohortStretchId}`)
+      .then(() => dispatch(deleteCohortStretch(cohortStretchId)))
   }
 }
