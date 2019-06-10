@@ -27,4 +27,10 @@ router.put('/:id', (req, res, next) => {
     .catch(next)
 })
 
+router.delete('/:id', (req, res, next) => {
+  CohortStretch.destroy({ where: { id: req.params.id } })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
+
 module.exports = router

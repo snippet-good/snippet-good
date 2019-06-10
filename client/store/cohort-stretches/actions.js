@@ -27,6 +27,11 @@ const updateCohortStretch = (cohortStretchId, updatedCohortStretch) => ({
   updatedCohortStretch
 })
 
+const deleteCohortStretch = cohortStretchId => ({
+  type: DELETE_COHORT_STRETCH,
+  cohortStretchId
+})
+
 // --------------------------------------------------
 // CRUD thunks
 
@@ -49,8 +54,14 @@ export const updateCohortStretchThunk = (cohortStretchId, updatedFields) => {
   return dispatch => {
     return axios
       .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
-      .then(({data}) =>
-        dispatch(updateCohortStretch(cohortStretchId, data))
-      )
+      .then(({ data }) => dispatch(updateCohortStretch(cohortStretchId, data)))
+  }
+}
+
+export const deleteCohortStretchThunk = cohortStretchId => {
+  return dispatch => {
+    return axios
+      .delete(`/api/cohort-stretches/${cohortStretchId}`)
+      .then(() => dispatch(deleteCohortStretch(cohortStretchId)))
   }
 }

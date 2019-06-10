@@ -1,8 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { getAllCohortStretches } from '../../store/cohort-stretches/actions'
 import { Link } from 'react-router-dom'
+import moment from 'moment'
+import {
+  deleteCohortStretchThunk,
+  updateCohortStretchThunk
+} from '../../store/cohort-stretches/actions'
 
+import StretchScheduler from '../_shared/StretchScheduler'
+import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
 import Table from '@material-ui/core/Table'
 import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
@@ -11,7 +17,19 @@ import TableCell from '@material-ui/core/TableCell'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
-const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
+const SingleCohortStretchTables = ({
+  cohort,
+  cohortStretches,
+  stretches,
+  deleteCohortStretch,
+  updateCohortStretch
+}) => {
+  let [rescheduleModalOpen, setRescheduleModalOpen] = useState(false)
+  let [unscheduleModalOpen, setunscheduleModalOpen] = useState(false)
+  let [openStretchModalOpen, setOpenStretchModalOpen] = useState(false)
+  let [selectedCohortStretch, setCohortStretch] = useState({})
+  let [selectedCohortStretchId, setCohortStretchId] = useState('')
+
   const thisCohortStretches =
     cohortStretches.filter(
       cohortStretch => cohortStretch.cohortId === cohort.id
@@ -28,29 +46,71 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
         stretch: stretches.find(s => s.id === cs.stretchId)
       })) || []
   const scheduledCohortStretches =
-    thisCohortStretches.filter(
-      cohortStretches => cohortStretches.status === 'scheduled'
-    ) || []
+    thisCohortStretches
+      .filter(cohortStretches => cohortStretches.status === 'scheduled')
+      .map(cs => ({
+        ...cs,
+        stretch: stretches.find(s => s.id === cs.stretchId)
+      })) || []
 
   const openCohortStretchIds = openCohortStretches.map(
     stretch => stretch.stretchId
   )
-  const scheduledCohortStretchIds = scheduledCohortStretches.map(
-    stretch => stretch.stretchId
-  )
+  //const scheduledCohortStretchIds = scheduledCohortStretches.map(
+  //  stretch => stretch.stretchId
+  //)
 
   const openStretches = stretches.filter(stretch =>
     openCohortStretchIds.includes(stretch.id)
   )
-  ////const closedStretches = stretches.filter(stretch =>
-  //  closedCohortStretchIds.includes(stretch.id)
-  //)
-  const scheduledStretches = stretches.filter(stretch =>
-    scheduledCohortStretchIds.includes(stretch.id)
-  )
+
+  //const scheduledStretches = stretches.filter(stretch =>
+  //  scheduledCohortStretchIds.includes(stretch.id)
+  // )
+
+  // StretchScheduler modal event handlers
+  const handleRescheduleModalClose = () => setRescheduleModalOpen(false)
+  const handleRescheduleModalOpen = selectedCohortStretch => {
+    rescheduleModalOpen(true)
+    setCohortStretch(selectedCohortStretch)
+  }
+
+  // Unschedule modal event handlers
+  const handleunscheduleModalClose = () => setunscheduleModalOpen(false)
+  const handleunscheduleModalOpen = id => {
+    setunscheduleModalOpen(true)
+    setCohortStretchId(id)
+  }
+
+  // open stretch modal event handlers
+  const handleopenStretchModalClose = () => setOpenStretchModalOpen(false)
+  const handleopenStretchModalOpen = id => {
+    setOpenStretchModalOpen(true)
+    setCohortStretchId(id)
+  }
 
   return (
     <div>
+      <StretchScheduler
+        open={rescheduleModalOpen}
+        onClose={handleRescheduleModalClose}
+        attributes={selectedCohortStretch}
+        mode="update"
+      />
+      <ConfirmDialogBox
+        text="Are you sure you would like to unschedule the stretch?"
+        open={unscheduleModalOpen}
+        setModalClosed={handleunscheduleModalClose}
+        args={[selectedCohortStretchId]}
+        action={deleteCohortStretch}
+      />
+      <ConfirmDialogBox
+        text="Are you sure you would like to open the stretch?"
+        open={openStretchModalOpen}
+        setModalClosed={handleopenStretchModalClose}
+        args={[selectedCohortStretchId, { status: 'open' }]}
+        action={updateCohortStretch}
+      />
       <Typography variant="h6" id="tableTitle">
         Open Stretches
       </Typography>
@@ -91,14 +151,16 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
             <TableCell>Author</TableCell>
             <TableCell>Category</TableCell>
             <TableCell>Difficulty</TableCell>
+            <TableCell>Scheduled Date</TableCell>
             <TableCell />
             <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
-          {scheduledStretches.map(stretch => {
+          {scheduledCohortStretches.map(cohortStretch => {
+            const { stretch } = cohortStretch
             return (
-              <TableRow key={stretch.id}>
+              <TableRow key={cohortStretch.id}>
                 <TableCell>
                   <Link to={`/admin/singleStretch/${stretch.id}`}>
                     {stretch.title}
@@ -108,14 +170,34 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
                 <TableCell>{stretch.categoryName}</TableCell>
                 <TableCell>{stretch.difficulty}</TableCell>
                 <TableCell>
-                  <Link to="/">
-                    <Button color="primary"> Reschedule </Button>
-                  </Link>
+                  {moment
+                    .utc(cohortStretch.scheduledDate)
+                    .local()
+                    .format('MMMM D, h:mm A')}
                 </TableCell>
                 <TableCell>
-                  <Link to="/">
-                    <Button color="secondary"> Unschedule </Button>
-                  </Link>
+                  <Button
+                    onClick={() => handleopenStretchModalOpen(cohortStretch.id)}
+                  >
+                    {' '}
+                    Open{' '}
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => handleRescheduleModalOpen(cohortStretch)}
+                  >
+                    {' '}
+                    Reschedule{' '}
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    color="secondary"
+                    onClick={() => handleunscheduleModalOpen(cohortStretch.id)}
+                  >
+                    {' '}
+                    Unschedule{' '}
+                  </Button>
                 </TableCell>
               </TableRow>
             )
@@ -173,4 +255,15 @@ const mapStateToProps = ({ cohortStretches, stretches }) => ({
   stretches
 })
 
-export default connect(mapStateToProps)(SingleCohortStretchTables)
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteCohortStretch: id => dispatch(deleteCohortStretchThunk(id)),
+    updateCohortStretch: (id, updatedFields) =>
+      dispatch(updateCohortStretchThunk(id, updatedFields))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SingleCohortStretchTables)
