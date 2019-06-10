@@ -3,74 +3,61 @@ import moment from 'moment'
 export const getStretchAnswerMetaData = (
   stretchAnswer,
   stretches,
-  cohortStretches,
-  cohorts,
-  cohortUsers
+  cohortStretches
 ) => {
-  const { stretchId, body } = stretchAnswer
-  const cohortUserId = stretchAnswer.cohortuserId
-  const cohortId = cohortUsers.find(cu => cu.id === cohortUserId).cohortId
+  const {
+    cohortstretchId,
+    body,
+    rating,
+    timeToSolve,
+    cohortName,
+    cohortId
+  } = stretchAnswer
+  const numberOfMiutes = Math.floor(timeToSolve / 60)
+  const numberOfSeconds = timeToSolve - numberOfMiutes * 60
+  const { stretchId, scheduledDate } = cohortStretches.find(
+    cs => cs.id === cohortstretchId
+  )
+  const { categoryName, difficulty, title, textPrompt } = stretches.find(
+    s => s.id === stretchId
+  )
 
-  const cohortName = cohorts.find(c => c.id === cohortId).name
-  const stretch = stretches.find(s => s.id === stretchId)
-  const { categoryName, difficulty, title, textPrompt } = stretch
-  const selectedCohortStretches = cohortStretches
+  const solutions = cohortStretches
     .filter(cs => cs.stretchId === stretchId)
     .map(cs => {
-      const { name } = cohorts.find(c => c.id === cs.cohortId)
-      return { ...cs, cohortName: name }
+      return {
+        solution: cs.solution,
+        dropdownTitle:
+          cs.cohortId === cohortId ? 'Cohort Solution' : cs.cohortName
+      }
     })
-
-  const { scheduledDate } = selectedCohortStretches.find(
-    cs => cs.cohortId === cohortId
-  )
-  const { isSolved, rating, timeToSolve } = stretchAnswer
+    .sort((a, b) => {
+      if (a.dropdownTitle === 'Cohort Solution') return -1
+      return a.dropdownTitle - b.dropdownTitle
+    })
 
   const stretchMetaData = {
     cohortName,
     categoryName: categoryName || 'N/A',
     difficulty: difficulty || 'N/A',
     title,
-    scheduledDate: scheduledDate.slice(0, 10),
-    isSolved:
-      typeof isSolved === 'boolean'
-        ? `${String(isSolved)[0].toUpperCase()}${String(isSolved).slice(1)}`
-        : 'N/A',
+    scheduledDate: moment
+      .utc(scheduledDate)
+      .local()
+      .format('LLLL'),
     rating: rating || 'N/A',
-    timeToSolve
+    timeToSolveString: `${
+      numberOfMiutes > 0 ? `${numberOfMiutes} minutes, ` : ''
+    }${numberOfSeconds} seconds`
   }
 
   const stretchCode = {
     textPrompt,
     studentAnswer: body,
-    solutions: selectedCohortStretches
-      .map(cs => ({
-        solution: cs.solution,
-        dropdownTitle:
-          cs.cohortId === cohortId ? 'Cohort Solution' : cs.cohortName
-      }))
-      .sort((a, b) => {
-        if (a.dropdownTitle === 'Cohort Solution') return -1
-        return a.dropdownTitle - b.dropdownTitle
-      })
+    solutions
   }
 
   return { stretchMetaData, stretchCode }
-}
-
-export const checkIfAllDataExists = (
-  stretchAnswer,
-  stretches,
-  cohortStretches,
-  cohorts,
-  cohortUsers
-) => {
-  if (!stretchAnswer) return false
-  const data = [stretches, cohortStretches, cohorts, cohortUsers]
-  for (var i = 0; i < data.length; ++i) {
-    if (!data[i].length) return false
-  }
-  return true
 }
 
 const parseTime = datetime => {

@@ -16,9 +16,8 @@ const GeneralInfo = ({ stretchMetaData }) => {
     { field: 'Title', dbColumn: 'title' },
     { field: 'Category', dbColumn: 'categoryName' },
     { field: 'Difficulty (out of 5)', dbColumn: 'difficulty' },
-    { field: 'Correct', dbColumn: 'isSolved' },
     { field: 'Rating (out of 5)', dbColumn: 'rating' },
-    { field: 'Time Took To Complete', dbColumn: 'timeToSolve' }
+    { field: 'Time Took To Complete', dbColumn: 'timeToSolveString' }
   ].reduce((acc, field) => {
     acc.push({ name: field.field, value: stretchMetaData[field.dbColumn] })
     return acc

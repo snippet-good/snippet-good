@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getCommentsOfStretchAnswerThunk } from '../../store/comments/actions'
-import {
-  getStretchAnswerMetaData,
-  checkIfAllDataExists
-} from './helperfunctions'
+import { getStretchAnswerMetaData } from './helperfunctions'
+import { checkIfAllDataExists } from '../../utilityfunctions'
 
 import GeneralInfo from './GeneralInfo'
 import CodeSection from './CodeSection'
@@ -57,7 +55,7 @@ const StudentClosedStretchView = ({
 }
 
 const mapStateToProps = (
-  { stretchAnswers, stretches, cohortStretches, cohorts, cohortUsers },
+  { stretchAnswers, stretches, cohortStretches },
   {
     match: {
       params: { stretchAnswerId }
@@ -65,7 +63,7 @@ const mapStateToProps = (
   }
 ) => {
   const stretchAnswer = stretchAnswers.find(sa => sa.id === stretchAnswerId)
-  const data = [stretchAnswer, stretches, cohortStretches, cohorts, cohortUsers]
+  const data = [stretchAnswer, stretches, cohortStretches]
   const allStretchAnswerRelatedData = checkIfAllDataExists(...data)
     ? getStretchAnswerMetaData(...data)
     : {}

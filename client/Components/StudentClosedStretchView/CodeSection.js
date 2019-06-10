@@ -45,10 +45,10 @@ class CodeSection extends Component {
               value={solution}
               onChange={handleChange}
             >
-              {solutions.map(el => {
+              {solutions.map((el, idnx) => {
                 const { dropdownTitle } = el
                 return (
-                  <MenuItem key={dropdownTitle} value={el.solution}>
+                  <MenuItem key={idnx} value={el.solution}>
                     {dropdownTitle}
                   </MenuItem>
                 )

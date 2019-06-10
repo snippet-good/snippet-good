@@ -218,7 +218,6 @@ const createCommentObjects = (
   for (let i = 0; i < stretchAnswers.length; ++i) {
     const { userId, id, cohortstretchId } = stretchAnswers[i]
     const { cohortId } = cohortStretches.find(cs => cs.id === cohortstretchId)
-    console.log(cohortId)
     const users = cohortUsers
       .filter(cu => adminIds.includes(cu.userId) && cu.cohortId === cohortId)
       .map(cu => cu.userId)
