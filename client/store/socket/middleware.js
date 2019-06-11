@@ -10,7 +10,7 @@ const socketMiddleware = storeAPI => {
         socket = new Socket(action.userDetails.id, storeAPI)
         break
       case CREATE_COMMENT:
-        socket.sendMessage(action.newComment, action.relatedUsers)
+        socket.sendMessage(action.newComment, action.emitObject)
         break
       case LOGOUT:
         socket.disconnectUser()

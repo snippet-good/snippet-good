@@ -17,7 +17,8 @@ const CommentSection = ({
   stretchAnswerId,
   createComment,
   allComments,
-  relatedUsers
+  relatedUsers,
+  stretchMetaData: { title, cohortName }
 }) => {
   let [message, setMessage] = useState('')
   const {
@@ -37,7 +38,7 @@ const CommentSection = ({
         stretchanswerId: stretchAnswerId,
         userId: userDetails.id
       },
-      relatedUsers
+      { relatedUsers, stretchTitle: title, cohortName }
     ).then(() => setMessage(''))
   }
   return (
@@ -115,8 +116,8 @@ const mapStateToProps = ({ comments, userDetails }) => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    createComment: (newComment, relatedUsers) =>
-      dispatch(createCommentThunk(newComment, relatedUsers))
+    createComment: (newComment, emitObject) =>
+      dispatch(createCommentThunk(newComment, emitObject))
   }
 }
 

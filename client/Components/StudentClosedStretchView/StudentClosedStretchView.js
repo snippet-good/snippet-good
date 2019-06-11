@@ -57,6 +57,7 @@ const StudentClosedStretchView = ({
       <CommentsSection
         stretchAnswerId={stretchAnswer.id}
         relatedUsers={relatedUsers}
+        stretchMetaData={stretchMetaData}
       />
     </div>
   )

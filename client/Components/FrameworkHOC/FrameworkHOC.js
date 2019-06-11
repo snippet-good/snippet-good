@@ -37,7 +37,8 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       history,
       loadAdminRelatedData,
       loadStudentRelatedData,
-      logoutUser
+      logoutUser,
+      flashMessages
     } = props
     useEffect(() => {
       if (userDetails.id && userDetails.isAdmin) {
@@ -106,13 +107,17 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
           }`}
         >
           <div className={classes.drawerHeader} />
+          {flashMessages.message && <div>{flashMessages.message}</div>}
           <MainComponent />
         </main>
       </div>
     )
   }
 
-  const mapStateToProps = ({ userDetails }) => ({ userDetails })
+  const mapStateToProps = ({ userDetails, flashMessages }) => ({
+    userDetails,
+    flashMessages
+  })
 
   const mapDispatchToProps = dispatch => {
     const commonData = [

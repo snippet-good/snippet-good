@@ -19,19 +19,20 @@ const socketFunction = socketServer => {
       console.log(socketIdsToUserIdsMap)
     })
 
-    socket.on('sendMessage', (commentObject, usersToSendTo) => {
-      console.log(usersToSendTo)
+    socket.on('sendMessage', (commentObject, emitObject) => {
+      console.log(emitObject)
       console.log(commentObject)
       console.log(socket.id)
+      const { relatedUsers, stretchTitle, cohortName } = emitObject
       /* if (usersToSendTo.includes(socketIdsToUserIdsMap[socket.id])) {
         socket.to(`${socket.id}`).emit('messageSent', commentObject)
       }*/
 
-      for (let i = 0; i < usersToSendTo.length; ++i) {
-        if (socketIdsToUserIdsMap[usersToSendTo[i]]) {
+      for (let i = 0; i < relatedUsers.length; ++i) {
+        if (socketIdsToUserIdsMap[relatedUsers[i]]) {
           socket
-            .to(`${socketIdsToUserIdsMap[usersToSendTo[i]]}`)
-            .emit('messageSent', commentObject)
+            .to(`${socketIdsToUserIdsMap[relatedUsers[i]]}`)
+            .emit('messageSent', commentObject, stretchTitle, cohortName)
         }
       }
     })

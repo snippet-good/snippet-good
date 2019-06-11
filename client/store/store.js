@@ -18,6 +18,8 @@ import stretchAnswers from './stretch-answers/reducer'
 import cohortStretches from './cohort-stretches/reducer'
 import comments from './comments/reducer'
 
+import flashMessages from './flash-message/reducer'
+
 const logger = createLogger({
   collapsed: true
 })
@@ -37,7 +39,9 @@ const store = createStore(
     stretches,
     stretchAnswers,
     cohortStretches,
-    comments
+    comments,
+
+    flashMessages
   }),
   applyMiddleware(socketMiddleware, thunk, logger)
 )
