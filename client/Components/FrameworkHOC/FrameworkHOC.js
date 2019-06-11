@@ -11,6 +11,10 @@ import {
   logoutUserThunk
 } from '../../store/auth/actions'
 import { getStudentCohortUsersThunk } from '../../store/cohort-users/actions'
+import { getAllCategories } from '../../store/categories/actions'
+import { getAllStretches } from '../../store/stretches/actions'
+import { getAllCohortStretches } from '../../store/cohort-stretches/actions'
+
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
@@ -32,14 +36,8 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       history,
       loadAdminRelatedData,
       loadStudentRelatedData,
-      checkIfUserLoggedIn,
       logoutUser
     } = props
-    useEffect(() => {
-      if (!userDetails.id) {
-        checkIfUserLoggedIn(history)
-      }
-    })
     useEffect(() => {
       if (userDetails.id && userDetails.isAdmin) {
         loadAdminRelatedData(userDetails.id)
@@ -116,6 +114,12 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
   const mapStateToProps = ({ userDetails }) => ({ userDetails })
 
   const mapDispatchToProps = dispatch => {
+    const commonData = [
+      dispatch(getAllCategories()),
+      dispatch(getAllStretches()),
+      dispatch(getAllCohortStretches())
+    ]
+
     return {
       checkIfUserLoggedIn: history =>
         dispatch(checkIfUserLoggedInThunk(history)),
@@ -124,13 +128,15 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
         return Promise.all([
           dispatch(getCohortsOfAdminThunk(adminId)),
           dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
-          dispatch(getUsersOfSingleAdminThunk(adminId))
+          dispatch(getUsersOfSingleAdminThunk(adminId)),
+          ...commonData
         ])
       },
       loadStudentRelatedData: studentId => {
         return Promise.all([
           dispatch(getStretchAnswersOfStudentThunk(studentId)),
-          dispatch(getStudentCohortUsersThunk(studentId))
+          dispatch(getStudentCohortUsersThunk(studentId)),
+          ...commonData
         ])
       }
     }

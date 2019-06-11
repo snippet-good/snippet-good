@@ -27,13 +27,15 @@ export const login = credentials => {
   }
 }
 
-export const checkIfUserLoggedInThunk = history => {
+export const checkIfUserLoggedInThunk = () => {
   return dispatch => {
     return axios
       .get('/api/auth')
       .then(res => res.data)
       .then(user => dispatch(getUser(user)))
-      .catch(() => history.push('/'))
+      .catch(() => {
+        window.location.hash = '/'
+      })
   }
 }
 
@@ -41,7 +43,7 @@ export const logoutUserThunk = history => {
   return dispatch => {
     return axios
       .delete('/api/auth')
-      .then(() => history.push('/'))
       .then(() => dispatch(logutUser()))
+      .then(() => history.push('/'))
   }
 }

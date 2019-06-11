@@ -37,14 +37,14 @@ CohortSelect.defaultProps = {
   handleChange: () => {}
 }
 
-const mapStateToProps = state => {
-  const { userDetails, cohorts, cohortUsers } = state
+const mapStateToProps = ({ cohorts }) => ({ cohorts })
+// const { userDetails, cohorts, cohortUsers } = state
 
-  const userCohorts = cohortUsers
-    .filter(e => e.userId === userDetails.id) // Find all cohorts associated to user
-    .map(e => cohorts.find(cohort => cohort.id === e.cohortId)) // Associate cohort details to UserCohort
+// const userCohorts = cohortUsers
+//   .filter(e => e.userId === userDetails.id) // Find all cohorts associated to user
+//   .map(e => cohorts.find(cohort => cohort.id === e.cohortId)) // Associate cohort details to UserCohort
 
-  return { cohorts: userCohorts }
-}
+// return { cohorts: userCohorts }
+//}
 
 export default connect(mapStateToProps)(CohortSelect)
