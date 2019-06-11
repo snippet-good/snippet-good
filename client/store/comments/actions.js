@@ -10,7 +10,11 @@ export const CREATE_COMMENT = 'CREATE_COMMENT'
 // Action creators
 
 const getComments = comments => ({ type: GET_COMMENTS, comments })
-const createComment = newComment => ({ type: CREATE_COMMENT, newComment })
+const createComment = (newComment, relatedUsers) => ({
+  type: CREATE_COMMENT,
+  newComment,
+  relatedUsers
+})
 
 // --------------------------------------------------
 // CRUD thunks
@@ -24,10 +28,10 @@ export const getCommentsOfStretchAnswerThunk = stretchAnswerId => {
   }
 }
 
-export const createCommentThunk = newComment => {
+export const createCommentThunk = (newComment, relatedUsers) => {
   return dispatch => {
     return axios
       .post('/api/comments', newComment)
-      .then(({ data }) => dispatch(createComment(data)))
+      .then(({ data }) => dispatch(createComment(data, relatedUsers)))
   }
 }

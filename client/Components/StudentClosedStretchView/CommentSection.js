@@ -16,7 +16,8 @@ const CommentSection = ({
   userDetails,
   stretchAnswerId,
   createComment,
-  allComments
+  allComments,
+  relatedUsers
 }) => {
   let [message, setMessage] = useState('')
   const {
@@ -30,11 +31,14 @@ const CommentSection = ({
   } = useStyles()
 
   const sendMessage = () => {
-    return createComment({
-      body: message,
-      stretchanswerId: stretchAnswerId,
-      userId: userDetails.id
-    }).then(() => setMessage(''))
+    return createComment(
+      {
+        body: message,
+        stretchanswerId: stretchAnswerId,
+        userId: userDetails.id
+      },
+      relatedUsers
+    ).then(() => setMessage(''))
   }
   return (
     <div>
@@ -111,7 +115,8 @@ const mapStateToProps = ({ comments, userDetails }) => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    createComment: newComment => dispatch(createCommentThunk(newComment))
+    createComment: (newComment, relatedUsers) =>
+      dispatch(createCommentThunk(newComment, relatedUsers))
   }
 }
 
