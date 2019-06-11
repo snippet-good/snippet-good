@@ -7,14 +7,22 @@ class Socket {
     this.socket = io(`${window.location.origin}?userId=${userId}`)
     console.log('two-way connection has been made!')
 
-    this.socket.on('messageSent', (commentObject, stretchTitle, cohortName) => {
-      console.log('reached back')
-      const { writerName } = commentObject
-      //storeAPI.getState().stretchAnswers.find()
-      const message = `${writerName} just commented on ${stretchTitle} in ${cohortName} `
-      storeAPI.dispatch(addComment(commentObject))
-      storeAPI.dispatch(setFlashMessage(message))
-    })
+    this.socket.on(
+      'messageSent',
+      (commentObject, stretchTitle, cohortName, studentId) => {
+        console.log('reached back')
+        const { writerName, stretchanswerId } = commentObject
+        const { isAdmin } = storeAPI.getState().userDetails
+        const message = `${writerName} just commented on ${stretchTitle} in ${cohortName} `
+        const link = `/${
+          isAdmin ? 'admin' : 'student'
+        }/stretchAnswer/${stretchanswerId}${
+          isAdmin ? `/student/${studentId}` : ''
+        }`
+        storeAPI.dispatch(addComment(commentObject))
+        storeAPI.dispatch(setFlashMessage(message, link))
+      }
+    )
   }
 
   disconnectUser() {

@@ -14,7 +14,7 @@ import { useStyles } from './styles'
 
 const CommentSection = ({
   userDetails,
-  stretchAnswerId,
+  stretchAnswer: { id, userId },
   createComment,
   allComments,
   relatedUsers,
@@ -35,10 +35,10 @@ const CommentSection = ({
     return createComment(
       {
         body: message,
-        stretchanswerId: stretchAnswerId,
+        stretchanswerId: id,
         userId: userDetails.id
       },
-      { relatedUsers, stretchTitle: title, cohortName }
+      { relatedUsers, stretchTitle: title, cohortName, studentId: userId }
     ).then(() => setMessage(''))
   }
   return (

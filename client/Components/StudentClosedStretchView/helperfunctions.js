@@ -68,8 +68,11 @@ export const getStretchAnswerMetaData = (
 
 const parseTime = datetime => {
   const hour = datetime.hour()
+  const minute = datetime.minute()
   const suffix = hour <= 12 ? 'AM' : 'PM'
-  return `${hour <= 12 ? hour : hour - 12}:${datetime.minute()} ${suffix}`
+  return `${hour <= 12 ? hour : hour - 12}:${
+    minute < 10 ? `0${minute}` : minute
+  } ${suffix}`
 }
 
 const compareTwoDates = (dateOne, dateTwo) => {

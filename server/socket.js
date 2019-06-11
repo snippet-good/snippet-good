@@ -23,7 +23,7 @@ const socketFunction = socketServer => {
       console.log(emitObject)
       console.log(commentObject)
       console.log(socket.id)
-      const { relatedUsers, stretchTitle, cohortName } = emitObject
+      const { relatedUsers, stretchTitle, cohortName, studentId } = emitObject
       /* if (usersToSendTo.includes(socketIdsToUserIdsMap[socket.id])) {
         socket.to(`${socket.id}`).emit('messageSent', commentObject)
       }*/
@@ -32,7 +32,13 @@ const socketFunction = socketServer => {
         if (socketIdsToUserIdsMap[relatedUsers[i]]) {
           socket
             .to(`${socketIdsToUserIdsMap[relatedUsers[i]]}`)
-            .emit('messageSent', commentObject, stretchTitle, cohortName)
+            .emit(
+              'messageSent',
+              commentObject,
+              stretchTitle,
+              cohortName,
+              studentId
+            )
         }
       }
     })

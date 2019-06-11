@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
+import FlashMessage from '../FlashMessage'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import {
   getStretchAnswersOfSingleAdminThunk,
@@ -37,8 +38,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       history,
       loadAdminRelatedData,
       loadStudentRelatedData,
-      logoutUser,
-      flashMessages
+      logoutUser
     } = props
     useEffect(() => {
       if (userDetails.id && userDetails.isAdmin) {
@@ -107,16 +107,15 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
           }`}
         >
           <div className={classes.drawerHeader} />
-          {flashMessages.message && <div>{flashMessages.message}</div>}
+          <FlashMessage history={history} />
           <MainComponent />
         </main>
       </div>
     )
   }
 
-  const mapStateToProps = ({ userDetails, flashMessages }) => ({
-    userDetails,
-    flashMessages
+  const mapStateToProps = ({ userDetails }) => ({
+    userDetails
   })
 
   const mapDispatchToProps = dispatch => {
