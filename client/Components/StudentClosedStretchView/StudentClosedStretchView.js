@@ -32,7 +32,8 @@ const StudentClosedStretchView = ({
   const { root } = styles
   const {
     stretchMetaData,
-    stretchCode: { textPrompt, studentAnswer, solutions }
+    stretchCode: { textPrompt, studentAnswer, solutions },
+    relatedUsers
   } = allStretchAnswerRelatedData
   return (
     <div styles={root}>
@@ -53,13 +54,16 @@ const StudentClosedStretchView = ({
         </Grid>
       </Grid>
       <CodeSection {...{ studentAnswer, solutions }} />
-      <CommentsSection stretchAnswerId={stretchAnswer.id} />
+      <CommentsSection
+        stretchAnswerId={stretchAnswer.id}
+        relatedUsers={relatedUsers}
+      />
     </div>
   )
 }
 
 const mapStateToProps = (
-  { stretchAnswers, stretches, cohortStretches, users },
+  { stretchAnswers, stretches, cohortStretches, users, userDetails },
   {
     match: {
       params: { stretchAnswerId, studentId }
@@ -68,8 +72,8 @@ const mapStateToProps = (
 ) => {
   let studentName = ''
   const stretchAnswer = stretchAnswers.find(sa => sa.id === stretchAnswerId)
-  const data = [stretchAnswer, stretches, cohortStretches, users]
-  if (!checkIfAllDataExists(...data)) return {}
+  const data = [stretchAnswer, stretches, cohortStretches, userDetails]
+  if (!checkIfAllDataExists(users, ...data)) return {}
   const allStretchAnswerRelatedData = getStretchAnswerMetaData(...data)
   if (studentId) {
     const student = users.find(u => u.id === studentId)

@@ -14,6 +14,7 @@ import { getStudentCohortUsersThunk } from '../../store/cohort-users/actions'
 import { getAllCategories } from '../../store/categories/actions'
 import { getAllStretches } from '../../store/stretches/actions'
 import { getAllCohortStretches } from '../../store/cohort-stretches/actions'
+//import {getAllCohortUsers} from '../../store/cohort-users/actions'
 
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'

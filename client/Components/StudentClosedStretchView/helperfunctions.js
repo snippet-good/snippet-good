@@ -3,7 +3,8 @@ import moment from 'moment'
 export const getStretchAnswerMetaData = (
   stretchAnswer,
   stretches,
-  cohortStretches
+  cohortStretches,
+  userDetails
 ) => {
   const {
     cohortstretchId,
@@ -11,11 +12,12 @@ export const getStretchAnswerMetaData = (
     rating,
     timeToSolve,
     cohortName,
-    cohortId
+    cohortId,
+    userId
   } = stretchAnswer
   const numberOfMiutes = Math.floor(timeToSolve / 60)
   const numberOfSeconds = timeToSolve - numberOfMiutes * 60
-  const { stretchId, scheduledDate } = cohortStretches.find(
+  const { stretchId, scheduledDate, adminIds } = cohortStretches.find(
     cs => cs.id === cohortstretchId
   )
   const { categoryName, difficulty, title, textPrompt } = stretches.find(
@@ -57,7 +59,11 @@ export const getStretchAnswerMetaData = (
     solutions
   }
 
-  return { stretchMetaData, stretchCode }
+  return {
+    stretchMetaData,
+    stretchCode,
+    relatedUsers: [userId, ...adminIds].filter(u => u.id !== userDetails.id)
+  }
 }
 
 const parseTime = datetime => {
