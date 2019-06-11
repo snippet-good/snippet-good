@@ -10,7 +10,6 @@ class Socket {
     this.socket.on(
       'messageSent',
       (commentObject, stretchTitle, cohortName, studentId) => {
-        console.log('reached back')
         const { writerName, stretchanswerId } = commentObject
         const { isAdmin } = storeAPI.getState().userDetails
         const message = `${writerName} just commented on ${stretchTitle} in ${cohortName} `
@@ -31,7 +30,6 @@ class Socket {
 
   sendMessage(commentObject, emitObject) {
     if (typeof this.socket.emit === 'function') {
-      console.log('here')
       this.socket.emit('sendMessage', commentObject, emitObject)
     } else {
       console.log('socket not connected')
