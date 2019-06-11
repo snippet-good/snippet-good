@@ -8,7 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import { GeneralInfoStyles as styles } from '../SingleStretch/styles'
 import { useStyles } from './styles'
 
-const GeneralInfo = ({ stretchMetaData }) => {
+const GeneralInfo = ({ stretchMetaData, studentName }) => {
   const { info } = styles
   const { bottomMargin } = useStyles()
   const { scheduledDate, cohortName } = stretchMetaData
@@ -26,7 +26,8 @@ const GeneralInfo = ({ stretchMetaData }) => {
     <div>
       <Typography variant="subtitle2" className={bottomMargin}>
         <i>
-          You completed this stretch on {scheduledDate} in {cohortName}
+          {`${studentName ||
+            'You'} completed this stretch on ${scheduledDate} in ${cohortName}`}
         </i>
       </Typography>
       <ExpansionPanel styles={info}>

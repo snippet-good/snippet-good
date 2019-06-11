@@ -15,15 +15,18 @@ import { useStyles } from './styles'
 
 const StudentClosedStretchView = ({
   stretchAnswerId,
+  studentName,
   getCommentsOfStretchAnswer,
   stretchAnswer,
   allStretchAnswerRelatedData
 }) => {
   const { textPromptSpacing, textPromptHeading } = useStyles()
   useEffect(() => {
-    getCommentsOfStretchAnswer(stretchAnswerId)
+    if (stretchAnswerId) {
+      getCommentsOfStretchAnswer(stretchAnswerId)
+    }
   }, [stretchAnswerId])
-  if (!allStretchAnswerRelatedData.stretchCode) {
+  if (!stretchAnswerId) {
     return <div>no stretch answer</div>
   }
   const { root } = styles
@@ -33,7 +36,10 @@ const StudentClosedStretchView = ({
   } = allStretchAnswerRelatedData
   return (
     <div styles={root}>
-      <GeneralInfo stretchMetaData={stretchMetaData} />
+      <GeneralInfo
+        stretchMetaData={stretchMetaData}
+        studentName={studentName}
+      />
       <Grid container justify="center" spacing={2}>
         <Grid item xs={12}>
           <Typography variant="subtitle2" className={textPromptHeading}>
@@ -53,22 +59,28 @@ const StudentClosedStretchView = ({
 }
 
 const mapStateToProps = (
-  { stretchAnswers, stretches, cohortStretches },
+  { stretchAnswers, stretches, cohortStretches, users },
   {
     match: {
-      params: { stretchAnswerId }
+      params: { stretchAnswerId, studentId }
     }
   }
 ) => {
+  let studentName = ''
   const stretchAnswer = stretchAnswers.find(sa => sa.id === stretchAnswerId)
-  const data = [stretchAnswer, stretches, cohortStretches]
-  const allStretchAnswerRelatedData = checkIfAllDataExists(...data)
-    ? getStretchAnswerMetaData(...data)
-    : {}
+  const data = [stretchAnswer, stretches, cohortStretches, users]
+  if (!checkIfAllDataExists(...data)) return {}
+  const allStretchAnswerRelatedData = getStretchAnswerMetaData(...data)
+  if (studentId) {
+    const student = users.find(u => u.id === studentId)
+    studentName = `${student.firstName} ${student.lastName}`
+  }
+
   return {
     stretchAnswerId,
     stretchAnswer,
-    allStretchAnswerRelatedData
+    allStretchAnswerRelatedData,
+    studentName
   }
 }
 

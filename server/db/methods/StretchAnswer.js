@@ -7,38 +7,6 @@ const {
   Cohort
 } = require('../models')
 
-StretchAnswer.getAnswersOfStudentsOfSingleAdmin = function(adminId) {
-  return User.findOne({
-    where: { id: adminId },
-    include: CohortUser
-  })
-    .then(user => user.cohortusers.map(cu => cu.cohortId))
-    .then(cohortIds => {
-      return StretchAnswer.findAll({
-        include: [
-          {
-            model: CohortStretch,
-            attributes: ['cohortId'],
-            where: { cohortId: { [Op.in]: cohortIds } }
-          }
-        ]
-      })
-    })
-    .then(stretchAnswers => {
-      return stretchAnswers.map(s => {
-        const values = s.get()
-        const {
-          cohortstretch: { cohortId },
-          ...itemValues
-        } = values
-        return {
-          ...itemValues,
-          cohortId
-        }
-      })
-    })
-}
-
 // These are the main parameters that are used in Sequelize models' find methods.
 const defaults = {
   include: [
@@ -79,4 +47,44 @@ StretchAnswer.getAnswersOfStudent = function(studentId) {
   }).then(stretchAnswers => {
     return stretchAnswers.map(sa => sa.format())
   })
+}
+
+StretchAnswer.getAnswersOfStudentsOfSingleAdmin = function(adminId) {
+  return User.findOne({
+    where: { id: adminId },
+    include: CohortUser
+  })
+    .then(user => user.cohortusers.map(cu => cu.cohortId))
+    .then(cohortIds => {
+      return StretchAnswer.findAll({
+        include: [
+          {
+            model: CohortStretch,
+            attributes: ['cohortId'],
+            where: { cohortId: { [Op.in]: cohortIds } },
+            include: [
+              {
+                model: Cohort,
+                attributes: ['name']
+              }
+            ]
+          }
+        ]
+      })
+    })
+    .then(stretchAnswers => {
+      return stretchAnswers.map(s => {
+        const values = s.get()
+        const { cohortstretch, ...itemValues } = values
+        const {
+          cohortId,
+          cohort: { name }
+        } = cohortstretch.get()
+        return {
+          ...itemValues,
+          cohortId,
+          cohortName: name
+        }
+      })
+    })
 }

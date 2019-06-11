@@ -40,7 +40,7 @@ class AdminController extends Component {
 
         {/* path to go to view student's stretchAnswer to see their oslution, comments*/}
         <Route
-          path="/admin/stretchAnswer/:stretchAnswerId"
+          path="/admin/stretchAnswer/:stretchAnswerId/student/:studentId"
           exact
           component={StudentClosedStretchView}
         />
