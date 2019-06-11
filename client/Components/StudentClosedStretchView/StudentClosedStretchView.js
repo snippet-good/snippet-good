@@ -73,7 +73,13 @@ const mapStateToProps = (
   let studentName = ''
   const stretchAnswer = stretchAnswers.find(sa => sa.id === stretchAnswerId)
   const data = [stretchAnswer, stretches, cohortStretches, userDetails]
-  if (!checkIfAllDataExists(users, ...data)) return {}
+
+  if ([undefined, true].includes(userDetails.isAdmin)) {
+    if (!checkIfAllDataExists(users, ...data)) return {}
+  } else if (!checkIfAllDataExists(...data)) {
+    return {}
+  }
+
   const allStretchAnswerRelatedData = getStretchAnswerMetaData(...data)
   if (studentId) {
     const student = users.find(u => u.id === studentId)

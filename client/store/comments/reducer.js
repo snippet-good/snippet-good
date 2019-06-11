@@ -1,4 +1,4 @@
-import { GET_COMMENTS, CREATE_COMMENT } from './actions'
+import { GET_COMMENTS, CREATE_COMMENT, ADD_COMMENT } from './actions'
 
 export default (state = [], action) => {
   switch (action.type) {
@@ -6,6 +6,8 @@ export default (state = [], action) => {
       return action.comments
     case CREATE_COMMENT:
       return [...state, action.newComment]
+    case ADD_COMMENT:
+      return [...state, action.comment]
     default:
       return state
   }

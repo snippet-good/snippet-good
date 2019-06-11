@@ -62,7 +62,7 @@ export const getStretchAnswerMetaData = (
   return {
     stretchMetaData,
     stretchCode,
-    relatedUsers: [userId, ...adminIds].filter(u => u.id !== userDetails.id)
+    relatedUsers: [userId, ...adminIds].filter(u => u !== userDetails.id)
   }
 }
 
