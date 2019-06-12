@@ -79,9 +79,12 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
             >
               Modern Stretches
             </Typography>
-            <Button color="inherit" onClick={() => logoutUser(history)}>
-              Logout
-            </Button>
+
+            <section className={classes.rightToolbar}>
+              <Button color="inherit" onClick={() => logoutUser(history)}>
+                Logout
+              </Button>
+            </section>
           </Toolbar>
         </AppBar>
         <Drawer
