@@ -39,7 +39,8 @@ export const getFilteredStretchesOfAdmin = (
       stretchId: value.id,
       title: value.title,
       category: value.categoryName,
-      difficulty: value.difficulty
+      difficulty: value.difficulty,
+      minutes: value.minutes
     }
     return obj
   }, {})

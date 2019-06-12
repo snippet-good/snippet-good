@@ -6,29 +6,23 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { checkIfUserLoggedInThunk } from '../store/auth/actions'
 
-import { getAllCohorts } from '../store/cohorts/actions'
-import { getAllCohortUsers } from '../store/cohort-users/actions'
-import { getAllCategories } from '../store/categories/actions'
-import { getAllStretches } from '../store/stretches/actions'
-import { getAllStretchAnswers } from '../store/stretch-answers/actions'
-import { getAllCohortStretches } from '../store/cohort-stretches/actions'
-
 // React sub-components
 import { Login, AdminController, StudentController } from './index'
 
 class App extends Component {
   componentDidMount() {
     this.props.checkIfUserLoggedIn()
-    this.props.load()
   }
 
   render() {
+    const { id } = this.props.userDetails
     return (
       <Router>
         <Fragment>
-          <Route path="/" exact component={Login} />
-          <Route path="/admin" component={AdminController} />
-          <Route path="/student" component={StudentController} />
+          {!id && <Route component={Login} />}
+          {id && <Route path="/" exact component={Login} />}
+          {id && <Route path="/admin" component={AdminController} />}
+          {id && <Route path="/student" component={StudentController} />}
         </Fragment>
       </Router>
     )
@@ -37,20 +31,13 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk()),
-
-    load: () => {
-      dispatch(getAllCohorts())
-      dispatch(getAllCohortUsers())
-      dispatch(getAllCategories())
-      dispatch(getAllStretches())
-      dispatch(getAllStretchAnswers())
-      dispatch(getAllCohortStretches())
-    }
+    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk())
   }
 }
 
+const mapStateToProps = ({ userDetails }) => ({ userDetails })
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(App)

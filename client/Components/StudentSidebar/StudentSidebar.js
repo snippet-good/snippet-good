@@ -37,7 +37,7 @@ const StudentSidebar = ({ history, location: { pathname } }) => {
       </List>
       <Divider />
       <List>
-        {['Account Information', 'Logout'].map(text => (
+        {['Account Information'].map(text => (
           <ListItem button key={text}>
             <ListItemText primary={text} />
           </ListItem>

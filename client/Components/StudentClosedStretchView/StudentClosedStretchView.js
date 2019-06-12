@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getCommentsOfStretchAnswerThunk } from '../../store/comments/actions'
-import {
-  getStretchAnswerMetaData,
-  checkIfAllDataExists
-} from './helperfunctions'
+import { getStretchAnswerMetaData } from './helperfunctions'
+import { checkIfAllDataExists } from '../../utilityfunctions'
 
 import GeneralInfo from './GeneralInfo'
 import CodeSection from './CodeSection'
@@ -17,6 +15,7 @@ import { useStyles } from './styles'
 
 const StudentClosedStretchView = ({
   stretchAnswerId,
+  studentName,
   getCommentsOfStretchAnswer,
   stretchAnswer,
   allStretchAnswerRelatedData
@@ -26,18 +25,22 @@ const StudentClosedStretchView = ({
     if (stretchAnswerId) {
       getCommentsOfStretchAnswer(stretchAnswerId)
     }
-  }, [stretchAnswer])
-  if (!allStretchAnswerRelatedData.stretchCode) {
+  }, [stretchAnswerId])
+  if (!stretchAnswerId) {
     return <div>no stretch answer</div>
   }
   const { root } = styles
   const {
     stretchMetaData,
-    stretchCode: { textPrompt, studentAnswer, solutions }
+    stretchCode: { textPrompt, studentAnswer, solutions },
+    relatedUsers
   } = allStretchAnswerRelatedData
   return (
     <div styles={root}>
-      <GeneralInfo stretchMetaData={stretchMetaData} />
+      <GeneralInfo
+        stretchMetaData={stretchMetaData}
+        studentName={studentName}
+      />
       <Grid container justify="center" spacing={2}>
         <Grid item xs={12}>
           <Typography variant="subtitle2" className={textPromptHeading}>
@@ -51,29 +54,44 @@ const StudentClosedStretchView = ({
         </Grid>
       </Grid>
       <CodeSection {...{ studentAnswer, solutions }} />
-      <CommentsSection stretchAnswerId={stretchAnswer.id} />
+      <CommentsSection
+        stretchAnswer={stretchAnswer}
+        relatedUsers={relatedUsers}
+        stretchMetaData={stretchMetaData}
+      />
     </div>
   )
 }
 
 const mapStateToProps = (
-  { stretchAnswers, stretches, cohortStretches, cohorts, cohortUsers },
+  { stretchAnswers, stretches, cohortStretches, users, userDetails },
   {
     match: {
-      params: { stretchAnswerId }
+      params: { stretchAnswerId, studentId }
     }
   }
 ) => {
-  console.log('here')
+  let studentName = ''
   const stretchAnswer = stretchAnswers.find(sa => sa.id === stretchAnswerId)
-  const data = [stretchAnswer, stretches, cohortStretches, cohorts, cohortUsers]
-  const allStretchAnswerRelatedData = checkIfAllDataExists(...data)
-    ? getStretchAnswerMetaData(...data)
-    : {}
+  const data = [stretchAnswer, stretches, cohortStretches, userDetails]
+
+  if ([undefined, true].includes(userDetails.isAdmin)) {
+    if (!checkIfAllDataExists(users, ...data)) return {}
+  } else if (!checkIfAllDataExists(...data)) {
+    return {}
+  }
+
+  const allStretchAnswerRelatedData = getStretchAnswerMetaData(...data)
+  if (studentId) {
+    const student = users.find(u => u.id === studentId)
+    studentName = `${student.firstName} ${student.lastName}`
+  }
+
   return {
     stretchAnswerId,
     stretchAnswer,
-    allStretchAnswerRelatedData
+    allStretchAnswerRelatedData,
+    studentName
   }
 }
 

@@ -10,18 +10,7 @@ const StudentController = () => {
   return (
     <Fragment>
       {/* path to go to student's home view */}
-      {/* <Route path="/student" exact component={StudentHomeView} /> */}
-
-      {/*
-          The below route is for testing purposes only.
-          Please delete this after the issue regarding the Login view redirecting
-          a user to /student after successfully logging in or signing up has been resolved.
-      */}
-      <Route
-        path="/student"
-        exact
-        render={() => <div>student home view</div>}
-      />
+      <Route path="/student" exact component={StudentHomeView} />
 
       {/* path to go to student's home view */}
       <Route
@@ -32,7 +21,7 @@ const StudentController = () => {
 
       {/* path to go to view to complete stretch currently open */}
       <Route
-        path="/student/stretch/:stretchId"
+        path="/student/stretch/:cohortStretchId"
         exact
         component={OpenStretchView}
       />

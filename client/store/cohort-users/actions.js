@@ -25,3 +25,10 @@ export const getAllCohortUsers = () => dispatch => {
     .get('/api/cohort-users')
     .then(res => dispatch(getCohortUsers(res.data)))
 }
+
+// GET all cohoort users of student
+export const getStudentCohortUsersThunk = studentId => dispatch => {
+  return axios
+    .get(`/api/cohort-users/student/${studentId}`)
+    .then(res => dispatch(getCohortUsers(res.data)))
+}

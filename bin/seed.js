@@ -101,7 +101,7 @@ const createStretchObjects = (userIds, categoryIds) => {
       codePrompt: paragraph(),
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
-      canBeCoded: Math.random() <= 0.7,
+      minutes: getRandomArrayEntry([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
     }
@@ -118,9 +118,8 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
       const status = i === 0 ? 'scheduled' : i === 1 ? 'open' : 'closed'
       let cohortStretch = {
         status,
-        allowAnswersToBeRun: Math.random() <= 0.3,
+        allowAnswersToBeRun: Math.random() <= 0.5,
         solution: paragraph(),
-        minutes: getRandomArrayEntry([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
         cohortId: cohortIds[j],
         stretchId: getRandomArrayEntry(stretchIdsTemp),
         scheduledDate: new Date(
@@ -153,7 +152,7 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
   const csClosed = cohortStretchs.filter(cs => cs.status === 'closed')
 
   for (let i = 0; i < csClosed.length; ++i) {
-    const { cohortId } = cohortStretchs[i]
+    const { cohortId } = csClosed[i]
     const students = cohortUsers
       .filter(cu => cu.cohortId === cohortId)
       .map(cu => cu.userId)
@@ -180,7 +179,7 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
 
   const csOpen = cohortStretchs.filter(cs => cs.status === 'open')
   for (let i = 0; i < csOpen.length; ++i) {
-    const { cohortId } = cohortStretchs[i]
+    const { cohortId } = csOpen[i]
     const students = cohortUsers
       .filter(cu => cu.cohortId === cohortId)
       .map(cu => cu.userId)
@@ -219,7 +218,6 @@ const createCommentObjects = (
   for (let i = 0; i < stretchAnswers.length; ++i) {
     const { userId, id, cohortstretchId } = stretchAnswers[i]
     const { cohortId } = cohortStretches.find(cs => cs.id === cohortstretchId)
-    console.log(cohortId)
     const users = cohortUsers
       .filter(cu => adminIds.includes(cu.userId) && cu.cohortId === cohortId)
       .map(cu => cu.userId)
