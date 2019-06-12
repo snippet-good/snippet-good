@@ -7,6 +7,7 @@ export const getStretchAnswerMetaData = (
   userDetails
 ) => {
   const {
+    id,
     cohortstretchId,
     body,
     rating,
@@ -39,6 +40,7 @@ export const getStretchAnswerMetaData = (
     })
 
   const stretchMetaData = {
+    stretchAnswerId: id,
     cohortName,
     categoryName: categoryName || 'N/A',
     difficulty: difficulty || 'N/A',

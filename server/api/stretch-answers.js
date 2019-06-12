@@ -32,4 +32,12 @@ router.post('/create', (req, res, next) => {
     .catch(next)
 })
 
+router.put('/:id', (req, res, next) => {
+  StretchAnswer.findByPk(req.params.id)
+    .then(stretchAnswer => stretchAnswer.update(req.body))
+    .then(stretchAnswer => stretchAnswer.addAssociations())
+    .then(stretchAnswer => res.json(stretchAnswer))
+    .catch(next)
+})
+
 module.exports = router

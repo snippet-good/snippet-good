@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import StudentRanking from './StudentRanking'
 import Grid from '@material-ui/core/Grid'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
@@ -11,7 +12,8 @@ import { useStyles } from './styles'
 const GeneralInfo = ({ stretchMetaData, studentName }) => {
   const { info } = styles
   const { bottomMargin } = useStyles()
-  const { scheduledDate, cohortName } = stretchMetaData
+  const [answerRating, setAnswerRating] = useState(0)
+  const { scheduledDate, cohortName, stretchAnswerId } = stretchMetaData
   const selectedFields = [
     { field: 'Title', dbColumn: 'title' },
     { field: 'Category', dbColumn: 'categoryName' },
@@ -24,12 +26,18 @@ const GeneralInfo = ({ stretchMetaData, studentName }) => {
   }, [])
   return (
     <div>
-      <Typography variant="subtitle2" className={bottomMargin}>
+      <Typography variant="subtitle2">
         <i>
           {`${studentName ||
             'You'} completed this stretch on ${scheduledDate} in ${cohortName}`}
         </i>
       </Typography>
+      {studentName && stretchMetaData.rating === 'N/A' && (
+        <StudentRanking
+          {...{ stretchAnswerId, answerRating, setAnswerRating }}
+        />
+      )}
+      <div className={bottomMargin} />
       <ExpansionPanel styles={info}>
         <ExpansionPanelSummary>
           <Grid container justify="center" alignItems="center" spacing={2}>
