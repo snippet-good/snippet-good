@@ -21,9 +21,13 @@ export const getStretchAnswerMetaData = (
   const { stretchId, scheduledDate, adminIds } = cohortStretches.find(
     cs => cs.id === cohortstretchId
   )
-  const { categoryName, difficulty, title, textPrompt } = stretches.find(
-    s => s.id === stretchId
-  )
+  const {
+    categoryName,
+    difficulty,
+    title,
+    textPrompt,
+    codePrompt
+  } = stretches.find(s => s.id === stretchId)
 
   const solutions = cohortStretches
     .filter(cs => cs.stretchId === stretchId)
@@ -57,6 +61,7 @@ export const getStretchAnswerMetaData = (
 
   const stretchCode = {
     textPrompt,
+    codePrompt,
     studentAnswer: body,
     solutions
   }
