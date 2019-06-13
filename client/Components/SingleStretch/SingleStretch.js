@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 import { createStretch, updateStretch } from '../../store/stretches/actions'
+import { startStretchTimerThunk } from '../../store/cohort-stretches/actions'
 
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
@@ -42,6 +43,15 @@ class SingleStretch extends Component {
       attributes = stretches.find(s => s.id === match.params.id)
 
     this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
+  }
+
+  startTimer = () => {
+    const { cohortStretches, match } = this.props
+    let currCohortStretch = cohortStretches.find(
+      cs => cs.stretchId === match.params.id
+    )
+    currCohortStretch.startTimer = true
+    this.props.startStretchTimer(currCohortStretch)
   }
 
   handleChange = event => {
@@ -86,6 +96,7 @@ class SingleStretch extends Component {
 
   componentDidMount() {
     this.setStretchDetails()
+    this.startTimer()
   }
 
   componentDidUpdate(prevProps) {
@@ -165,12 +176,15 @@ SingleStretch.defaultProps = {
 
 const mapStateToProps = state => ({
   userDetails: state.userDetails,
-  stretches: state.stretches
+  stretches: state.stretches,
+  cohortStretches: state.cohortStretches
 })
 
 const mapDispatchToProps = dispatch => ({
   createStretch: newStretch => dispatch(createStretch(newStretch)),
-  updateStretch: updatedStretch => dispatch(updateStretch(updatedStretch))
+  updateStretch: updatedStretch => dispatch(updateStretch(updatedStretch)),
+  startStretchTimer: cohortStretch =>
+    dispatch(startStretchTimerThunk(cohortStretch))
 })
 
 export default connect(

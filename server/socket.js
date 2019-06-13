@@ -31,6 +31,27 @@ const socketFunction = socketServer => {
         }
       }
     })
+
+    socket.on('joinCohortStretchRoom', cohortStretchId => {
+      socket.join(cohortStretchId)
+
+      if (cohortStretchId) {
+        return socketServer.emit(
+          'success',
+          `you have joined room for cohort stretch id ${cohortStretchId}`
+        )
+      } else {
+        return socketServer.emit(
+          'err',
+          `the room for cohort stretch Id ${cohortStretchId} does not exist`
+        )
+      }
+    })
+
+    socket.on('startStretchTimer', cohortStretch => {
+      socket.to(cohortStretch.id).emit('timer-started', cohortStretch)
+      console.log('received request to start stretch timer')
+    })
   })
 }
 
