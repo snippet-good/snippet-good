@@ -2,6 +2,7 @@ import Socket from './Socket'
 import { GET_USER_DETAILS, LOGOUT } from '../auth/actions'
 import { CREATE_COMMENT } from '../comments/actions'
 import { JOIN_COHORT_STRETCH_ROOM } from './actions'
+import { START_STRETCH_TIMER } from '../cohort-stretches/actions'
 
 const socketMiddleware = storeAPI => {
   let socket
@@ -18,6 +19,9 @@ const socketMiddleware = storeAPI => {
         break
       case JOIN_COHORT_STRETCH_ROOM:
         socket.joinCohortStretchRoom(action.cohortStretchId)
+        break
+      case START_STRETCH_TIMER:
+        socket.startStretchTimer(action.cohortStretch)
         break
       default:
         break
