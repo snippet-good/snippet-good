@@ -58,6 +58,7 @@ const OpenStretchView = ({
   const [displayMinutes, setDisplayMinutes] = useState(0)
   const [displaySeconds, setDisplaySeconds] = useState(59)
   const [stretchAnswer, setStretchAnswer] = useState('')
+
   useEffect(() => {
     if (myStretch) {
       setCodePrompt(myStretch.codePrompt)
@@ -69,23 +70,25 @@ const OpenStretchView = ({
       setRemainingTime(myStretch.minutes * 60)
     }
     if (myStretch && remainingTime) {
-      const timer = setTimeout(() => {
-        setRemainingTime(remainingTime - 1)
-        if (displaySeconds > 0) {
-          setDisplaySeconds(displaySeconds - 1)
-        } else {
-          setDisplaySeconds(59)
-          setDisplayMinutes(displayMinutes - 1)
+      if (myCohortStretch.startTimer) {
+        const timer = setTimeout(() => {
+          setRemainingTime(remainingTime - 1)
+          if (displaySeconds > 0) {
+            setDisplaySeconds(displaySeconds - 1)
+          } else {
+            setDisplaySeconds(59)
+            setDisplayMinutes(displayMinutes - 1)
+          }
+        }, 1000)
+        if (remainingTime === 1) {
+          clearTimeout(timer)
+          createStretchAnswer({
+            body: stretchAnswer,
+            timeToSolve: myStretch.minutes * 60 - remainingTime,
+            cohortstretchId: myCohortStretch.id,
+            userId: userDetails.id
+          })
         }
-      }, 1000)
-      if (remainingTime === 1) {
-        clearTimeout(timer)
-        createStretchAnswer({
-          body: stretchAnswer,
-          timeToSolve: myStretch.minutes * 60 - remainingTime,
-          cohortstretchId: myCohortStretch.id,
-          userId: userDetails.id
-        })
       }
     }
   })
