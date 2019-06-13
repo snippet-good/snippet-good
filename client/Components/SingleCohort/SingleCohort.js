@@ -1,10 +1,4 @@
-import React, { Component, useState } from 'react'
-import { connect } from 'react-redux'
-import Typography from '@material-ui/core/Typography'
-
 import AppBar from '@material-ui/core/AppBar'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
 import { makeStyles } from '@material-ui/core/styles'
 import SingleCohortStretchTables from './SingleCohortStretchTables'
 import { CohortStudents } from './CohortStudents'
@@ -49,12 +43,73 @@ import { CohortStudents } from './CohortStudents'
 //     </div>
 //   )
 // }
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
 import Calendar from 'react-calendar'
 
+import Attendance from './Attendance'
+
 class SingleCohort extends Component {
+  state = {
+    tab: 0,
+    currentDate: new Date()
+  }
+
+  // This event handler handles changes on the Calendar component.
+  handleCalendarChange = currentDate => this.setState({ currentDate })
+
+  handleTabsChange = (event, tab) => this.setState({ tab })
+
   render() {
-    return <Calendar />
+    const { state, props } = this
+    const { handleCalendarChange, handleTabsChange } = this
+
+    return (
+      <div
+        style={{ display: 'flex', justifyContent: 'center', width: '100vw' }}
+      >
+        <Grid container spacing={2} style={{ width: '80%' }}>
+          <Grid item xs={6}>
+            <Typography variant="h3">{props.cohort.name}</Typography>
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            style={{ display: 'flex', justifyContent: 'flex-end' }}
+          >
+            <Calendar
+              onChange={handleCalendarChange}
+              value={state.currentDate}
+            />
+          </Grid>
+
+          <Grid item xs={12} style={{ height: '20px' }} />
+
+          <Grid item xs={12}>
+            <Tabs
+              value={state.tab}
+              onChange={handleTabsChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+            >
+              <Tab label="Attendance" />
+              <Tab label="Stretches" />
+            </Tabs>
+          </Grid>
+
+          <Grid item xs={12}>
+            {state.tab === 0 && <Attendance cohortId={props.match.params.id} />}
+          </Grid>
+        </Grid>
+      </div>
+    )
   }
 }
 

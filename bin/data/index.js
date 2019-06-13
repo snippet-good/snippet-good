@@ -1,5 +1,6 @@
 module.exports = {
-  users: require('./users'),
+  admins: require('./admins'),
+  students: require('./students'),
   cohorts: require('./cohorts'),
   categories: require('./categories')
 }

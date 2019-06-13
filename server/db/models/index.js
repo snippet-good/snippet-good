@@ -1,19 +1,15 @@
-const User = require('./User')
-const StretchAnswer = require('./StretchAnswer')
-const Stretch = require('./Stretch')
-const Comment = require('./Comment')
-const Cohort = require('./Cohort')
-const CohortStretch = require('./CohortStretch')
-const Category = require('./Category')
-const CohortUser = require('./CohortUser')
-
 module.exports = {
-  User,
-  StretchAnswer,
-  Stretch,
-  Comment,
-  Cohort,
-  CohortStretch,
-  Category,
-  CohortUser
+  User: require('./User'),
+  Cohort: require('./Cohort'),
+  CohortUser: require('./CohortUser'),
+
+  Comment: require('./Comment'),
+
+  Attendance: require('./Attendance'),
+  Withdrawl: require('./Withdrawl'),
+
+  Category: require('./Category'),
+  Stretch: require('./Stretch'),
+  CohortStretch: require('./CohortStretch'),
+  StretchAnswer: require('./StretchAnswer')
 }

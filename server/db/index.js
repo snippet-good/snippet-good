@@ -7,7 +7,9 @@ const {
   CohortUser,
   User,
   Stretch,
-  CohortStretch
+  CohortStretch,
+  Attendance,
+  Withdrawl
 } = require('./models')
 
 const { UserMethods, CohortMethods, CommentMethods } = require('./methods')

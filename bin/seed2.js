@@ -13,22 +13,34 @@ const syncAndSeed = async () => {
   // Create categories
   await Promise.all(data.categories.map(c => Category.create(c)))
 
-  // Create users
-  const users = await Promise.all(data.users.map(u => User.create(u)))
+  // Create admins
+  const admins = await Promise.all(data.admins.map(u => User.create(u)))
+
+  // Create students
+  const students = await Promise.all(data.students.map(s => User.create(s)))
 
   // Create cohorts
   const cohorts = await Promise.all(data.cohorts.map(c => Cohort.create(c)))
 
-  // Create associations for users and cohorts on CohortUser join table
+  // Create associations for admin and cohort on CohortUser join table
   await Promise.all(
     cohorts.map(cohort => {
-      const i = getRandomIndex(users.length)
-      const obj = { cohortId: cohort.id, userId: users[i].id }
+      const i = getRandomIndex(admins.length)
+      const obj = { cohortId: cohort.id, userId: admins[i].id }
       return CohortUser.create(obj)
     })
   )
 
-  console.log('database successfully seeded!')
+  // Create associations for student and cohort on CohortUser join table
+  await Promise.all(
+    students.map(student => {
+      const i = getRandomIndex(cohorts.length)
+      const obj = { userId: student.id, cohortId: cohorts[i].id }
+      return CohortUser.create(obj)
+    })
+  )
+
+  console.log('Database successfully seeded!')
 }
 
 module.exports = syncAndSeed
