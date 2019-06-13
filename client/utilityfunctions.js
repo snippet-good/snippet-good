@@ -1,5 +1,6 @@
 export const checkIfAllDataExists = (...args) => {
   for (let i = 0; i < args.length; ++i) {
+    console.log(args[i])
     if (!args[i]) {
       return false
     } else if (Array.isArray(args[i])) {

@@ -75,6 +75,7 @@ const StretchScheduler = props => {
                 <CohortSelect
                   cohortId={selectedCohortId}
                   handleChange={handleCohortIdChange}
+                  stretchId={id}
                 />
               </Grid>
             )}

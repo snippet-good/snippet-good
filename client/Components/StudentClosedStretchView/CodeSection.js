@@ -27,7 +27,7 @@ class CodeSection extends Component {
   }
 
   render() {
-    const { studentAnswer, solutions } = this.props
+    const { studentAnswer, solutions, codePrompt } = this.props
     const { center, select, solutionSelect } = editorsStyles()
     const { editorTheme, solution } = this.state
     const { handleChange } = this
@@ -59,14 +59,14 @@ class CodeSection extends Component {
         <Grid container>
           <Grid item xs={6}>
             <SingleCodeComponent
-              savedCode={studentAnswer}
+              savedCode={`${codePrompt}\n\n${studentAnswer}`}
               editorId="student"
               {...{ editorTheme, handleChange }}
             />
           </Grid>
           <Grid item xs={6}>
             <SingleCodeComponent
-              savedCode={solution}
+              savedCode={`${codePrompt}\n\n${solution}`}
               editorId="admin"
               {...{ editorTheme, handleChange }}
             />

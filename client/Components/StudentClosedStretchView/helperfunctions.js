@@ -7,6 +7,7 @@ export const getStretchAnswerMetaData = (
   userDetails
 ) => {
   const {
+    id,
     cohortstretchId,
     body,
     rating,
@@ -20,9 +21,13 @@ export const getStretchAnswerMetaData = (
   const { stretchId, scheduledDate, adminIds } = cohortStretches.find(
     cs => cs.id === cohortstretchId
   )
-  const { categoryName, difficulty, title, textPrompt } = stretches.find(
-    s => s.id === stretchId
-  )
+  const {
+    categoryName,
+    difficulty,
+    title,
+    textPrompt,
+    codePrompt
+  } = stretches.find(s => s.id === stretchId)
 
   const solutions = cohortStretches
     .filter(cs => cs.stretchId === stretchId)
@@ -39,6 +44,7 @@ export const getStretchAnswerMetaData = (
     })
 
   const stretchMetaData = {
+    stretchAnswerId: id,
     cohortName,
     categoryName: categoryName || 'N/A',
     difficulty: difficulty || 'N/A',
@@ -55,6 +61,7 @@ export const getStretchAnswerMetaData = (
 
   const stretchCode = {
     textPrompt,
+    codePrompt,
     studentAnswer: body,
     solutions
   }

@@ -8,11 +8,14 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
+import { joinCohortStretchRoomThunk } from '../../store/socket/actions'
 
 const mapDispatchToProps = dispatch => {
   return {
     createStretchAnswer: stretchAnswer =>
-      dispatch(createStretchAnswerThunk(stretchAnswer))
+      dispatch(createStretchAnswerThunk(stretchAnswer)),
+    joinCohortStretchRoom: cohortStretchId =>
+      dispatch(joinCohortStretchRoomThunk(cohortStretchId))
   }
 }
 
@@ -46,7 +49,9 @@ const OpenStretchView = ({
   myStretch,
   myCohortStretch,
   createStretchAnswer,
-  userDetails
+  userDetails,
+  history
+  joinCohortStretchRoom
 }) => {
   const classes = useStyles()
   const [codePrompt, setCodePrompt] = useState('')
@@ -54,33 +59,51 @@ const OpenStretchView = ({
   const [displayMinutes, setDisplayMinutes] = useState(0)
   const [displaySeconds, setDisplaySeconds] = useState(59)
   const [stretchAnswer, setStretchAnswer] = useState('')
+
+
+  const submitStretch = () => {
+    return createStretchAnswer({
+      body: stretchAnswer,
+      timeToSolve: myStretch.minutes * 60 - remainingTime,
+      cohortstretchId: myCohortStretch.id,
+      userId: userDetails.id
+    }).then(() => history.push('/student/stretches/submitted'))
+  }
+
   useEffect(() => {
     if (myStretch) {
       setCodePrompt(myStretch.codePrompt)
       setStretchAnswer(myStretch.codePrompt)
     }
     if (myStretch && !remainingTime) {
+      joinCohortStretchRoom(myCohortStretch.id)
       setDisplayMinutes(myStretch.minutes - 1)
       setRemainingTime(myStretch.minutes * 60)
     }
     if (myStretch && remainingTime) {
-      const timer = setTimeout(() => {
-        setRemainingTime(remainingTime - 1)
-        if (displaySeconds > 0) {
-          setDisplaySeconds(displaySeconds - 1)
-        } else {
-          setDisplaySeconds(59)
-          setDisplayMinutes(displayMinutes - 1)
+      if (myCohortStretch.startTimer) {
+        const timer = setTimeout(() => {
+          setRemainingTime(remainingTime - 1)
+          if (displaySeconds > 0) {
+            setDisplaySeconds(displaySeconds - 1)
+          } else {
+            setDisplaySeconds(59)
+            setDisplayMinutes(displayMinutes - 1)
+          }
+        }, 1000)
+        if (remainingTime === 1) {
+          clearTimeout(timer)
+          createStretchAnswer({
+            body: stretchAnswer,
+            timeToSolve: myStretch.minutes * 60 - remainingTime,
+            cohortstretchId: myCohortStretch.id,
+            userId: userDetails.id
+          })
         }
       }, 1000)
       if (remainingTime === 1) {
         clearTimeout(timer)
-        createStretchAnswer({
-          body: stretchAnswer,
-          timeToSolve: myStretch.minutes * 60 - remainingTime,
-          cohortstretchId: myCohortStretch.id,
-          userId: userDetails.id
-        })
+        submitStretch()
       }
     }
   })
@@ -115,18 +138,7 @@ const OpenStretchView = ({
           />
         ))}
 
-      <Button
-        onClick={() =>
-          createStretchAnswer({
-            body: stretchAnswer,
-            timeToSolve: myStretch.minutes * 60 - remainingTime,
-            cohortstretchId: myCohortStretch.id,
-            userId: userDetails.id
-          })
-        }
-      >
-        Submit
-      </Button>
+      <Button onClick={submitStretch}>Submit</Button>
     </div>
   )
 }

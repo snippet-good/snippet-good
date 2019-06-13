@@ -32,7 +32,7 @@ const StudentClosedStretchView = ({
   const { root } = styles
   const {
     stretchMetaData,
-    stretchCode: { textPrompt, studentAnswer, solutions },
+    stretchCode: { textPrompt, codePrompt, studentAnswer, solutions },
     relatedUsers
   } = allStretchAnswerRelatedData
   return (
@@ -53,7 +53,7 @@ const StudentClosedStretchView = ({
           </Typography>
         </Grid>
       </Grid>
-      <CodeSection {...{ studentAnswer, solutions }} />
+      <CodeSection {...{ studentAnswer, codePrompt, solutions }} />
       <CommentsSection
         stretchAnswer={stretchAnswer}
         relatedUsers={relatedUsers}

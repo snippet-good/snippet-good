@@ -21,8 +21,9 @@ const createStretchAnswer = newStretchAnswer => ({
   newStretchAnswer
 })
 
-const replaceStretchAnswer = updatedStretchAnswer => ({
+const replaceStretchAnswer = (stretchAnswerId, updatedStretchAnswer) => ({
   type: UPDATE_STRETCH_ANSWER,
+  stretchAnswerId,
   updatedStretchAnswer
 })
 
@@ -58,4 +59,15 @@ export const createStretchAnswerThunk = newStretchAnswer => dispatch => {
     .post(`/api/stretch-answers/create`, { newStretchAnswer })
     .then(res => res.data)
     .then(stretchAnswer => dispatch(createStretchAnswer(stretchAnswer)))
+}
+
+export const updateStretchAnswerThunk = (stretchAnswerId, updatedFields) => {
+  return dispatch => {
+    return axios
+      .put(`/api/stretch-answers/${stretchAnswerId}`, updatedFields)
+      .then(res => res.data)
+      .then(stretchAnswer =>
+        dispatch(replaceStretchAnswer(stretchAnswerId, stretchAnswer))
+      )
+  }
 }
