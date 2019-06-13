@@ -1,4 +1,4 @@
-import React, {  useState } from 'react'
+import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 
@@ -9,45 +9,53 @@ import { makeStyles } from '@material-ui/core/styles'
 import SingleCohortStretchTables from './SingleCohortStretchTables'
 import { CohortStudents } from './CohortStudents'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    width: 500
+// const useStyles = makeStyles(theme => ({
+//   root: {
+//     backgroundColor: theme.palette.background.paper,
+//     width: 500
+//   }
+// }))
+
+// const SingleCohort = ({ cohort, cohortStudents }) => {
+//   const { root } = useStyles()
+//   const { name } = cohort
+//   const [value, setValue] = useState('stretches')
+
+//   return (
+//     <div className={root}>
+//       <Typography
+//         variant="h5"
+//         gutterBottom
+//       >
+//         {name}
+//       </Typography>
+
+//       <AppBar position="static" color="default">
+//         <Tabs
+//           value={value}
+//           onChange={(event, newValue) => setValue(newValue)}
+//           indicatorColor="primary"
+//           textColor="primary"
+//           variant="fullWidth"
+//         >
+//           <Tab value="stretches" label="Stretches" />
+//           <Tab value="students" label="Students" />
+//         </Tabs>
+//       </AppBar>
+//       {value === 'stretches' && <SingleCohortStretchTables cohort={cohort} />}
+//       {value === 'students' && (
+//         <CohortStudents cohortStudents={cohortStudents} />
+//       )}
+//     </div>
+//   )
+// }
+
+import Calendar from 'react-calendar'
+
+class SingleCohort extends Component {
+  render() {
+    return <Calendar />
   }
-}))
-
-const SingleCohort = ({ cohort, cohortStudents }) => {
-  const { root } = useStyles()
-  const { name } = cohort
-  const [value, setValue] = useState('stretches')
-
-  return (
-    <div className={root}>
-      <Typography
-        variant="h5"
-        gutterBottom
-      >
-        {name}
-      </Typography>
-
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={(event, newValue) => setValue(newValue)}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-        >
-          <Tab value="stretches" label="Stretches" />
-          <Tab value="students" label="Students" />
-        </Tabs>
-      </AppBar>
-      {value === 'stretches' && <SingleCohortStretchTables cohort={cohort} />}
-      {value === 'students' && (
-        <CohortStudents cohortStudents={cohortStudents} />
-      )}
-    </div>
-  )
 }
 
 const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
@@ -57,8 +65,4 @@ const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
   cohort: cohorts.find(cohort => cohort.id === params.id) || {}
 })
 
-
-
-export default connect(
-  mapStateToProps
-)(SingleCohort)
+export default connect(mapStateToProps)(SingleCohort)
