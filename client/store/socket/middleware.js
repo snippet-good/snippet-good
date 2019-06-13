@@ -1,6 +1,7 @@
 import Socket from './Socket'
 import { GET_USER_DETAILS, LOGOUT } from '../auth/actions'
 import { CREATE_COMMENT } from '../comments/actions'
+import { JOIN_COHORT_STRETCH_ROOM } from './actions'
 
 const socketMiddleware = storeAPI => {
   let socket
@@ -14,6 +15,9 @@ const socketMiddleware = storeAPI => {
         break
       case LOGOUT:
         socket.disconnectUser()
+        break
+      case JOIN_COHORT_STRETCH_ROOM:
+        socket.joinCohortStretchRoom(action.cohortStretchId)
         break
       default:
         break

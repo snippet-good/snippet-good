@@ -8,11 +8,14 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
+import { joinCohortStretchRoomThunk } from '../../store/socket/actions'
 
 const mapDispatchToProps = dispatch => {
   return {
     createStretchAnswer: stretchAnswer =>
-      dispatch(createStretchAnswerThunk(stretchAnswer))
+      dispatch(createStretchAnswerThunk(stretchAnswer)),
+    joinCohortStretchRoom: cohortStretchId =>
+      dispatch(joinCohortStretchRoomThunk(cohortStretchId))
   }
 }
 
@@ -46,7 +49,8 @@ const OpenStretchView = ({
   myStretch,
   myCohortStretch,
   createStretchAnswer,
-  userDetails
+  userDetails,
+  joinCohortStretchRoom
 }) => {
   const classes = useStyles()
   const [codePrompt, setCodePrompt] = useState('')
@@ -60,6 +64,7 @@ const OpenStretchView = ({
       setStretchAnswer(myStretch.codePrompt)
     }
     if (myStretch && !remainingTime) {
+      joinCohortStretchRoom(myCohortStretch.id)
       setDisplayMinutes(myStretch.minutes - 1)
       setRemainingTime(myStretch.minutes * 60)
     }

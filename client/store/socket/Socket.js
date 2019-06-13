@@ -35,6 +35,11 @@ class Socket {
       console.log('socket not connected')
     }
   }
+
+  joinCohortStretchRoom(cohortStretchId) {
+    this.socket.emit('joinCohortStretchRoom', cohortStretchId)
+    this.socket.on('success', msg => console.log(msg))
+  }
 }
 
 export default Socket
