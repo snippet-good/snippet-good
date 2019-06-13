@@ -10,7 +10,7 @@ import { textPromptStyles } from './styles'
 
 const StretchReviewView = ({ attributes, currentCohortStretch }) => {
   if (!attributes) return <div>Data still loading</div>
-  const { textPrompt, ...otherStretchFields } = attributes
+  const { textPrompt, codePrompt, ...otherStretchFields } = attributes
 
   return (
     <div>
@@ -31,7 +31,9 @@ const StretchReviewView = ({ attributes, currentCohortStretch }) => {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <CodeSection solution={currentCohortStretch.solution} />
+          <CodeSection
+            solution={`${codePrompt}\n\n${currentCohortStretch.solution}`}
+          />
         </Grid>
       </Grid>
     </div>

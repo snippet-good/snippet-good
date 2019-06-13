@@ -26,9 +26,7 @@ export const getFilteredStretchesOfAdmin = (
   students,
   stretchAnswers
 ) => {
-  if (
-    !checkIfAllDataExists(cohortStretches, stretches, students, stretchAnswers)
-  ) {
+  if (!checkIfAllDataExists(cohortStretches, stretches, students)) {
     return { scheduled: [], open: [] }
   }
 

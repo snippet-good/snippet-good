@@ -50,6 +50,7 @@ const OpenStretchView = ({
   myCohortStretch,
   createStretchAnswer,
   userDetails,
+  history
   joinCohortStretchRoom
 }) => {
   const classes = useStyles()
@@ -58,6 +59,16 @@ const OpenStretchView = ({
   const [displayMinutes, setDisplayMinutes] = useState(0)
   const [displaySeconds, setDisplaySeconds] = useState(59)
   const [stretchAnswer, setStretchAnswer] = useState('')
+
+
+  const submitStretch = () => {
+    return createStretchAnswer({
+      body: stretchAnswer,
+      timeToSolve: myStretch.minutes * 60 - remainingTime,
+      cohortstretchId: myCohortStretch.id,
+      userId: userDetails.id
+    }).then(() => history.push('/student/stretches/submitted'))
+  }
 
   useEffect(() => {
     if (myStretch) {
@@ -89,6 +100,10 @@ const OpenStretchView = ({
             userId: userDetails.id
           })
         }
+      }, 1000)
+      if (remainingTime === 1) {
+        clearTimeout(timer)
+        submitStretch()
       }
     }
   })
@@ -123,18 +138,7 @@ const OpenStretchView = ({
           />
         ))}
 
-      <Button
-        onClick={() =>
-          createStretchAnswer({
-            body: stretchAnswer,
-            timeToSolve: myStretch.minutes * 60 - remainingTime,
-            cohortstretchId: myCohortStretch.id,
-            userId: userDetails.id
-          })
-        }
-      >
-        Submit
-      </Button>
+      <Button onClick={submitStretch}>Submit</Button>
     </div>
   )
 }

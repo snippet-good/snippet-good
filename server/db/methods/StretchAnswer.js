@@ -60,7 +60,7 @@ StretchAnswer.getAnswersOfStudentsOfSingleAdmin = function(adminId) {
         include: [
           {
             model: CohortStretch,
-            attributes: ['cohortId'],
+            attributes: ['cohortId', 'stretchId'],
             where: { cohortId: { [Op.in]: cohortIds } },
             include: [
               {
@@ -73,18 +73,6 @@ StretchAnswer.getAnswersOfStudentsOfSingleAdmin = function(adminId) {
       })
     })
     .then(stretchAnswers => {
-      return stretchAnswers.map(s => {
-        const values = s.get()
-        const { cohortstretch, ...itemValues } = values
-        const {
-          cohortId,
-          cohort: { name }
-        } = cohortstretch.get()
-        return {
-          ...itemValues,
-          cohortId,
-          cohortName: name
-        }
-      })
+      return stretchAnswers.map(sa => sa.format())
     })
 }

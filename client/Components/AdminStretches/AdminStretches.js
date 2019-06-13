@@ -10,10 +10,9 @@ import TableBody from '@material-ui/core/TableBody'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import Button from '@material-ui/core/Button'
-
 import Card from '@material-ui/core/Card'
-
 import Typography from '@material-ui/core/Typography'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import StretchScheduler from '../_shared/StretchScheduler'
 
@@ -130,8 +129,11 @@ class AdminStretches extends Component {
 
   render() {
     const { searchTerm } = this.state
-    const { stretches } = this.props
-    const currentStretches = this.state.currentStretches.length > 0 ? this.state.currentStretches : stretches
+    const { stretches, cohorts, cohortStretches } = this.props
+    const currentStretches =
+      this.state.currentStretches.length > 0
+        ? this.state.currentStretches
+        : stretches
 
     const allCategories = []
     stretches.map(stretch => allCategories.push(stretch.categoryName))
@@ -215,9 +217,7 @@ class AdminStretches extends Component {
 
             <Typography variant="h6">Filter by Author:</Typography>
             <form onSubmit={this.applyAuthorFilter}>
-              <select
-                onChange={this.selectAuthorFilter}
-              >
+              <select onChange={this.selectAuthorFilter}>
                 {authors.map((auth, index) => (
                   <option key={index} value={auth}>
                     {auth}
@@ -261,6 +261,12 @@ class AdminStretches extends Component {
             </TableHead>
             <TableBody>
               {currentStretches.map(stretch => {
+                const cohortsAlreadyUsedStretch = cohortStretches
+                  .filter(cs => cs.stretchId === stretch.id)
+                  .map(cs => cs.cohortId)
+                const disableButton = cohorts.every(c =>
+                  cohortsAlreadyUsedStretch.includes(c.id)
+                )
                 return (
                   <TableRow key={stretch.id}>
                     <TableCell>
@@ -272,12 +278,24 @@ class AdminStretches extends Component {
                     <TableCell>{stretch.categoryName}</TableCell>
                     <TableCell>{stretch.difficulty}</TableCell>
                     <TableCell>
-                      <Button
-                        color="secondary"
-                        onClick={() => handleModalOpen(stretch)}
+                      <Tooltip
+                        title={
+                          disableButton
+                            ? 'You have already used this stretch in all your cohorts'
+                            : ''
+                        }
+                        placement="top-end"
                       >
-                        Schedule
-                      </Button>
+                        <div>
+                          <Button
+                            color="secondary"
+                            onClick={() => handleModalOpen(stretch)}
+                            disabled={disableButton}
+                          >
+                            Schedule
+                          </Button>
+                        </div>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 )
@@ -290,18 +308,22 @@ class AdminStretches extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const { categories, stretches } = state
-  return {
-    categories,
-    stretches
-  }
-}
+const mapStateToProps = ({
+  categories,
+  stretches,
+  cohorts,
+  cohortStretches
+}) => ({
+  categories,
+  stretches,
+  cohorts,
+  cohortStretches
+})
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchCategories: () => dispatch(getAllCategories()),
-    fetchStretches: () => dispatch(getAllStretches()),
+    fetchStretches: () => dispatch(getAllStretches())
   }
 }
 export default connect(
