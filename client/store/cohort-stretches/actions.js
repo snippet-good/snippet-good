@@ -8,6 +8,7 @@ export const CREATE_COHORT_STRETCH = 'CREATE_COHORT_STRETCH'
 export const UPDATE_COHORT_STRETCH = 'UPDATE_COHORT_STRETCH'
 export const DELETE_COHORT_STRETCH = 'DELETE_COHORT_STRETCH'
 
+export const START_STRETCH_TIMER = 'START_STRETCH_TIMER'
 // --------------------------------------------------
 // Action creators
 
@@ -32,6 +33,10 @@ const deleteCohortStretch = cohortStretchId => ({
   cohortStretchId
 })
 
+export const startStretchTimer = cohortStretch => ({
+  type: START_STRETCH_TIMER,
+  cohortStretch
+})
 // --------------------------------------------------
 // CRUD thunks
 
@@ -64,4 +69,8 @@ export const deleteCohortStretchThunk = cohortStretchId => {
       .delete(`/api/cohort-stretches/${cohortStretchId}`)
       .then(() => dispatch(deleteCohortStretch(cohortStretchId)))
   }
+}
+
+export const startStretchTimerThunk = cohortStretch => dispatch => {
+  return dispatch(startStretchTimer(cohortStretch))
 }

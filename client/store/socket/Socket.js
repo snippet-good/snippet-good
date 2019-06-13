@@ -1,6 +1,7 @@
 import io from 'socket.io-client'
 import { addComment } from '../comments/actions'
 import { setFlashMessage } from '../flash-message/actions'
+import { startStretchTimer } from '../cohort-stretches/actions'
 
 class Socket {
   constructor(userId, storeAPI) {
@@ -22,6 +23,10 @@ class Socket {
         storeAPI.dispatch(setFlashMessage(message, link))
       }
     )
+
+    this.socket.on('timer-started', cohortStretchId => {
+      storeAPI.dispatch(startStretchTimer(cohortStretchId))
+    })
   }
 
   disconnectUser() {
@@ -34,6 +39,15 @@ class Socket {
     } else {
       console.log('socket not connected')
     }
+  }
+
+  joinCohortStretchRoom(cohortStretchId) {
+    this.socket.emit('joinCohortStretchRoom', cohortStretchId)
+    this.socket.on('success', msg => console.log(msg))
+  }
+
+  startStretchTimer(cohortStretch) {
+    this.socket.emit('startStretchTimer', cohortStretch)
   }
 }
 
