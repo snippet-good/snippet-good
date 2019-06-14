@@ -87,7 +87,8 @@ const GeneralInfo = props => {
                   />
                 )}
               </div>
-
+            </Grid>
+            <Grid item xs={12} style={styles.row}>
               {/* Minutes input/display */}
               <div>
                 <InputLabel shrink>Minutes</InputLabel>

@@ -24,7 +24,7 @@ class SingleStretch extends Component {
     codePrompt: '// This is an example code prompt.',
     difficulty: 3,
     minutes: '',
-    language: '',
+    language: 'javascript',
     authorId: '',
     isLoaded: false
   }
@@ -38,7 +38,7 @@ class SingleStretch extends Component {
     let attributes = {}
     if (match.params.id && stretches.length)
       attributes = stretches.find(s => s.id === match.params.id)
-
+    console.log(attributes)
     this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
   }
 
@@ -107,7 +107,8 @@ class SingleStretch extends Component {
     const { state } = this
     const { handleSubmit, changeMode } = this
     const { handleChange } = this
-    const { mode, authorId } = state
+    const { mode, authorId, language } = state
+    console.log('in render', this.state)
     return (
       <form onSubmit={handleSubmit}>
         <div style={styles.root}>
@@ -155,6 +156,7 @@ class SingleStretch extends Component {
                 initialCode={state.initialCode}
                 codeTargetName="codePrompt"
                 handleCodeChange={handleChange}
+                language={language.toLowerCase()}
                 readOnly={mode === 'read'}
               />
             </Grid>

@@ -20,11 +20,17 @@ const addClosingCurlyBracket = (editor, editorSession) => {
 const configEditor = function(
   editor,
   editorSession,
-  language,
+  userOptions,
   handleCodeChange,
   codeTargetName
 ) {
+  const { initialCode, editorTheme, language, readOnly } = userOptions
+  console.log('LANGUAGE', language)
   editorSession.setMode(`ace/mode/${language}`)
+  if (initialCode) editor.setValue(initialCode)
+  if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)
+  editor.setReadOnly(readOnly)
+
   editor.setShowPrintMargin(false)
   editor.setOptions({ minLines: 15 })
   editor.setOptions({ maxLines: 40 })
