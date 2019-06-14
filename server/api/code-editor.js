@@ -58,3 +58,13 @@ router.post('/runcode', (req, res, next) => {
     next(error)
   }
 })
+
+router.delete('/:fileName', (req, res, next) => {
+  fs.unlink(
+    path.join(__dirname, '..', '..', 'TempUserFiles', req.params.fileName),
+    err => {
+      if (err) throw err
+      res.send('file successfully deleted')
+    }
+  )
+})

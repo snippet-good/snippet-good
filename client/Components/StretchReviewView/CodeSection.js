@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import CodeEditor, {
   AuxillaryComponents,
   codeEditorFunctions
@@ -28,6 +29,10 @@ class CodeSection extends Component {
     }
     this.runCodeBinded = runCode.bind(this)
     this.clearCodeResultsBinded = clearCodeResults.bind(this)
+  }
+
+  componentWillUnmount() {
+    axios.delete(`/api/code/file-${this.props.cohortStretchId}.html`)
   }
 
   handleChange = ({ target }) => {
