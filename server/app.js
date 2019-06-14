@@ -15,7 +15,7 @@ app.use(
 app.use(volleyball)
 app.use(express.json())
 app.use('/public', express.static(path.join(__dirname, '..', 'public')))
-app.use('/temp', express.static(path.join(__dirname, '..', 'temp')))
+app.use('/temp', express.static(path.join(__dirname, '..', 'TempUserFiles')))
 
 // routers
 app.use('/api', require('./api'))

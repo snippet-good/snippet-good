@@ -23,7 +23,8 @@ class CodeSection extends Component {
       code: '',
       solution: '',
       codeResponse: '',
-      codeError: ''
+      codeError: '',
+      fileGenerated: false
     }
     this.runCodeBinded = runCode.bind(this)
     this.clearCodeResultsBinded = clearCodeResults.bind(this)
@@ -40,14 +41,21 @@ class CodeSection extends Component {
   }
 
   render() {
-    const { editorTheme, code, codeResponse, codeError, solution } = this.state
+    const {
+      editorTheme,
+      code,
+      codeResponse,
+      codeError,
+      solution,
+      fileGenerated
+    } = this.state
     const {
       runCodeBinded,
       clearCodeResultsBinded,
       handleChange,
       showSolution
     } = this
-    const { language } = this.props
+    const { language, cohortStretchId } = this.props
     return (
       <div>
         <Grid container>
@@ -70,7 +78,12 @@ class CodeSection extends Component {
                 <RunCodeButton
                   color="primary"
                   runCode={runCodeBinded}
-                  code={code}
+                  postPayload={{
+                    code,
+                    language,
+                    fileName:
+                      language === 'javascript' ? '' : `file-${cohortStretchId}`
+                  }}
                 />
                 <ClearCodeResultsButton
                   color="secondary"
@@ -91,11 +104,17 @@ class CodeSection extends Component {
             />
           </Grid>
           <Grid item xs={6}>
-            <CodeOutput
-              codeResponse={codeResponse}
-              codeError={codeError}
-              minHeight="23rem"
-            />
+            {language === 'javascript' && (
+              <CodeOutput
+                codeResponse={codeResponse}
+                codeError={codeError}
+                minHeight="23rem"
+              />
+            )}
+            {language === 'jsx' && !fileGenerated && <iframe src="" />}
+            {language === 'jsx' && fileGenerated && (
+              <iframe src={`/temp/file-${cohortStretchId}.html`} />
+            )}
           </Grid>
         </Grid>
       </div>
