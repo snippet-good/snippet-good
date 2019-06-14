@@ -57,6 +57,25 @@ function initDb(force = false) {
     Comment.belongsTo(StretchAnswer)
     StretchAnswer.hasMany(Comment)
 
+    // -------------------------------------------------------
+    /* Attendance-related relationships
+
+       Attendance model is a join table that joins students to cohorts.
+       Withdrawl model is a join table that joins students to cohorts.
+    */
+    Attendance.belongsTo(User)
+    User.hasMany(Attendance)
+
+    Attendance.belongsTo(Cohort)
+    Cohort.hasMany(Attendance)
+
+    Withdrawl.belongsTo(User)
+    User.hasMany(Withdrawl)
+
+    Withdrawl.belongsTo(Cohort)
+    Cohort.hasMany(Withdrawl)
+    // -------------------------------------------------------
+
     return db.sync({ force })
   })
 }
