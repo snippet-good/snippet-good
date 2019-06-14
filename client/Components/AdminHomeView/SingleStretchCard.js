@@ -28,7 +28,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           {title}
         </Typography>
         <Grid container>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Typography variant="body2" component="p">
               <i>Cohort:</i> {cohortName}
             </Typography>
@@ -45,7 +45,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           </Grid>
 
           {status === 'open' && (
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <Typography
                 variant="body2"
                 component="p"
@@ -57,7 +57,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           )}
 
           {status === 'scheduled' && (
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <CardActions>
                 <Button
                   color="primary"

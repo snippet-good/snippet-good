@@ -16,6 +16,7 @@ import { getAllCategories } from '../../store/categories/actions'
 import { getAllStretches } from '../../store/stretches/actions'
 import { getAllCohortStretches } from '../../store/cohort-stretches/actions'
 //import {getAllCohortUsers} from '../../store/cohort-users/actions'
+import path from 'path'
 
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -28,8 +29,10 @@ import Button from '@material-ui/core/Button'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import useStyles from './styles'
+import { Grid } from '@material-ui/core'
 
 const FrameworkHOC = (MainComponent, Sidebar) => {
+  console.log(__dirname)
   const Framework = props => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
@@ -110,6 +113,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
           }`}
         >
           <div className={classes.drawerHeader} />
+          <iframe src="/temp/blank.html" width="60%" />
           <FlashMessage history={history} />
           <MainComponent />
         </main>

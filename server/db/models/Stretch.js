@@ -45,6 +45,13 @@ const Stretch = db.define('stretch', {
     validate: {
       notEmpty: true
     }
+  },
+  language: {
+    type: db.Sequelize.ENUM('javascript', 'JSX'),
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   }
 })
 

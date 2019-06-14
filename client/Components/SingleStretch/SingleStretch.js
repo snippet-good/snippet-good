@@ -13,11 +13,7 @@ import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
 import CodeEditor from '../CodeEditor'
 
-import { SingleStretchStyles as styles } from './styles'
-import { GeneralInfoStyles } from './styles'
-
-// Notes:
-// - Need to work on componentDidUpdate()
+import { GeneralInfoStyles, SingleStretchStyles as styles } from './styles'
 
 class SingleStretch extends Component {
   state = {
@@ -28,6 +24,7 @@ class SingleStretch extends Component {
     codePrompt: '// This is an example code prompt.',
     difficulty: 3,
     minutes: '',
+    language: '',
     authorId: '',
     isLoaded: false
   }

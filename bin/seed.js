@@ -102,6 +102,7 @@ const createStretchObjects = (userIds, categoryIds) => {
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
       minutes: getRandomArrayEntry([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+      language: Math.random() <= 0.8 ? 'javascript' : 'JSX',
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
     }

@@ -15,12 +15,14 @@ app.use(
 app.use(volleyball)
 app.use(express.json())
 app.use('/public', express.static(path.join(__dirname, '..', 'public')))
+app.use('/temp', express.static(path.join(__dirname, '..', 'temp')))
 
 // routers
 app.use('/api', require('./api'))
 
 //route for serving up index.html
 app.get('/', (req, res, next) => {
+  console.log(__dirname)
   res.sendFile(path.join(__dirname, '..', 'client', 'index.html'))
 })
 
