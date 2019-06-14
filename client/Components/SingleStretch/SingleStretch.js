@@ -47,9 +47,8 @@ class SingleStretch extends Component {
 
   startTimer = () => {
     const { cohortStretches, match } = this.props
-    let currCohortStretch = cohortStretches.find(
-      cs => cs.stretchId === match.params.id
-    )
+    let currCohortStretch =
+      cohortStretches.find(cs => cs.stretchId === match.params.id) || {}
     currCohortStretch.startTimer = true
     this.props.startStretchTimer(currCohortStretch)
   }
