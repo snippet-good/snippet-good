@@ -110,7 +110,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
           }`}
         >
           <div className={classes.drawerHeader} />
-          <iframe src="/temp/blank.html" width="60%" />
+          <iframe src="" width="60%" />
           <FlashMessage history={history} />
           <MainComponent />
         </main>
