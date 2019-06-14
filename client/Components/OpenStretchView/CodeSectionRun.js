@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import CodeEditor, {
   AuxillaryComponents,
   codeEditorFunctions
@@ -33,7 +34,11 @@ class CodeSectionRun extends Component {
   render() {
     const { editorTheme, codeResponse, codeError } = this.state
     const { runCodeBinded, clearCodeResultsBinded, handleChange } = this
-    const { codePrompt, setStretchAnswer, stretchAnswer } = this.props
+    const {
+      setStretchAnswer,
+      stretchAnswer,
+      stretch: { language, codePrompt }
+    } = this.props
     return (
       <div>
         <Grid container>
@@ -63,6 +68,7 @@ class CodeSectionRun extends Component {
               initialCode={codePrompt}
               editorTheme={editorTheme}
               handleCodeChange={({ target }) => setStretchAnswer(target.value)}
+              language={language}
             />
           </Grid>
           <Grid item xs={6}>
@@ -78,4 +84,8 @@ class CodeSectionRun extends Component {
   }
 }
 
-export default CodeSectionRun
+const mapStateToProps = ({ stretches }, { stretchId }) => ({
+  stretch: stretches.find(s => s.id === stretchId)
+})
+
+export default connect(mapStateToProps)(CodeSectionRun)

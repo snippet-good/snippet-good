@@ -35,6 +35,7 @@ const StudentClosedStretchView = ({
     stretchCode: { textPrompt, codePrompt, studentAnswer, solutions },
     relatedUsers
   } = allStretchAnswerRelatedData
+  const { language } = stretchMetaData
   return (
     <div styles={root}>
       <GeneralInfo
@@ -53,7 +54,7 @@ const StudentClosedStretchView = ({
           </Typography>
         </Grid>
       </Grid>
-      <CodeSection {...{ studentAnswer, codePrompt, solutions }} />
+      <CodeSection {...{ studentAnswer, codePrompt, solutions, language }} />
       <CommentsSection
         stretchAnswer={stretchAnswer}
         relatedUsers={relatedUsers}

@@ -47,6 +47,7 @@ class CodeSection extends Component {
       handleChange,
       showSolution
     } = this
+    const { language } = this.props
     return (
       <div>
         <Grid container>
@@ -86,6 +87,7 @@ class CodeSection extends Component {
               initialCode={solution}
               editorTheme={editorTheme}
               handleCodeChange={handleChange}
+              language={language}
             />
           </Grid>
           <Grid item xs={6}>

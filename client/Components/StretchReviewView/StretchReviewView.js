@@ -33,6 +33,7 @@ const StretchReviewView = ({ attributes, currentCohortStretch }) => {
         <Grid item xs={12}>
           <CodeSection
             solution={`${codePrompt}\n\n${currentCohortStretch.solution}`}
+            language={otherStretchFields.language}
           />
         </Grid>
       </Grid>

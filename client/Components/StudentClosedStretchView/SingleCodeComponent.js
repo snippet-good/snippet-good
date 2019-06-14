@@ -40,7 +40,7 @@ class SingleCodeComponent extends Component {
   render() {
     const { runCodeBinded, clearCodeResultsBinded, handleChange } = this
     const { code, codeResponse, codeError, savedCode } = this.state
-    const { editorTheme, editorId } = this.props
+    const { editorTheme, editorId, language } = this.props
     const { root } = editorsStyles()
     return (
       <Grid container>
@@ -51,6 +51,7 @@ class SingleCodeComponent extends Component {
             handleCodeChange={handleChange}
             editorId={editorId}
             initialCode={savedCode}
+            language={language}
           />
         </Grid>
         <Grid item xs={12} style={root}>

@@ -22,12 +22,8 @@ class AceEditor extends Component {
       initialCode
     } = this.props
 
-    console.log('in mount')
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
-    if (initialCode) editor.setValue(initialCode)
-    if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)
-    editor.setReadOnly(!!readOnly)
     this.configEditor(
       editor,
       editorSession,
@@ -41,7 +37,6 @@ class AceEditor extends Component {
 
   componentDidUpdate(prevProps) {
     const { language, editorTheme, readOnly, initialCode } = this.props
-    console.log('language', language)
     if (prevProps.language !== language && language !== '') {
       this.state.editorSession.setMode(`ace/mode/${language}`)
       this.state.editor.setValue('')

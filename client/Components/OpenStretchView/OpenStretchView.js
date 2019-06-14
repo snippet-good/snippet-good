@@ -97,7 +97,7 @@ const OpenStretchView = ({
         }
       }
     }
-  })
+  }, [myStretch])
   return (
     <div>
       <Paper className={classes.root}>
@@ -118,12 +118,12 @@ const OpenStretchView = ({
       {myCohortStretch &&
         (!myCohortStretch.allowAnswersToBeRun ? (
           <CodeSectionNoRun
-            codePrompt={codePrompt}
+            stretchId={myStretch.id}
             setStretchAnswer={setStretchAnswer}
           />
         ) : (
           <CodeSectionRun
-            codePrompt={codePrompt}
+            stretchId={myStretch.id}
             setStretchAnswer={setStretchAnswer}
             stretchAnswer={stretchAnswer}
           />

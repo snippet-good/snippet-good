@@ -25,7 +25,6 @@ const configEditor = function(
   codeTargetName
 ) {
   const { initialCode, editorTheme, language, readOnly } = userOptions
-  console.log('LANGUAGE', language)
   editorSession.setMode(`ace/mode/${language}`)
   if (initialCode) editor.setValue(initialCode)
   if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)

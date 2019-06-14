@@ -38,7 +38,6 @@ class SingleStretch extends Component {
     let attributes = {}
     if (match.params.id && stretches.length)
       attributes = stretches.find(s => s.id === match.params.id)
-    console.log(attributes)
     this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
   }
 
@@ -108,7 +107,6 @@ class SingleStretch extends Component {
     const { handleSubmit, changeMode } = this
     const { handleChange } = this
     const { mode, authorId, language } = state
-    console.log('in render', this.state)
     return (
       <form onSubmit={handleSubmit}>
         <div style={styles.root}>
@@ -156,7 +154,7 @@ class SingleStretch extends Component {
                 initialCode={state.initialCode}
                 codeTargetName="codePrompt"
                 handleCodeChange={handleChange}
-                language={language.toLowerCase()}
+                language={language}
                 readOnly={mode === 'read'}
               />
             </Grid>

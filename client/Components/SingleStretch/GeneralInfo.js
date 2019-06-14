@@ -75,12 +75,16 @@ const GeneralInfo = props => {
                 ) : (
                   <DropdownSelect
                     data={[
-                      { id: 1, name: 'javascript' },
-                      { id: 2, name: 'JSX' }
+                      {
+                        id: 1,
+                        name: 'javascript',
+                        nameLowerCase: 'javascript'
+                      },
+                      { id: 2, name: 'JSX', nameLowerCase: 'jsx' }
                     ]}
                     dbName="language"
                     label="Language"
-                    valueColumn="name"
+                    valueColumn="nameLowerCase"
                     displayColumn="name"
                     currentSelection={language}
                     handleChange={handleChange}
