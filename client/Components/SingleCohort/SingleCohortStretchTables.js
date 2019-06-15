@@ -6,6 +6,7 @@ import {
   deleteCohortStretchThunk,
   updateCohortStretchThunk
 } from '../../store/cohort-stretches/actions'
+import { checkIfAllDataExists } from '../../utilityfunctions'
 
 import StretchScheduler from '../_shared/StretchScheduler'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
@@ -24,6 +25,9 @@ const SingleCohortStretchTables = ({
   deleteCohortStretch,
   updateCohortStretch
 }) => {
+  if (!checkIfAllDataExists(cohort, cohortStretches, stretches)) {
+    return <div>No open, scheduled, or submitted stretches for cohort</div>
+  }
   let [rescheduleModalOpen, setRescheduleModalOpen] = useState(false)
   let [unscheduleModalOpen, setunscheduleModalOpen] = useState(false)
   let [openStretchModalOpen, setOpenStretchModalOpen] = useState(false)
@@ -35,9 +39,12 @@ const SingleCohortStretchTables = ({
       cohortStretch => cohortStretch.cohortId === cohort.id
     ) || []
   const openCohortStretches =
-    thisCohortStretches.filter(
-      cohortStretches => cohortStretches.status === 'open'
-    ) || []
+    thisCohortStretches
+      .filter(cohortStretches => cohortStretches.status === 'open')
+      .map(cs => ({
+        ...cs,
+        stretch: stretches.find(s => s.id === cs.stretchId)
+      })) || []
   const closedCohortStretches =
     thisCohortStretches
       .filter(cohortStretches => cohortStretches.status === 'closed')
@@ -52,21 +59,6 @@ const SingleCohortStretchTables = ({
         ...cs,
         stretch: stretches.find(s => s.id === cs.stretchId)
       })) || []
-
-  const openCohortStretchIds = openCohortStretches.map(
-    stretch => stretch.stretchId
-  )
-  //const scheduledCohortStretchIds = scheduledCohortStretches.map(
-  //  stretch => stretch.stretchId
-  //)
-
-  const openStretches = stretches.filter(stretch =>
-    openCohortStretchIds.includes(stretch.id)
-  )
-
-  //const scheduledStretches = stretches.filter(stretch =>
-  //  scheduledCohortStretchIds.includes(stretch.id)
-  // )
 
   // StretchScheduler modal event handlers
   const handleRescheduleModalClose = () => setRescheduleModalOpen(false)
@@ -124,9 +116,10 @@ const SingleCohortStretchTables = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {openStretches.map(stretch => {
+          {openCohortStretches.map(cohortStretch => {
+            const { id, stretch } = cohortStretch
             return (
-              <TableRow key={stretch.id}>
+              <TableRow key={id}>
                 <TableCell>
                   <Link to={`/admin/singleStretch/${stretch.id}`}>
                     {stretch.title}
@@ -232,7 +225,7 @@ const SingleCohortStretchTables = ({
                 <TableCell>{stretch.categoryName}</TableCell>
                 <TableCell>{stretch.difficulty}</TableCell>
                 <TableCell>
-                  <Link to="/">
+                  <Link to={`/admin/stretch/analytics/${stretch.id}`}>
                     <Button color="primary"> View Analytics </Button>
                   </Link>
                 </TableCell>

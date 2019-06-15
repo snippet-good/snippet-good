@@ -10,4 +10,11 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
+// GET, retrieves all cohort users of student
+router.get('/student/:studentId', (req, res, next) => {
+  CohortUser.findAll({ where: { userId: req.params.studentId } })
+    .then(cohortUsers => res.json(cohortUsers))
+    .catch(next)
+})
+
 module.exports = router

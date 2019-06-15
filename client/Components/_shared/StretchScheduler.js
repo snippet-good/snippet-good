@@ -10,6 +10,8 @@ import Grid from '@material-ui/core/Grid'
 import Modal from '@material-ui/core/Modal'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 import DateAndTimePicker from './DateAndTimePicker'
 import CohortSelect from './CohortSelect'
@@ -20,6 +22,7 @@ const StretchScheduler = props => {
 
   const [scheduledDate, setScheduledDate] = useState(new Date())
   const [selectedCohortId, setSelectedCohortId] = useState('')
+  const [allowAnswersToBeRun, setAllowAnswersToBeRun] = useState(false)
 
   const handleCohortIdChange = event => setSelectedCohortId(event.target.value)
 
@@ -30,8 +33,7 @@ const StretchScheduler = props => {
       return props.scheduleStretch({
         status: 'scheduled',
         scheduledDate,
-        minutes: 5,
-        allowAnswersToBeRun: false,
+        allowAnswersToBeRun,
         stretchId: id,
         cohortId: selectedCohortId
       })
@@ -73,6 +75,25 @@ const StretchScheduler = props => {
                 <CohortSelect
                   cohortId={selectedCohortId}
                   handleChange={handleCohortIdChange}
+                  stretchId={id}
+                />
+              </Grid>
+            )}
+
+            <Grid item xs={12} style={{ height: '20px' }} />
+            {mode === 'create' && (
+              <Grid item xs={12} style={styles.center}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowAnswersToBeRun}
+                      onChange={({ target }) =>
+                        setAllowAnswersToBeRun(target.checked)
+                      }
+                      color="primary"
+                    />
+                  }
+                  label="Check this box if you want to allow students to run code while completing the stretch"
                 />
               </Grid>
             )}

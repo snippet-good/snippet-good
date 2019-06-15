@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import CohortBarChart from './CohortBarChart'
+import RatingBarChart from './RatingBarChart'
 import { connect } from 'react-redux'
 
 class StretchAnalytics extends Component {
@@ -7,12 +7,13 @@ class StretchAnalytics extends Component {
         super(props)
     }
     render() {
-        const { cohortStretches, stretches, cohorts, stretchAnswersFiltered } = this.props
-        console.log(stretchAnswersFiltered)
-        const stretchCohorts = stretchAnswersFiltered.map(answer => answer.userCohortId)
+        const { stretchAnswers, cohortStretches, stretches, cohorts, stretchAnswersFiltered } = this.props
+        console.log("STRETCH ANSWERS", stretchAnswers)
+        console.log("FILTERED", stretchAnswersFiltered)
+
         return (
             <div>
-                <CohortBarChart stretchAnswers={stretchAnswersFiltered} cohortStretches={cohortStretches} />
+                <RatingBarChart stretchAnswers={stretchAnswersFiltered} />
             </div>
         )
     }
@@ -21,6 +22,7 @@ class StretchAnalytics extends Component {
 const mapStateToProps = ({ stretchAnswers, stretches,
     cohorts, cohortStretches, users }, { match: { params } }) => {
     return {
+        stretchAnswers,
         stretchAnswersFiltered: stretchAnswers.filter(stretch =>
             stretch.stretchId === params.id
         ),

@@ -41,6 +41,9 @@ const useStyles = makeStyles(theme => {
     bottomMargin: {
       marginBottom: '15px',
       fontSize: '1rem'
+    },
+    starColor: {
+      color
     }
   }
 })

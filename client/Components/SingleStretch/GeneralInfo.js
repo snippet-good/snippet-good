@@ -15,7 +15,14 @@ import { GeneralInfoStyles as styles } from './styles'
 
 const GeneralInfo = props => {
   const { attributes, handleChange } = props
-  const { mode, title, categoryName, categoryId, difficulty } = attributes
+  const {
+    mode,
+    title,
+    categoryName,
+    categoryId,
+    difficulty,
+    minutes
+  } = attributes
 
   const handleDifficultyChange = (event, value) =>
     handleChange({ target: { name: 'difficulty', value } })
@@ -54,6 +61,21 @@ const GeneralInfo = props => {
                   <CategorySelect
                     categoryId={categoryId}
                     handleChange={handleChange}
+                  />
+                )}
+              </div>
+
+              {/* Minutes input/display */}
+              <div>
+                <InputLabel shrink>Minutes</InputLabel>
+                {mode === 'read' ? (
+                  <Typography variant="subtitle2">{minutes}</Typography>
+                ) : (
+                  <TextField
+                    name="minutes"
+                    defaultValue={minutes}
+                    margin="normal"
+                    onChange={handleChange}
                   />
                 )}
               </div>

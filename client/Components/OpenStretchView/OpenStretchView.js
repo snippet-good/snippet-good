@@ -1,48 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import CodeEditor, { AuxillaryComponents } from '../CodeEditor'
-const { ThemeSelector } = AuxillaryComponents
+import CodeSectionNoRun from './CodeSectionNoRun'
+import CodeSectionRun from './CodeSectionRun'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
-
-const checkIfAllDataExists = (cohortUsers, stretches, cohortStretches) => {
-  const data = [cohortUsers, stretches, cohortStretches]
-  for (let i = 0; i < data.length; ++i) {
-    if (!data[i].length) {
-      return false
-    }
-  }
-  return true
-}
+import { checkIfAllDataExists } from '../../utilityfunctions'
+import { joinCohortStretchRoomThunk } from '../../store/socket/actions'
 
 const mapDispatchToProps = dispatch => {
   return {
     createStretchAnswer: stretchAnswer =>
-      dispatch(createStretchAnswerThunk(stretchAnswer))
+      dispatch(createStretchAnswerThunk(stretchAnswer)),
+    joinCohortStretchRoom: cohortStretchId =>
+      dispatch(joinCohortStretchRoomThunk(cohortStretchId))
   }
 }
 
 const mapStateToProps = (
-  { userDetails, cohortUsers, stretches, cohortStretches },
-  { match }
+  { userDetails, stretches, cohortStretches },
+  {
+    match: {
+      params: { cohortStretchId }
+    }
+  }
 ) => {
-  if (checkIfAllDataExists(cohortUsers, stretches, cohortStretches)) {
-    const { stretchId } = match.params
-    const myCohort = cohortUsers.find(
-      cohortUser => cohortUser.userId === userDetails.id
-    )
-    const myStretch = stretches.find(stretch => stretch.id === stretchId)
+  if (checkIfAllDataExists(stretches, cohortStretches)) {
     const myCohortStretch = cohortStretches.find(
-      cohortStretch =>
-        cohortStretch.stretchId === stretchId &&
-        cohortStretch.cohortId === myCohort.cohortId &&
-        cohortStretch.status === 'open'
+      cs => cs.id === cohortStretchId
     )
     return {
-      myStretch,
-      myCohortStretch
+      myStretch: stretches.find(s => s.id === myCohortStretch.stretchId),
+      myCohortStretch,
+      userDetails
     }
   }
   return {}
@@ -56,7 +48,10 @@ const useStyles = makeStyles(theme => ({
 const OpenStretchView = ({
   myStretch,
   myCohortStretch,
-  createStretchAnswer
+  createStretchAnswer,
+  userDetails,
+  history,
+  joinCohortStretchRoom
 }) => {
   const classes = useStyles()
   const [codePrompt, setCodePrompt] = useState('')
@@ -64,31 +59,42 @@ const OpenStretchView = ({
   const [displayMinutes, setDisplayMinutes] = useState(0)
   const [displaySeconds, setDisplaySeconds] = useState(59)
   const [stretchAnswer, setStretchAnswer] = useState('')
-  const [editorTheme, setEditorTheme] = useState('monokai')
+
+  const submitStretch = () => {
+    return createStretchAnswer({
+      body: stretchAnswer,
+      timeToSolve: myStretch.minutes * 60 - remainingTime,
+      cohortstretchId: myCohortStretch.id,
+      userId: userDetails.id
+    }).then(() => history.push('/student/stretches/submitted'))
+  }
+
   useEffect(() => {
     if (myStretch) {
       setCodePrompt(myStretch.codePrompt)
+      setStretchAnswer(myStretch.codePrompt)
     }
-    if (myCohortStretch && !remainingTime) {
-      setDisplayMinutes(myCohortStretch.minutes - 1)
-      setRemainingTime(myCohortStretch.minutes * 60)
+    if (myStretch && !remainingTime) {
+      joinCohortStretchRoom(myCohortStretch.id)
+      setDisplayMinutes(myStretch.minutes - 1)
+      setRemainingTime(myStretch.minutes * 60)
     }
-    if (myCohortStretch && remainingTime) {
-      const timer = setTimeout(() => {
-        setRemainingTime(remainingTime - 1)
-        if (displaySeconds > 0) {
-          setDisplaySeconds(displaySeconds - 1)
-        } else {
-          setDisplaySeconds(59)
-          setDisplayMinutes(displayMinutes - 1)
+    if (myStretch && remainingTime) {
+      if (myCohortStretch.startTimer) {
+        const timer = setTimeout(() => {
+          setRemainingTime(remainingTime - 1)
+          if (displaySeconds > 0) {
+            setDisplaySeconds(displaySeconds - 1)
+          } else {
+            setDisplaySeconds(59)
+            setDisplayMinutes(displayMinutes - 1)
+          }
+        }, 1000)
+
+        if (remainingTime === 1) {
+          clearTimeout(timer)
+          submitStretch()
         }
-      }, 1000)
-      if (remainingTime === 1) {
-        clearTimeout(timer)
-        createStretchAnswer({
-          body: stretchAnswer,
-          timeToSolve: myCohortStretch.minutes * 60 - remainingTime
-        })
       }
     }
   })
@@ -108,16 +114,22 @@ const OpenStretchView = ({
           </Typography>
         </Paper>
       </Paper>
-      <ThemeSelector
-        editorTheme={editorTheme}
-        handleChange={({ target }) => setEditorTheme(target.value)}
-      />
-      <CodeEditor
-        codeTargetName="code"
-        initialCode={codePrompt}
-        editorTheme={editorTheme}
-        handleCodeChange={({ target }) => setStretchAnswer(target.value)}
-      />
+
+      {myCohortStretch &&
+        (!myCohortStretch.allowAnswersToBeRun ? (
+          <CodeSectionNoRun
+            codePrompt={codePrompt}
+            setStretchAnswer={setStretchAnswer}
+          />
+        ) : (
+          <CodeSectionRun
+            codePrompt={codePrompt}
+            setStretchAnswer={setStretchAnswer}
+            stretchAnswer={stretchAnswer}
+          />
+        ))}
+
+      <Button onClick={submitStretch}>Submit</Button>
     </div>
   )
 }

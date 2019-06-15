@@ -50,7 +50,9 @@ const SubmittedStretches = ({
             )
             return (
               <Typography key={answer.id}>
-                <Link to={`admin/stretchAnswer/${answer.id}`}>
+                <Link
+                  to={`/admin/stretchAnswer/${answer.id}/student/${student.id}`}
+                >
                   <li>Submission for {stretchName.title}</li>
                 </Link>
               </Typography>

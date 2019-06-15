@@ -14,9 +14,11 @@ import { useStyles } from './styles'
 
 const CommentSection = ({
   userDetails,
-  stretchAnswerId,
+  stretchAnswer: { id, userId },
   createComment,
-  allComments
+  allComments,
+  relatedUsers,
+  stretchMetaData: { title, cohortName }
 }) => {
   let [message, setMessage] = useState('')
   const {
@@ -30,11 +32,14 @@ const CommentSection = ({
   } = useStyles()
 
   const sendMessage = () => {
-    return createComment({
-      body: message,
-      stretchanswerId: stretchAnswerId,
-      userId: userDetails.id
-    }).then(() => setMessage(''))
+    return createComment(
+      {
+        body: message,
+        stretchanswerId: id,
+        userId: userDetails.id
+      },
+      { relatedUsers, stretchTitle: title, cohortName, studentId: userId }
+    ).then(() => setMessage(''))
   }
   return (
     <div>
@@ -111,7 +116,8 @@ const mapStateToProps = ({ comments, userDetails }) => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    createComment: newComment => dispatch(createCommentThunk(newComment))
+    createComment: (newComment, emitObject) =>
+      dispatch(createCommentThunk(newComment, emitObject))
   }
 }
 

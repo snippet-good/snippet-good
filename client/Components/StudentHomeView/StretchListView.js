@@ -21,17 +21,22 @@ const useStyles = makeStyles(theme => ({
 
 function StretchListView(props) {
   const classes = useStyles()
-  function createOpenStretchData(id, title, categoryName, difficulty) {
-    return { id, title, categoryName, difficulty }
+  function createOpenStretchData(
+    cohortStretchId,
+    title,
+    categoryName,
+    difficulty
+  ) {
+    return { cohortStretchId, title, categoryName, difficulty }
   }
   function createSubmittedStretchData(
     stretchAnswerId,
     title,
-    isSolved,
+    cohortName,
     rating,
     stretchId
   ) {
-    return { stretchAnswerId, title, isSolved, rating, stretchId }
+    return { stretchAnswerId, title, cohortName, rating, stretchId }
   }
 
   const rows = []
@@ -39,20 +44,20 @@ function StretchListView(props) {
     for (let i = 0; i < props.openStretches.length; ++i) {
       rows.push(
         createOpenStretchData(
-          props.openStretches[i].id,
+          props.openStretches[i].cohortStretchId,
           props.openStretches[i].title,
           props.openStretches[i].categoryName,
           props.openStretches[i].difficulty
         )
       )
     }
-  } else {
+  } else if (props.submittedStretches) {
     for (let i = 0; i < props.submittedStretches.length; ++i) {
       rows.push(
         createSubmittedStretchData(
           props.submittedStretches[i].id,
           props.submittedStretches[i].title,
-          props.submittedStretches[i].isSolved,
+          props.submittedStretches[i].cohortName,
           props.submittedStretches[i].rating,
           props.submittedStretches[i].stretchId
         )
@@ -74,7 +79,9 @@ function StretchListView(props) {
             {rows.map((row, indx) => (
               <TableRow key={indx}>
                 <TableCell component="th" scope="row">
-                  <Link to={`/student/stretch/${row.id}`}>{row.title}</Link>
+                  <Link to={`/student/stretch/${row.cohortStretchId}`}>
+                    {row.title}
+                  </Link>
                 </TableCell>
                 <TableCell align="right">{row.categoryName}</TableCell>
                 <TableCell align="right">{row.difficulty}</TableCell>
@@ -87,8 +94,8 @@ function StretchListView(props) {
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
-              <TableCell align="right">Status</TableCell>
               <TableCell align="right">Rating</TableCell>
+              <TableCell align="right">Cohort</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,10 +106,9 @@ function StretchListView(props) {
                     {row.title}
                   </Link>
                 </TableCell>
-                <TableCell align="right">
-                  {row.isSolved ? 'submitted' : 'not submitted'}
-                </TableCell>
+
                 <TableCell align="right">{row.rating}</TableCell>
+                <TableCell align="right">{row.cohortName}</TableCell>
               </TableRow>
             ))}
           </TableBody>

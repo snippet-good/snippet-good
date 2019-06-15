@@ -1,11 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import Button from '@material-ui/core/Button'
 
 import { ControlStyles as styles } from './styles'
 
 const Controls = props => {
-  const { mode, changeMode } = props
+  const { mode, changeMode, authorId, userDetails } = props
 
   const setModeToUpdate = () => changeMode('update')
 
@@ -17,6 +18,7 @@ const Controls = props => {
           variant="contained"
           style={{ ...styles.updateButton }}
           onClick={setModeToUpdate}
+          disabled={authorId !== userDetails.id}
         >
           Update
         </Button>
@@ -32,4 +34,6 @@ const Controls = props => {
   )
 }
 
-export default Controls
+const mapStateToProps = ({ userDetails }) => ({ userDetails })
+
+export default connect(mapStateToProps)(Controls)

@@ -21,10 +21,10 @@ class CohortBarChart extends Component {
         console.log(this.props.stretchAnswers)
         var ratingsByCohort = {}
         this.props.stretchAnswers.map(stretch => {
-            if (Object.keys(ratingsByCohort).includes(stretch.cohortstretchId)) {
-                ratingsByCohort[stretch.cohortstretchId].push(stretch.rating)
+            if (Object.keys(ratingsByCohort).includes(stretch.cohortName)) {
+                ratingsByCohort[stretch.cohortName].push(stretch.rating)
             } else {
-                ratingsByCohort[stretch.cohortstretchId] = [stretch.rating]
+                ratingsByCohort[stretch.cohortName] = [stretch.rating]
             }
         })
 

@@ -30,6 +30,14 @@ const Stretch = db.define('stretch', {
       max: 5
     }
   },
+  minutes: {
+    type: db.Sequelize.INTEGER,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+      min: 1
+    }
+  },
   solution: {
     type: db.Sequelize.TEXT,
     defaultValue: `const solution = console.log('You did it!')`,

@@ -33,11 +33,17 @@ export const checkIfUserLoggedInThunk = () => {
       .get('/api/auth')
       .then(res => res.data)
       .then(user => dispatch(getUser(user)))
+      .catch(() => {
+        window.location.hash = '/'
+      })
   }
 }
 
-export const logoutUserThunk = () => {
+export const logoutUserThunk = history => {
   return dispatch => {
-    return axios.delete('/api/auth').then(() => dispatch(logutUser()))
+    return axios
+      .delete('/api/auth')
+      .then(() => dispatch(logutUser()))
+      .then(() => history.push('/'))
   }
 }

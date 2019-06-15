@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 import { createStretch, updateStretch } from '../../store/stretches/actions'
+import { startStretchTimerThunk } from '../../store/cohort-stretches/actions'
 
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
@@ -26,6 +27,8 @@ class SingleStretch extends Component {
     textPrompt: 'This is an example text prompt.',
     codePrompt: '// This is an example code prompt.',
     difficulty: 3,
+    minutes: '',
+    authorId: '',
     isLoaded: false
   }
 
@@ -40,6 +43,15 @@ class SingleStretch extends Component {
       attributes = stretches.find(s => s.id === match.params.id)
 
     this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
+  }
+
+  startTimer = () => {
+    const { cohortStretches, match } = this.props
+    let currCohortStretch = cohortStretches.find(
+      cs => cs.stretchId === match.params.id
+    )
+    currCohortStretch.startTimer = true
+    this.props.startStretchTimer(currCohortStretch)
   }
 
   handleChange = event => {
@@ -84,6 +96,7 @@ class SingleStretch extends Component {
 
   componentDidMount() {
     this.setStretchDetails()
+    this.startTimer()
   }
 
   componentDidUpdate(prevProps) {
@@ -98,13 +111,17 @@ class SingleStretch extends Component {
     const { state } = this
     const { handleSubmit, changeMode } = this
     const { handleChange } = this
-    const { mode } = state
+    const { mode, authorId } = state
     return (
       <form onSubmit={handleSubmit}>
         <div style={styles.root}>
           <Grid container spacing={2} style={styles.sub}>
             <Grid item xs={12}>
-              <Controls mode={mode} changeMode={changeMode} />
+              <Controls
+                mode={mode}
+                changeMode={changeMode}
+                authorId={authorId}
+              />
             </Grid>
 
             <Grid item xs={12}>
@@ -159,12 +176,15 @@ SingleStretch.defaultProps = {
 
 const mapStateToProps = state => ({
   userDetails: state.userDetails,
-  stretches: state.stretches
+  stretches: state.stretches,
+  cohortStretches: state.cohortStretches
 })
 
 const mapDispatchToProps = dispatch => ({
   createStretch: newStretch => dispatch(createStretch(newStretch)),
-  updateStretch: updatedStretch => dispatch(updateStretch(updatedStretch))
+  updateStretch: updatedStretch => dispatch(updateStretch(updatedStretch)),
+  startStretchTimer: cohortStretch =>
+    dispatch(startStretchTimerThunk(cohortStretch))
 })
 
 export default connect(

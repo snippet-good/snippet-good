@@ -4,7 +4,6 @@ const runCode = function(code) {
   return axios
     .post('/api/code/runcode', { code })
     .then(res => {
-      console.log(res)
       this.setState({
         codeResponse: String(res.data),
         codeError: ''

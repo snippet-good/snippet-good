@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen
     })
   },
+  rightToolbar: {
+    marginLeft: 'auto'
+  },
   menuButton: {
     marginRight: theme.spacing(2)
   },
