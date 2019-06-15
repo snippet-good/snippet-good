@@ -1,50 +1,6 @@
-import AppBar from '@material-ui/core/AppBar'
-import { makeStyles } from '@material-ui/core/styles'
-import SingleCohortStretchTables from './SingleCohortStretchTables'
-import { CohortStudents } from './CohortStudents'
-
-// const useStyles = makeStyles(theme => ({
-//   root: {
-//     backgroundColor: theme.palette.background.paper,
-//     width: 500
-//   }
-// }))
-
-// const SingleCohort = ({ cohort, cohortStudents }) => {
-//   const { root } = useStyles()
-//   const { name } = cohort
-//   const [value, setValue] = useState('stretches')
-
-//   return (
-//     <div className={root}>
-//       <Typography
-//         variant="h5"
-//         gutterBottom
-//       >
-//         {name}
-//       </Typography>
-
-//       <AppBar position="static" color="default">
-//         <Tabs
-//           value={value}
-//           onChange={(event, newValue) => setValue(newValue)}
-//           indicatorColor="primary"
-//           textColor="primary"
-//           variant="fullWidth"
-//         >
-//           <Tab value="stretches" label="Stretches" />
-//           <Tab value="students" label="Students" />
-//         </Tabs>
-//       </AppBar>
-//       {value === 'stretches' && <SingleCohortStretchTables cohort={cohort} />}
-//       {value === 'students' && (
-//         <CohortStudents cohortStudents={cohortStudents} />
-//       )}
-//     </div>
-//   )
-// }
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { getAttendance } from '../../store/attendance/actions'
 
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -58,11 +14,22 @@ import Attendance from './Attendance'
 class SingleCohort extends Component {
   state = {
     tab: 0,
-    currentDate: new Date()
+    currentDate: new Date(),
+    attendanceRecords: {}
+  }
+
+  getAttendance = async currentDate => {
+    const cohortId = this.props.match.params.id
+    const attendanceRecords = await getAttendance(cohortId, currentDate)
+    console.log(attendanceRecords)
+    return attendanceRecords
   }
 
   // This event handler handles changes on the Calendar component.
-  handleCalendarChange = currentDate => this.setState({ currentDate })
+  handleCalendarChange = currentDate => {
+    const attendanceRecords = this.getAttendance(currentDate)
+    this.setState({ currentDate, attendanceRecords })
+  }
 
   handleTabsChange = (event, tab) => this.setState({ tab })
 

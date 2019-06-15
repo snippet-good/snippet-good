@@ -16,7 +16,7 @@ Cohort.getCohortsOfSingleAdmin = async function(adminId) {
   return cohorts.map(cohort => cohort.formatAttendance())
 }
 
-/*
+/*  --------------------------------------------------------------------------------
     This function is used to convert the 'attendances' array generated from Cohort.getCohortsOfSingleAdmin() into a hash map, whose keys are students' ids in the cohort and its value is an array of Sequelize Attendance objects.
 
     ex.
@@ -28,14 +28,16 @@ Cohort.getCohortsOfSingleAdmin = async function(adminId) {
         user2_id: [{}, {}, {}]
       }
     }
-
 */
 Cohort.prototype.formatAttendance = function() {
   if (!this.attendances) return this
 
+  // Isolate 'attendances' array from Cohort object
   const { attendances, ...fields } = this.dataValues
 
+  // Attendance records hash map
   const attendanceRecords = {}
+
   attendances.forEach(record => {
     if (attendanceRecords[record.userId])
       attendanceRecords[record.userId].push(record)
@@ -47,3 +49,4 @@ Cohort.prototype.formatAttendance = function() {
     attendanceRecords
   }
 }
+//  --------------------------------------------------------------------------------

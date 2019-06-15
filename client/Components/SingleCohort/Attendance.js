@@ -13,7 +13,7 @@ const Attendance = props => {
 
   return (
     <Table>
-      <EnhancedTableHead students={students} />
+      <EnhancedTableHead />
 
       <TableBody>
         {students.map(s => (
@@ -52,7 +52,7 @@ const StudentRow = props => {
 }
 
 const mapStateToProps = (state, props) => {
-  const { users } = state
+  const { users, cohorts } = state
   const { cohortId } = props
 
   const students = users.filter(

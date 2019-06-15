@@ -1,13 +1,13 @@
 require('./User')
-require('./Stretch')
-const CohortStretchMethods = require('./CohortStretch')
-const CohortMethods = require('./Cohort')
+require('./Attendance')
 const CommentMethods = require('./Comment')
-const StretchAnswerMethods = require('./StretchAnswer')
+
+require('./Cohort')
+
+require('./Stretch')
+require('./CohortStretch')
+require('./StretchAnswer')
 
 module.exports = {
-  CohortStretchMethods,
-  CohortMethods,
-  CommentMethods,
-  StretchAnswerMethods
+  CommentMethods
 }
