@@ -6,6 +6,11 @@ const Attendance = db.define('attendance', {
     defaultValue: db.Sequelize.UUIDV4,
     primaryKey: true
   },
+  isPresent: {
+    type: db.Sequelize.BOOLEAN,
+    defaultValue: true,
+    allowNull: false
+  },
   isExcused: {
     type: db.Sequelize.BOOLEAN,
     defaultValue: false,

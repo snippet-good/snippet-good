@@ -12,7 +12,7 @@ const {
   Withdrawl
 } = require('./models')
 
-const { UserMethods, CohortMethods, CommentMethods } = require('./methods')
+const { CohortMethods, CommentMethods } = require('./methods')
 
 function initDb(force = false) {
   return db.authenticate().then(() => {
@@ -80,7 +80,6 @@ function initDb(force = false) {
   })
 }
 
-User.getStudentsOfSingleAdmin = UserMethods.getStudentsOfSingleAdmin
 Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
 Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
 Comment.createNewComment = CommentMethods.createNewComment

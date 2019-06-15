@@ -74,38 +74,36 @@ class SingleCohort extends Component {
       <div
         style={{ display: 'flex', justifyContent: 'center', width: '100vw' }}
       >
-        <Grid container spacing={2} style={{ width: '80%' }}>
-          <Grid item xs={6}>
-            <Typography variant="h3">{props.cohort.name}</Typography>
+        <Grid container spacing={2} style={{ width: '98%' }}>
+          <Grid item xs={7}>
+            <Grid item xs={12}>
+              <Tabs
+                value={state.tab}
+                onChange={handleTabsChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+                style={{ marginBottom: '2em' }}
+              >
+                <Tab label="Attendance" />
+                <Tab label="Stretches" />
+              </Tabs>
+            </Grid>
+
+            <Grid item xs={12}>
+              {state.tab === 0 && (
+                <Attendance cohortId={props.match.params.id} />
+              )}
+            </Grid>
           </Grid>
-          <Grid
-            item
-            xs={6}
-            style={{ display: 'flex', justifyContent: 'flex-end' }}
-          >
+
+          <Grid item xs={1} />
+
+          <Grid item xs={4} style={{ height: '100vh' }}>
             <Calendar
               onChange={handleCalendarChange}
               value={state.currentDate}
             />
-          </Grid>
-
-          <Grid item xs={12} style={{ height: '20px' }} />
-
-          <Grid item xs={12}>
-            <Tabs
-              value={state.tab}
-              onChange={handleTabsChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="fullWidth"
-            >
-              <Tab label="Attendance" />
-              <Tab label="Stretches" />
-            </Tabs>
-          </Grid>
-
-          <Grid item xs={12}>
-            {state.tab === 0 && <Attendance cohortId={props.match.params.id} />}
           </Grid>
         </Grid>
       </div>
