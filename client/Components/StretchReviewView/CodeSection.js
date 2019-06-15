@@ -32,7 +32,10 @@ class CodeSection extends Component {
   }
 
   componentWillUnmount() {
-    axios.delete(`/api/code/file-${this.props.cohortStretchId}.html`)
+    const { language, cohortStretchId } = this.props
+    if (language === 'jsx' && this.state.fileGenerated) {
+      axios.delete(`/api/code/file-${cohortStretchId}`)
+    }
   }
 
   handleChange = ({ target }) => {

@@ -11,11 +11,13 @@ const runCode = function(postPayload) {
                 codeResponse: String(res.data),
                 codeError: ''
               }
-            : { fileGenerated: res.data === 'file successfully written' }
-        this.setState(stateObject)
+            : { fileGenerated: res.data === 'html file successfully written' }
+        this.setState(stateObject, () => console.log(this.state))
       })
       .catch(({ response: { data } }) => {
-        this.setState({ codeError: data, codeResponse: '' })
+        this.setState({ codeError: data, codeResponse: '' }, () =>
+          console.log('after error', this.state)
+        )
       })
   })
 }
