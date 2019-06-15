@@ -225,7 +225,7 @@ const SingleCohortStretchTables = ({
                 <TableCell>{stretch.categoryName}</TableCell>
                 <TableCell>{stretch.difficulty}</TableCell>
                 <TableCell>
-                  <Link to="/">
+                  <Link to={`/admin/stretch/analytics/${stretch.id}`}>
                     <Button color="primary"> View Analytics </Button>
                   </Link>
                 </TableCell>
