@@ -50,6 +50,8 @@ class AdminController extends Component {
         {/* path to go to Admin stretch dashboard for a stretch  */}
         <Route exact path="/admin/stretch/analytics/"
           component={StretchAnalytics} />
+        <Route exact path="/admin/stretch/analytics/:id"
+          component={StretchAnalytics} />
       </div>
     )
   }

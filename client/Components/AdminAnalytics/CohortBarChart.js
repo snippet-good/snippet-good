@@ -18,6 +18,7 @@ class CohortBarChart extends Component {
     createBarChart = () => {
 
         //get all stretch ratings by cohort in an object
+        console.log(this.props.stretchAnswers)
         var ratingsByCohort = {}
         this.props.stretchAnswers.map(stretch => {
             if (Object.keys(ratingsByCohort).includes(stretch.cohortstretchId)) {

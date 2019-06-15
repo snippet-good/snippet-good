@@ -8,6 +8,7 @@ class StretchAnalytics extends Component {
     }
     render() {
         const { cohortStretches, stretches, cohorts, stretchAnswersFiltered } = this.props
+        console.log(stretchAnswersFiltered)
         const stretchCohorts = stretchAnswersFiltered.map(answer => answer.userCohortId)
         return (
             <div>
