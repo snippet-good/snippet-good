@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import RatingBarChart from './RatingBarChart'
+import TimeBarchart from './TimeBarChart'
 import { connect } from 'react-redux'
 
 class StretchAnalytics extends Component {
@@ -7,13 +8,14 @@ class StretchAnalytics extends Component {
         super(props)
     }
     render() {
-        const { stretchAnswers, cohortStretches, stretches, cohorts, stretchAnswersFiltered } = this.props
+        const { stretchAnswers, stretchAnswersFiltered } = this.props
         console.log("STRETCH ANSWERS", stretchAnswers)
         console.log("FILTERED", stretchAnswersFiltered)
 
         return (
             <div>
                 <RatingBarChart stretchAnswers={stretchAnswersFiltered} />
+                <TimeBarchart stretchAnswers={stretchAnswersFiltered} />
             </div>
         )
     }

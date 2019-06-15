@@ -4,7 +4,7 @@ import { max } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft } from 'd3-axis'
 
-class CohortBarChart extends Component {
+class RatingBarChart extends Component {
     constructor(props) {
         super(props)
 
@@ -45,7 +45,7 @@ class CohortBarChart extends Component {
             height = 500 - margin.top - margin.bottom;
 
         const node = this.node
-        //const data = Object.keys(ratingsByCohort).map(key => ratingsByCohort[key])
+
         const dataMax = max(formattedData.map(d => d.Avg))
         const yScale = scaleLinear()
             .domain([0, dataMax])
@@ -107,6 +107,16 @@ class CohortBarChart extends Component {
             .attr("dy", "1em")
             .style("text-anchor", "middle")
             .text("Average submission rating");
+
+        //Title
+        svg.append("text")
+            .attr("x", (width / 2))
+            .attr("y", 0 + (margin.top))
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("text-decoration", "underline")
+            .text(`Average Stretch Score by Cohort`);
+
     }
 
     render() {
@@ -117,4 +127,4 @@ class CohortBarChart extends Component {
         )
     }
 }
-export default CohortBarChart
+export default RatingBarChart
