@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import CodeSectionNoRun from './CodeSectionNoRun'
@@ -8,14 +9,13 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
-import { joinCohortStretchRoomThunk } from '../../store/socket/actions'
+import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
+import moment from 'moment'
 
 const mapDispatchToProps = dispatch => {
   return {
     createStretchAnswer: stretchAnswer =>
-      dispatch(createStretchAnswerThunk(stretchAnswer)),
-    joinCohortStretchRoom: cohortStretchId =>
-      dispatch(joinCohortStretchRoomThunk(cohortStretchId))
+      dispatch(createStretchAnswerThunk(stretchAnswer))
   }
 }
 
@@ -50,17 +50,35 @@ const OpenStretchView = ({
   myCohortStretch,
   createStretchAnswer,
   userDetails,
-  history,
-  joinCohortStretchRoom
+  history
 }) => {
+  let secondsLeft
+  if (myStretch) {
+    secondsLeft =
+      myStretch.minutes * 60 -
+      moment
+        .utc(new Date())
+        .local()
+        .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
+  }
+
   const classes = useStyles()
+  let [modalOpen, setModalOpen] = useState(false)
   const [codePrompt, setCodePrompt] = useState('')
-  const [remainingTime, setRemainingTime] = useState(0)
-  const [displayMinutes, setDisplayMinutes] = useState(0)
-  const [displaySeconds, setDisplaySeconds] = useState(59)
+  const [remainingTime, setRemainingTime] = useState(secondsLeft || 1)
+  const [displayMinutes, setDisplayMinutes] = useState(
+    Math.floor(secondsLeft / 60) || 0
+  )
+  const [displaySeconds, setDisplaySeconds] = useState(
+    secondsLeft - Math.floor(secondsLeft / 60) * 60 || 0
+  )
   const [stretchAnswer, setStretchAnswer] = useState('')
 
-  const submitStretch = () => {
+  const handleModalClose = () => {
+    setModalOpen(false)
+  }
+
+  const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
     return createStretchAnswer({
       body: stretchAnswer,
       timeToSolve: myStretch.minutes * 60 - remainingTime,
@@ -74,32 +92,35 @@ const OpenStretchView = ({
       setCodePrompt(myStretch.codePrompt)
       setStretchAnswer(myStretch.codePrompt)
     }
-    if (myStretch && !remainingTime) {
-      joinCohortStretchRoom(myCohortStretch.id)
-      setDisplayMinutes(myStretch.minutes - 1)
-      setRemainingTime(myStretch.minutes * 60)
+    let timer
+    if (myStretch && secondsLeft) {
+      timer = setTimeout(() => {
+        secondsLeft =
+          myStretch.minutes * 60 -
+          moment
+            .utc(new Date())
+            .local()
+            .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
+        setRemainingTime(secondsLeft)
+        setDisplaySeconds(secondsLeft - Math.floor(secondsLeft / 60) * 60)
+        setDisplayMinutes(Math.floor(secondsLeft / 60))
+      }, 1000)
     }
-    if (myStretch && remainingTime) {
-      if (myCohortStretch.startTimer) {
-        const timer = setTimeout(() => {
-          setRemainingTime(remainingTime - 1)
-          if (displaySeconds > 0) {
-            setDisplaySeconds(displaySeconds - 1)
-          } else {
-            setDisplaySeconds(59)
-            setDisplayMinutes(displayMinutes - 1)
-          }
-        }, 1000)
-
-        if (remainingTime === 1) {
-          clearTimeout(timer)
-          submitStretch()
-        }
-      }
+    if (remainingTime === 0) {
+      clearTimeout(timer)
+      setModalOpen(true)
     }
   })
   return (
     <div>
+      <ConfirmDialogBox
+        text="Confirm to submit"
+        open={modalOpen}
+        setModalClosed={() => setModalOpen(false)}
+        args={[stretchAnswer, myStretch, userDetails, history]}
+        action={submitStretch}
+        showNoButton={false}
+      />
       <Paper className={classes.root}>
         <Typography variant="h5" component="h3">
           {myStretch === undefined ? 'loading...' : `${myStretch.title}`}
