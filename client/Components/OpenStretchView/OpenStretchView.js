@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
-import { joinCohortStretchRoomThunk } from '../../store/socket/actions'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
 import moment from 'moment'
 
@@ -63,7 +62,6 @@ const OpenStretchView = ({
         .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
   }
 
-  console.log(secondsLeft)
   const classes = useStyles()
   let [modalOpen, setModalOpen] = useState(false)
   const [codePrompt, setCodePrompt] = useState('')
@@ -118,9 +116,10 @@ const OpenStretchView = ({
       <ConfirmDialogBox
         text="Confirm to submit"
         open={modalOpen}
-        setModalClosed={handleModalClose}
+        setModalClosed={() => setModalOpen(false)}
         args={[stretchAnswer, myStretch, userDetails, history]}
         action={submitStretch}
+        showNoButton={false}
       />
       <Paper className={classes.root}>
         <Typography variant="h5" component="h3">

@@ -18,7 +18,6 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import { joinCohortStretchRoomAdmin } from '../../store/socket/actions'
 
 const SingleCohortStretchTables = ({
   cohort,
