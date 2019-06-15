@@ -6,6 +6,7 @@ import Sidebar from '../Sidebar'
 import FrameworkHOC from '../FrameworkHOC'
 import StretchReviewView from '../StretchReviewView'
 import StudentClosedStretchView from '../StudentClosedStretchView'
+import StretchAnalytics from '../AdminAnalytics/StretchAnalytics'
 
 class AdminController extends Component {
   render() {
@@ -45,6 +46,10 @@ class AdminController extends Component {
           exact
           component={StudentClosedStretchView}
         />
+
+        {/* path to go to Admin stretch dashboard for a stretch  */}
+        <Route exact path="/admin/stretch/analytics/"
+          component={StretchAnalytics} />
       </div>
     )
   }
