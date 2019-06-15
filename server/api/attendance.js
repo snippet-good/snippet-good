@@ -6,9 +6,8 @@ const { Attendance } = models
 // on a particular date from the database
 router.get('/:cohortId/:date', (req, res, next) => {
   const { cohortId, date } = req.params
-  console.log(cohortId)
-  console.log(date)
-  Attendance.findUsing({ cohortId, createdAt: date })
+
+  Attendance.findUsing({ cohortId, date })
     .then(data => res.json(data))
     .catch(next)
 })
