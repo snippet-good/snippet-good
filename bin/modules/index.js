@@ -1,6 +1,7 @@
 module.exports = {
   // User-related seed modules
   createUsers: require('./users/create-users'),
+  createAttendance: require('./users/create-attendance'),
 
   // Cohort-related seed modules
   createCohorts: require('./cohorts/create-cohorts'),

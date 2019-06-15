@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 const models = require('../models')
-const { User, CohortUser } = models
+const { User, CohortUser, Attendance } = models
 
 User.getStudentsOfSingleAdmin = async function(adminId) {
   // Get all of the associated cohorts of user
@@ -26,6 +26,7 @@ User.getStudentsOfSingleAdmin = async function(adminId) {
 
 User.prototype.formatStudent = function() {
   const { cohortusers, ...studentValues } = this.dataValues
+
   return {
     ...studentValues,
     cohortIds: cohortusers.map(cu => cu.cohortId)

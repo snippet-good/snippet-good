@@ -33,9 +33,18 @@ const syncAndSeed = async () => {
   })
 
   // Create associations between cohorts and admins
-  await modules.createCohortUsers({
+  const associatedCohortsForAdmins = await modules.createCohortUsers({
     cohorts: cohorts,
-    users: [...admins, ...students]
+    users: admins
+  })
+
+  const associatedCohortsForStudents = await modules.createCohortUsers({
+    cohorts: cohorts,
+    users: students
+  })
+
+  await modules.createAttendance({
+    cohortUsers: associatedCohortsForStudents
   })
 
   console.log('Database successfully seeded!')

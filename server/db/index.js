@@ -1,18 +1,11 @@
 const db = require('./db')
-const {
-  StretchAnswer,
-  Comment,
-  Cohort,
-  Category,
-  CohortUser,
-  User,
-  Stretch,
-  CohortStretch,
-  Attendance,
-  Withdrawl
-} = require('./models')
+const models = require('./models')
 
-const { CohortMethods, CommentMethods } = require('./methods')
+const { User, Comment, Attendance, Withdrawl } = models
+const { Cohort, CohortUser, CohortStretch } = models
+const { Category, Stretch, StretchAnswer } = models
+
+const { CommentMethods } = require('./methods')
 
 function initDb(force = false) {
   return db.authenticate().then(() => {
@@ -80,20 +73,7 @@ function initDb(force = false) {
   })
 }
 
-Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
 Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
 Comment.createNewComment = CommentMethods.createNewComment
 
-module.exports = {
-  initDb,
-  models: {
-    StretchAnswer,
-    Comment,
-    Cohort,
-    Category,
-    CohortUser,
-    CohortStretch,
-    User,
-    Stretch
-  }
-}
+module.exports = { initDb, models }

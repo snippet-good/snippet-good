@@ -13,10 +13,12 @@ const { CohortUser } = models
 module.exports = function(data) {
   const { cohorts, users } = data
 
-  return users.map(user => {
+  const result = users.map(user => {
     const i = users.length % cohorts.length
     const obj = { userId: user.id, cohortId: cohorts[i].id }
 
     return CohortUser.create(obj)
   })
+
+  return Promise.all(result)
 }
