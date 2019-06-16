@@ -4,7 +4,7 @@ import FlashMessage from '../FlashMessage'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import {
   getAllStretchAnswersThunk,
-  getStretchAnswersOfStudentThunk
+  getAnswersOfCohortsOfStudentThunk
 } from '../../store/stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import {
@@ -142,7 +142,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       },
       loadStudentRelatedData: studentId => {
         return Promise.all([
-          dispatch(getStretchAnswersOfStudentThunk(studentId)),
+          dispatch(getAnswersOfCohortsOfStudentThunk(studentId)),
           dispatch(getStudentCohortUsersThunk(studentId)),
           ...commonData
         ])

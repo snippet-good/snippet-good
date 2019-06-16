@@ -42,13 +42,7 @@ export const getAllStretchAnswersThunk = () => dispatch => {
     .then(res => dispatch(getStretchAnswers(res.data)))
 }
 
-/*export const getStretchAnswersOfSingleAdminThunk = adminId => dispatch => {
-  return axios
-    .get(`/api/stretch-answers/admin/${adminId}`)
-    .then(res => dispatch(getStretchAnswers(res.data)))
-}*/
-
-export const getStretchAnswersOfStudentThunk = studentId => dispatch => {
+export const getAnswersOfCohortsOfStudentThunk = studentId => dispatch => {
   return axios
     .get(`/api/stretch-answers/student/${studentId}`)
     .then(res => dispatch(getStretchAnswers(res.data)))
