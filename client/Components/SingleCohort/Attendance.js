@@ -31,8 +31,8 @@ const EnhancedTableHead = props => {
     <TableHead>
       <TableRow>
         <TableCell>Student Name</TableCell>
-        <TableCell>Present/Absent</TableCell>
-        <TableCell>Excused/Unexcused</TableCell>
+        <TableCell>Present</TableCell>
+        <TableCell>Excused</TableCell>
         <TableCell>Edit</TableCell>
       </TableRow>
     </TableHead>
@@ -77,7 +77,7 @@ const StudentRow = props => {
 }
 
 const mapStateToProps = (state, props) => {
-  const { users, cohorts } = state
+  const { users } = state
   const { cohortId, records } = props
 
   const students = users
