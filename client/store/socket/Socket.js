@@ -1,11 +1,18 @@
 import io from 'socket.io-client'
 import { addComment } from '../comments/actions'
 import { setFlashMessage } from '../flash-message/actions'
-import { startStretchTimer } from '../cohort-stretches/actions'
+import {
+  startStretchTimer,
+  updateCohortStretch
+} from '../cohort-stretches/actions'
 
 class Socket {
-  constructor(userId, storeAPI) {
-    this.socket = io(`${window.location.origin}?userId=${userId}`)
+  constructor(userDetails, storeAPI) {
+    this.storeAPI = storeAPI
+    this.socket = io(`${window.location.origin}?userId=${userDetails.id}`)
+    console.log(this.socket.userDetails)
+    this.socket.emit('initializeRoom', userDetails)
+
     console.log('two-way connection has been made!')
 
     this.socket.on(
@@ -24,6 +31,10 @@ class Socket {
       }
     )
 
+    this.socket.on('startStretchTimer', cohortStretch => {
+      storeAPI.dispatch(updateCohortStretch(cohortStretch.id, cohortStretch))
+    })
+
     this.socket.on('timer-started', cohortStretchId => {
       storeAPI.dispatch(startStretchTimer(cohortStretchId))
     })
@@ -41,8 +52,16 @@ class Socket {
     }
   }
 
+  joinCohortStretchRoomAdmin(cohortStretch) {
+    this.socket.emit('joinCohortStretchRoomAdmin', cohortStretch)
+  }
+
   joinCohortStretchRoom(cohortStretchId) {
     this.socket.emit('joinCohortStretchRoom', cohortStretchId)
+    const { isAdmin } = this.storeAPI.getState().userDetails
+    if (isAdmin) {
+      this.storeAPI.dispatch(startStretchTimer(cohortStretchId))
+    }
     this.socket.on('success', msg => console.log(msg))
   }
 

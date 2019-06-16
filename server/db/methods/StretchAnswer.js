@@ -4,7 +4,7 @@ const {
   CohortStretch,
   CohortUser,
   StretchAnswer,
-  Cohort
+  Cohort,
 } = require('../models')
 
 // These are the main parameters that are used in Sequelize models' find methods.
@@ -24,23 +24,23 @@ const defaults = {
 }
 
 // This method formats a single instance of StretchAnswer.
-StretchAnswer.prototype.format = function() {
+StretchAnswer.prototype.format = function () {
   const { cohortstretch, ...stretchAnswerFields } = this.dataValues
   const { cohort, ...cohortsStretchFields } = cohortstretch.get()
   return {
     ...stretchAnswerFields,
     ...cohortsStretchFields,
-    cohortName: cohort.name
+    cohortName: cohort.name,
   }
 }
 
-StretchAnswer.prototype.addAssociations = function(format = true) {
+StretchAnswer.prototype.addAssociations = function (format = true) {
   return StretchAnswer.findByPk(this.id, defaults).then(sa =>
     format ? sa.format() : sa
   )
 }
 
-StretchAnswer.getAnswersOfStudent = function(studentId) {
+StretchAnswer.getAnswersOfStudent = function (studentId) {
   return this.findAll({
     where: { userId: studentId },
     ...defaults
@@ -49,7 +49,7 @@ StretchAnswer.getAnswersOfStudent = function(studentId) {
   })
 }
 
-StretchAnswer.getAnswersOfStudentsOfSingleAdmin = function(adminId) {
+StretchAnswer.getAnswersOfStudentsOfSingleAdmin = function (adminId) {
   return User.findOne({
     where: { id: adminId },
     include: CohortUser

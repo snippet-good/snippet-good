@@ -5,7 +5,14 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 
-const ConfirmDialogBox = ({ text, open, setModalClosed, args, action }) => {
+const ConfirmDialogBox = ({
+  text,
+  open,
+  setModalClosed,
+  args,
+  action,
+  showNoButton
+}) => {
   return (
     <Dialog open={open} onClose={setModalClosed}>
       <DialogContent>
@@ -18,9 +25,11 @@ const ConfirmDialogBox = ({ text, open, setModalClosed, args, action }) => {
         >
           Yes
         </Button>
-        <Button color="secondary" onClick={() => setModalClosed()}>
-          No
-        </Button>
+        {showNoButton && (
+          <Button color="secondary" onClick={() => setModalClosed()}>
+            No
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   )

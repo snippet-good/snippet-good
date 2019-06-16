@@ -102,7 +102,7 @@ const createStretchObjects = (userIds, categoryIds) => {
       codePrompt: paragraph(),
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
-      minutes: getRandomArrayEntry([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+      minutes: getRandomArrayEntry([1]),
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
     }
@@ -172,7 +172,7 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
           Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
         userId: students[studentsIndex[j]],
         cohortstretchId: csClosed[i].id,
-        timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10])
+        timeToSolve: getRandomArrayEntry([(60 * 1), (60 * 2), (60 * 3), (60 * 4), (60 * 5)])
       }
       stretchAnswers.push(stretchAnswer)
     }
