@@ -72,11 +72,13 @@ class SingleCohort extends Component {
 
           <Grid item xs={1} />
 
-          <Grid item xs={4} style={{ height: '100vh' }}>
-            <Calendar
-              onChange={handleCalendarChange}
-              value={state.currentDate}
-            />
+          <Grid item xs={4}>
+            <div style={{ height: '100vh', position: 'fixed', top: '90px' }}>
+              <Calendar
+                onChange={handleCalendarChange}
+                value={state.currentDate}
+              />
+            </div>
           </Grid>
         </Grid>
       </div>
