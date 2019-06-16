@@ -22,9 +22,15 @@ const mapStateToProps = ({
   )
     return { userDetails }
   const studentCohorts = cohortUsers.map(cu => cu.cohortId)
+  const cohortStretchIds = stretchAnswers.map(sa => sa.cohortstretchId)
 
   const openStretches = cohortStretches
-    .filter(cs => studentCohorts.includes(cs.cohortId) && cs.status === 'open')
+    .filter(
+      cs =>
+        studentCohorts.includes(cs.cohortId) &&
+        !cohortStretchIds.includes(cs.id) &&
+        cs.status === 'open'
+    )
     .map(cs => {
       const stretch = stretches.find(s => s.id === cs.stretchId)
       const { id, ...stretchFields } = stretch

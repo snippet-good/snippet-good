@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import {
   deleteCohortStretchThunk,
-  updateCohortStretchThunk
+  updateCohortStretchThunk,
+  openStretchProcessThunk
 } from '../../store/cohort-stretches/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 
@@ -23,11 +24,13 @@ const SingleCohortStretchTables = ({
   cohortStretches,
   stretches,
   deleteCohortStretch,
-  updateCohortStretch
+  updateCohortStretch,
+  openStretchProcess
 }) => {
   if (!checkIfAllDataExists(cohort, cohortStretches, stretches)) {
     return <div>No open, scheduled, or submitted stretches for cohort</div>
   }
+
   let [rescheduleModalOpen, setRescheduleModalOpen] = useState(false)
   let [unscheduleModalOpen, setunscheduleModalOpen] = useState(false)
   let [openStretchModalOpen, setOpenStretchModalOpen] = useState(false)
@@ -100,8 +103,11 @@ const SingleCohortStretchTables = ({
         text="Are you sure you would like to open the stretch?"
         open={openStretchModalOpen}
         setModalClosed={handleopenStretchModalClose}
-        args={[selectedCohortStretchId, { status: 'open' }]}
-        action={updateCohortStretch}
+        args={[
+          selectedCohortStretchId,
+          { status: 'open', startTimer: new Date() }
+        ]}
+        action={openStretchProcess}
       />
       <Typography variant="h6" id="tableTitle">
         Open Stretches
@@ -225,7 +231,7 @@ const SingleCohortStretchTables = ({
                 <TableCell>{stretch.categoryName}</TableCell>
                 <TableCell>{stretch.difficulty}</TableCell>
                 <TableCell>
-                  <Link to="/">
+                  <Link to={`/admin/stretch/analytics/${stretch.id}`}>
                     <Button color="primary"> View Analytics </Button>
                   </Link>
                 </TableCell>
@@ -252,7 +258,9 @@ const mapDispatchToProps = dispatch => {
   return {
     deleteCohortStretch: id => dispatch(deleteCohortStretchThunk(id)),
     updateCohortStretch: (id, updatedFields) =>
-      dispatch(updateCohortStretchThunk(id, updatedFields))
+      dispatch(updateCohortStretchThunk(id, updatedFields)),
+    openStretchProcess: (cohortStretchId, updatedFields) =>
+      dispatch(openStretchProcessThunk(cohortStretchId, updatedFields))
   }
 }
 

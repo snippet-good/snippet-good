@@ -24,6 +24,11 @@ const CohortStretch = db.define('cohortstretch', {
   solution: {
     type: db.Sequelize.TEXT
   },
+  startTimer: {
+    type: db.Sequelize.DATE,
+    defaultValue: new Date(),
+    allowNull: false
+  },
   scheduledDate: {
     type: db.Sequelize.DATE,
     allowNull: false,

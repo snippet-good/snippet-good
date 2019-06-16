@@ -7,7 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
 
 const CohortSelect = props => {
-  const { style, cohorts, cohortId } = props
+  const { style, cohorts, cohortId, stretchId } = props
   const { handleChange } = props
 
   return (
@@ -37,14 +37,13 @@ CohortSelect.defaultProps = {
   handleChange: () => {}
 }
 
-const mapStateToProps = ({ cohorts }) => ({ cohorts })
-// const { userDetails, cohorts, cohortUsers } = state
-
-// const userCohorts = cohortUsers
-//   .filter(e => e.userId === userDetails.id) // Find all cohorts associated to user
-//   .map(e => cohorts.find(cohort => cohort.id === e.cohortId)) // Associate cohort details to UserCohort
-
-// return { cohorts: userCohorts }
-//}
+const mapStateToProps = ({ cohorts, cohortStretches }, { stretchId }) => {
+  const cohortsAlreadyUsedStretch = cohortStretches
+    .filter(cs => cs.stretchId === stretchId)
+    .map(cs => cs.cohortId)
+  return {
+    cohorts: cohorts.filter(c => !cohortsAlreadyUsedStretch.includes(c.id))
+  }
+}
 
 export default connect(mapStateToProps)(CohortSelect)

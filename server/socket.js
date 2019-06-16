@@ -14,6 +14,15 @@ const socketFunction = socketServer => {
       }
     })
 
+    socket.on('initializeRoom', userDetails => {
+      userDetails.cohortIds.forEach(cohortId => {
+        socket.join(cohortId)
+        console.log(
+          `${userDetails.id} has joined the room for cohortId ${cohortId}`
+        )
+      })
+    })
+
     socket.on('sendMessage', (commentObject, emitObject) => {
       const { relatedUsers, stretchTitle, cohortName, studentId } = emitObject
 
@@ -30,6 +39,11 @@ const socketFunction = socketServer => {
             )
         }
       }
+    })
+
+    socket.on('startStretchTimer', cohortStretch => {
+      socket.to(cohortStretch.cohortId).emit('timer-started', cohortStretch)
+      console.log('received request to start stretch timer')
     })
   })
 }

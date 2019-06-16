@@ -1,53 +1,89 @@
-import React, {  useState } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Typography from '@material-ui/core/Typography'
+import { getAttendance } from '../../store/attendance/actions'
 
-import AppBar from '@material-ui/core/AppBar'
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { makeStyles } from '@material-ui/core/styles'
-import SingleCohortStretchTables from './SingleCohortStretchTables'
-import { CohortStudents } from './CohortStudents'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    width: 500
+import Calendar from 'react-calendar'
+
+import Attendance from './Attendance'
+
+class SingleCohort extends Component {
+  state = {
+    tab: 0,
+    currentDate: new Date(),
+    attendanceRecords: {}
   }
-}))
 
-const SingleCohort = ({ cohort, cohortStudents }) => {
-  const { root } = useStyles()
-  const { name } = cohort
-  const [value, setValue] = useState('stretches')
+  getAttendance = async (currentDate = this.state.currentDate) => {
+    const cohortId = this.props.match.params.id
+    const attendanceRecords = await getAttendance(cohortId, currentDate)
+    this.setState({ attendanceRecords })
+  }
 
-  return (
-    <div className={root}>
-      <Typography
-        variant="h5"
-        gutterBottom
+  // This event handler handles changes on the Calendar component.
+  handleCalendarChange = async currentDate => {
+    await this.getAttendance(currentDate)
+    this.setState({ currentDate })
+  }
+
+  handleTabsChange = (event, tab) => this.setState({ tab })
+
+  async componentDidMount() {
+    await this.getAttendance()
+  }
+
+  render() {
+    const { state, props } = this
+    const { handleCalendarChange, handleTabsChange } = this
+
+    return (
+      <div
+        style={{ display: 'flex', justifyContent: 'center', width: '100vw' }}
       >
-        {name}
-      </Typography>
+        <Grid container spacing={2} style={{ width: '98%' }}>
+          <Grid item xs={7}>
+            <Grid item xs={12}>
+              <Tabs
+                value={state.tab}
+                onChange={handleTabsChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+                style={{ marginBottom: '2em' }}
+              >
+                <Tab label="Attendance" />
+                <Tab label="Stretches" />
+              </Tabs>
+            </Grid>
 
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={(event, newValue) => setValue(newValue)}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-        >
-          <Tab value="stretches" label="Stretches" />
-          <Tab value="students" label="Students" />
-        </Tabs>
-      </AppBar>
-      {value === 'stretches' && <SingleCohortStretchTables cohort={cohort} />}
-      {value === 'students' && (
-        <CohortStudents cohortStudents={cohortStudents} />
-      )}
-    </div>
-  )
+            <Grid item xs={12}>
+              {state.tab === 0 && (
+                <Attendance
+                  cohortId={props.match.params.id}
+                  records={state.attendanceRecords}
+                />
+              )}
+            </Grid>
+          </Grid>
+
+          <Grid item xs={1} />
+
+          <Grid item xs={4}>
+            <div style={{ height: '100vh', position: 'fixed', top: '90px' }}>
+              <Calendar
+                onChange={handleCalendarChange}
+                value={state.currentDate}
+              />
+            </div>
+          </Grid>
+        </Grid>
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
@@ -57,8 +93,4 @@ const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
   cohort: cohorts.find(cohort => cohort.id === params.id) || {}
 })
 
-
-
-export default connect(
-  mapStateToProps
-)(SingleCohort)
+export default connect(mapStateToProps)(SingleCohort)

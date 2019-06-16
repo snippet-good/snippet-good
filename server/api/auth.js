@@ -1,10 +1,15 @@
 const router = require('express').Router()
 const { validationResult } = require('express-validator/check')
 const {
-  models: { User }
+  models: { User, CohortUser }
 } = require('../db/index')
 
 const loginValidations = require('../validations/login')
+
+User.prototype.format = function() {
+  const { cohortusers, ...userDetails } = this.dataValues
+  return { ...userDetails, cohortIds: cohortusers.map(cu => cu.cohortId) }
+}
 
 // POST, authenticates user
 router.post('/', loginValidations, async (req, res, next) => {
@@ -21,7 +26,7 @@ router.post('/', loginValidations, async (req, res, next) => {
     // Secondary error handler for login
     // This section checks if inputs match database records.
     const { email, password } = req.body
-    const user = await User.findOne({ where: { email } })
+    let user = await User.findOne({ where: { email }, include: CohortUser })
 
     const errors = {}
 
@@ -47,8 +52,11 @@ router.get('/', (req, res, next) => {
     return next(error)
   }
 
-  User.findByPk(req.session.userId)
-    .then(user => res.json(user))
+  User.findByPk(req.session.userId, { include: CohortUser })
+    .then(user => {
+      if (!user) throw new Error('user not logged in on page load')
+      res.json(user.format())
+    })
     .catch(next)
 })
 
