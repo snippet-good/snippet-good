@@ -36,30 +36,6 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
     initialTotalSecondsLeft || 1
   )
 
-  const [displayMinutes, setDisplayMinutes] = useState(
-    Math.floor(totalSecondsLeft / 60) || 0
-  )
-  const [displaySeconds, setDisplaySeconds] = useState(
-    totalSecondsLeft - Math.floor(totalSecondsLeft / 60) * 60 || 0
-  )
-
-  /*const timer = setTimeout(() => {
-    secondsLeft =
-      minutes * 60 -
-      moment
-        .utc(new Date())
-        .local()
-        .diff(moment.utc(startTimer).local(), 'seconds')
-    setRemainingTime(secondsLeft)
-    setDisplaySeconds(secondsLeft - Math.floor(secondsLeft / 60) * 60)
-    setDisplayMinutes(Math.floor(secondsLeft / 60))
-  }, 1000)
-
-  if (remainingTime === 0) {
-    clearTimeout(timer)
-    setModalOpen(true)
-  }*/
-
   return (
     <Card style={styles.singleCard}>
       <CardContent>
@@ -85,10 +61,11 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
 
           {status === 'open' && (
             <Grid item xs={6}>
-              <Typography
-                variant="body2"
-                component="p"
-              >{`${displayMinutes}:${displaySeconds}`}</Typography>
+              <Timer
+                minutesForStretch={minutes}
+                timeStretchStarted={startTimer}
+                {...{ totalSecondsLeft, setTotalSecondsLeft }}
+              />
               <Typography variant="body2" component="p">
                 {`${completedStretches} out of ${cohortSize} students are done`}
               </Typography>

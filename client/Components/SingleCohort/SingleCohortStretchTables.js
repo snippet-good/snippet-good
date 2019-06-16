@@ -79,9 +79,10 @@ const SingleCohortStretchTables = ({
 
   // open stretch modal event handlers
   const handleopenStretchModalClose = () => setOpenStretchModalOpen(false)
-  const handleopenStretchModalOpen = id => {
+  const handleopenStretchModalOpen = cohortStretch => {
     setOpenStretchModalOpen(true)
-    setCohortStretchId(id)
+    setCohortStretch(cohortStretch)
+    setCohortStretchId(cohortStretch.id)
   }
 
   return (
@@ -104,6 +105,7 @@ const SingleCohortStretchTables = ({
         open={openStretchModalOpen}
         setModalClosed={handleopenStretchModalClose}
         args={[
+          stretches.find(s => s.id === selectedCohortStretch.stretchId),
           selectedCohortStretchId,
           { status: 'open', startTimer: new Date() }
         ]}
@@ -176,7 +178,7 @@ const SingleCohortStretchTables = ({
                 </TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => handleopenStretchModalOpen(cohortStretch.id)}
+                    onClick={() => handleopenStretchModalOpen(cohortStretch)}
                   >
                     {' '}
                     Open{' '}
@@ -259,8 +261,8 @@ const mapDispatchToProps = dispatch => {
     deleteCohortStretch: id => dispatch(deleteCohortStretchThunk(id)),
     updateCohortStretch: (id, updatedFields) =>
       dispatch(updateCohortStretchThunk(id, updatedFields)),
-    openStretchProcess: (cohortStretchId, updatedFields) =>
-      dispatch(openStretchProcessThunk(cohortStretchId, updatedFields))
+    openStretchProcess: (stretch, cohortStretchId, updatedFields) =>
+      dispatch(openStretchProcessThunk(stretch, cohortStretchId, updatedFields))
   }
 }
 
