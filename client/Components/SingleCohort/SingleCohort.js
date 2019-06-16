@@ -18,20 +18,23 @@ class SingleCohort extends Component {
     attendanceRecords: {}
   }
 
-  getAttendance = async currentDate => {
+  getAttendance = async (currentDate = this.state.currentDate) => {
     const cohortId = this.props.match.params.id
     const attendanceRecords = await getAttendance(cohortId, currentDate)
-    console.log(attendanceRecords)
-    return attendanceRecords
+    this.setState({ attendanceRecords })
   }
 
   // This event handler handles changes on the Calendar component.
-  handleCalendarChange = currentDate => {
-    const attendanceRecords = this.getAttendance(currentDate)
-    this.setState({ currentDate, attendanceRecords })
+  handleCalendarChange = async currentDate => {
+    await this.getAttendance(currentDate)
+    this.setState({ currentDate })
   }
 
   handleTabsChange = (event, tab) => this.setState({ tab })
+
+  async componentDidMount() {
+    await this.getAttendance()
+  }
 
   render() {
     const { state, props } = this
@@ -59,7 +62,10 @@ class SingleCohort extends Component {
 
             <Grid item xs={12}>
               {state.tab === 0 && (
-                <Attendance cohortId={props.match.params.id} />
+                <Attendance
+                  cohortId={props.match.params.id}
+                  records={state.attendanceRecords}
+                />
               )}
             </Grid>
           </Grid>

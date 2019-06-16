@@ -8,6 +8,8 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 
+import Button from '@material-ui/core/Button'
+
 const Attendance = props => {
   const { students } = props
 
@@ -38,7 +40,8 @@ const EnhancedTableHead = props => {
 }
 
 const StudentRow = props => {
-  const { firstName, lastName } = props.attributes
+  const { attributes } = props
+  const { firstName, lastName, attendance } = attributes
 
   return (
     <TableRow>
@@ -46,18 +49,42 @@ const StudentRow = props => {
         {firstName} {lastName}
       </TableCell>
 
-      <TableCell />
+      <TableCell>
+        {attendance ? (
+          `${attendance.isPresent ? 'Present' : 'Absent'}`
+        ) : (
+          <em>No record found</em>
+        )}
+      </TableCell>
+
+      <TableCell>
+        {attendance ? (
+          `${
+            attendance.isPresent
+              ? ''
+              : `${attendance.isExcused ? 'Excused' : 'Unexcused'}`
+          }`
+        ) : (
+          <em>No record found</em>
+        )}
+      </TableCell>
+
+      <TableCell>
+        <Button>Edit</Button>
+      </TableCell>
     </TableRow>
   )
 }
 
 const mapStateToProps = (state, props) => {
   const { users, cohorts } = state
-  const { cohortId } = props
+  const { cohortId, records } = props
 
-  const students = users.filter(
-    s => !s.isAdmin && s.cohortIds.find(id => id === cohortId)
-  )
+  const students = users
+    .filter(s => !s.isAdmin && s.cohortIds.find(id => id === cohortId))
+    .map(s => {
+      return { ...s, attendance: records[s.id] }
+    })
 
   return { students }
 }
