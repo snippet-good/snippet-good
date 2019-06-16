@@ -25,9 +25,6 @@ const CategorySelect = props => {
         style={{ ...style }}
         onChange={handleChange}
       >
-        {/* <MenuItem value="">
-        <em>None</em>
-      </MenuItem> */}
         {categories.map(c => (
           <MenuItem key={c.id} value={c.id}>
             {c.name}
