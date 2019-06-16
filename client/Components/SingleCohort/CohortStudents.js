@@ -1,7 +1,7 @@
 import React from 'react'
 import SubmittedStretches from './SubmittedStretches'
 
-export const CohortStudents = ({ cohortStudents }) => {
+const CohortStudents = ({ cohortStudents }) => {
   return (
     <div>
       {cohortStudents.map(student => (
@@ -10,3 +10,5 @@ export const CohortStudents = ({ cohortStudents }) => {
     </div>
   )
 }
+
+export default CohortStudents
