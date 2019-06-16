@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
 import { parseDateTime } from './helperfunctions'
+import Timer from '../_shared/Timer'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
@@ -10,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import styles from './styles'
+import moment from 'moment'
 
 const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
   const {
@@ -19,8 +21,21 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
     cohortName,
     cohortSize,
     completedStretches,
-    scheduledDate
+    scheduledDate,
+    startTimer
   } = stretch
+
+  let initialTotalSecondsLeft =
+    minutes * 60 -
+    moment
+      .utc(new Date())
+      .local()
+      .diff(moment.utc(startTimer).local(), 'seconds')
+
+  const [totalSecondsLeft, setTotalSecondsLeft] = useState(
+    initialTotalSecondsLeft || 1
+  )
+
   return (
     <Card style={styles.singleCard}>
       <CardContent>
@@ -46,10 +61,11 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
 
           {status === 'open' && (
             <Grid item xs={6}>
-              <Typography
-                variant="body2"
-                component="p"
-              >{`${minutes}:00`}</Typography>
+              <Timer
+                minutesForStretch={minutes}
+                timeStretchStarted={startTimer}
+                {...{ totalSecondsLeft, setTotalSecondsLeft }}
+              />
               <Typography variant="body2" component="p">
                 {`${completedStretches} out of ${cohortSize} students are done`}
               </Typography>

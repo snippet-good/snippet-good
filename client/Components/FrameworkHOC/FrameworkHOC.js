@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import FlashMessage from '../FlashMessage'
-import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
-import {
-  getStretchAnswersOfSingleAdminThunk,
-  getStretchAnswersOfStudentThunk
-} from '../../store/stretch-answers/actions'
-import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
 import {
   checkIfUserLoggedInThunk,
   logoutUserThunk
 } from '../../store/auth/actions'
-import { getStudentCohortUsersThunk } from '../../store/cohort-users/actions'
-import { getAllCategories } from '../../store/categories/actions'
-import { getAllStretches } from '../../store/stretches/actions'
-import { getAllCohortStretches } from '../../store/cohort-stretches/actions'
+import {
+  loadAdminRelatedDataThunk,
+  loadStudentRelatedDataThunk
+} from '../../store/shared-actions'
 //import {getAllCohortUsers} from '../../store/cohort-users/actions'
 
 import Drawer from '@material-ui/core/Drawer'
@@ -122,31 +116,14 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
   })
 
   const mapDispatchToProps = dispatch => {
-    const commonData = [
-      dispatch(getAllCategories()),
-      dispatch(getAllStretches()),
-      dispatch(getAllCohortStretches())
-    ]
-
     return {
       checkIfUserLoggedIn: history =>
         dispatch(checkIfUserLoggedInThunk(history)),
       logoutUser: history => dispatch(logoutUserThunk(history)),
-      loadAdminRelatedData: adminId => {
-        return Promise.all([
-          dispatch(getCohortsOfAdminThunk(adminId)),
-          dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
-          dispatch(getUsersOfSingleAdminThunk(adminId)),
-          ...commonData
-        ])
-      },
-      loadStudentRelatedData: studentId => {
-        return Promise.all([
-          dispatch(getStretchAnswersOfStudentThunk(studentId)),
-          dispatch(getStudentCohortUsersThunk(studentId)),
-          ...commonData
-        ])
-      }
+      loadAdminRelatedData: adminId =>
+        dispatch(loadAdminRelatedDataThunk(adminId)),
+      loadStudentRelatedData: adminId =>
+        dispatch(loadStudentRelatedDataThunk(adminId))
     }
   }
 
