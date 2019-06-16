@@ -5,7 +5,7 @@
   "scripts": {
     "seed": "node ./bin/runSeed",
     "nodemon": "./node_modules/.bin/nodemon",
-    "postinstall": "webpack",
+    "postinstall": "webpack & npm run seed",
     "start": "node server/index.js",
     "start:dev": "npm run seed && npm run start-server & npm run build-watch",
     "start-server": "nodemon server/index.js --watch server -e js,html",
