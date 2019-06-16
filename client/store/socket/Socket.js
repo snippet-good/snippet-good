@@ -15,7 +15,7 @@ class Socket {
     this.socket.on(
       'messageSent',
       (commentObject, stretchTitle, cohortName, studentId) => {
-        const flashMessageObject = this.generateFlashMessageObject(
+        const flashMessageObject = this.generateFlashMessageObjectForMessage(
           commentObject,
           stretchTitle,
           cohortName,
@@ -28,10 +28,31 @@ class Socket {
 
     this.socket.on('timer-started', cohortStretch => {
       storeAPI.dispatch(updateCohortStretch(cohortStretch.id, cohortStretch))
+      storeAPI.dispatch(
+        addFlashMessage(
+          this.generateFlashMessageObjectForOpenStretch(cohortStretch)
+        )
+      )
     })
   }
 
-  generateFlashMessageObject = (
+  generateFlashMessageObjectForOpenStretch = cohortStretch => {
+    const { stretches, flashMessages, userDetails } = this.storeAPI.getState()
+    const { title } = stretches.find(s => s.id === cohortStretch.stretchId)
+    const { id, cohortName } = cohortStretch
+    let commonObject = {
+      id: generateFlashMessageId(flashMessages, 'stretchOpened'),
+      body: `Stretch ${title} is now open in ${cohortName}`
+    }
+    if (userDetails.isAdmin) return commonObject
+    return {
+      ...commonObject,
+      linkLabel: 'Click here to answer',
+      link: `/student/stretch/${id}`
+    }
+  }
+
+  generateFlashMessageObjectForMessage = (
     commentObject,
     stretchTitle,
     cohortName,

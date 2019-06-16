@@ -14,16 +14,18 @@ const FlashMessage = ({ flashMessages, history, deleteFlashMessage }) => {
             <li key={id}>
               {' '}
               {body}
-              <Button
-                color="primary"
-                size="small"
-                onClick={() => {
-                  history.push(link)
-                  deleteFlashMessage(id)
-                }}
-              >
-                {linkLabel}
-              </Button>
+              {link && (
+                <Button
+                  color="primary"
+                  size="small"
+                  onClick={() => {
+                    history.push(link)
+                    deleteFlashMessage(id)
+                  }}
+                >
+                  {linkLabel}
+                </Button>
+              )}
               <Button
                 color="secondary"
                 size="small"
