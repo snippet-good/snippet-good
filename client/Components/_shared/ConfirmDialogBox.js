@@ -13,7 +13,6 @@ const ConfirmDialogBox = ({
   action,
   showNoButton
 }) => {
-  console.log(open)
   return (
     <Dialog open={open} onClose={setModalClosed}>
       <DialogContent>
