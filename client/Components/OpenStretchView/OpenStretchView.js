@@ -75,13 +75,19 @@ const OpenStretchView = ({
     setModalOpen(false)
   }
 
-  const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
-    console.log('myStretch', myStretch)
+  const submitStretch = (
+    stretchAnswer,
+    myStretch,
+    userDetails,
+    history,
+    updateAdminCount
+  ) => {
     return createStretchAnswer({
       body: stretchAnswer,
       timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
       cohortstretchId: myCohortStretch.id,
-      userId: userDetails.id
+      userId: userDetails.id,
+      updateAdminCount
     }).then(() => history.push('/student/stretches/submitted'))
   }
 
@@ -98,7 +104,7 @@ const OpenStretchView = ({
         text="Confirm to submit"
         open={modalOpen}
         setModalClosed={handleModalClose}
-        args={[stretchAnswer, myStretch, userDetails, history]}
+        args={[stretchAnswer, myStretch, userDetails, history, false]}
         action={submitStretch}
         showNoButton={false}
       />
@@ -141,7 +147,7 @@ const OpenStretchView = ({
 
       <Button
         onClick={() =>
-          submitStretch(stretchAnswer, myStretch, userDetails, history)
+          submitStretch(stretchAnswer, myStretch, userDetails, history, true)
         }
       >
         Submit

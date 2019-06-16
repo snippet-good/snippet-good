@@ -3,6 +3,7 @@ import { GET_USER_DETAILS, LOGOUT } from '../auth/actions'
 import { CREATE_COMMENT } from '../comments/actions'
 import { START_STRETCH_TIMER } from '../cohort-stretches/actions'
 import { SEND_CLOSED_STRETCH } from '../socket/actions'
+import { CREATE_STRETCH_ANSWER } from '../stretch-answers/actions'
 
 const socketMiddleware = storeAPI => {
   let socket
@@ -22,6 +23,9 @@ const socketMiddleware = storeAPI => {
         break
       case SEND_CLOSED_STRETCH:
         socket.sendClosedStretch(action.cohortStretch)
+        break
+      case CREATE_STRETCH_ANSWER:
+        socket.sendStretchAnswer(action.newStretchAnswer)
         break
       default:
         break
