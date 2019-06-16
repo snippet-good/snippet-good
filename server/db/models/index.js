@@ -6,7 +6,7 @@ module.exports = {
   Comment: require('./Comment'),
 
   Attendance: require('./Attendance'),
-  Withdrawl: require('./Withdrawl'),
+  Withdrawal: require('./Withdrawal'),
 
   Category: require('./Category'),
   Stretch: require('./Stretch'),

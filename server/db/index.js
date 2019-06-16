@@ -1,7 +1,7 @@
 const db = require('./db')
 const models = require('./models')
 
-const { User, Comment, Attendance, Withdrawl } = models
+const { User, Comment, Attendance, Withdrawal } = models
 const { Cohort, CohortUser, CohortStretch } = models
 const { Category, Stretch, StretchAnswer } = models
 
@@ -62,11 +62,8 @@ function initDb(force = false) {
     Attendance.belongsTo(Cohort)
     Cohort.hasMany(Attendance)
 
-    Withdrawl.belongsTo(User)
-    User.hasMany(Withdrawl)
-
-    Withdrawl.belongsTo(Cohort)
-    Cohort.hasMany(Withdrawl)
+    Withdrawal.belongsTo(CohortUser)
+    CohortUser.hasMany(Withdrawal)
     // -------------------------------------------------------
 
     return db.sync({ force })

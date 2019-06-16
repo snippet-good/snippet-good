@@ -1,6 +1,6 @@
 const db = require('../db')
 
-const Withdrawl = db.define('withdrawl', {
+const Withdrawal = db.define('withdrawl', {
   id: {
     type: db.Sequelize.UUID,
     defaultValue: db.Sequelize.UUIDV4,
@@ -8,4 +8,4 @@ const Withdrawl = db.define('withdrawl', {
   }
 })
 
-module.exports = Withdrawl
+module.exports = Withdrawal
