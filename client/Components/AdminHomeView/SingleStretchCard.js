@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
 import { parseDateTime } from './helperfunctions'
+import Timer from '../_shared/Timer'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
@@ -10,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import styles from './styles'
+import moment from 'moment'
 
 const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
   const {
@@ -19,8 +21,45 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
     cohortName,
     cohortSize,
     completedStretches,
-    scheduledDate
+    scheduledDate,
+    startTimer
   } = stretch
+
+  let initialTotalSecondsLeft =
+    minutes * 60 -
+    moment
+      .utc(new Date())
+      .local()
+      .diff(moment.utc(startTimer).local(), 'seconds')
+
+  const [totalSecondsLeft, setTotalSecondsLeft] = useState(
+    initialTotalSecondsLeft || 1
+  )
+
+  const [displayMinutes, setDisplayMinutes] = useState(
+    Math.floor(totalSecondsLeft / 60) || 0
+  )
+  const [displaySeconds, setDisplaySeconds] = useState(
+    totalSecondsLeft - Math.floor(totalSecondsLeft / 60) * 60 || 0
+  )
+
+  /*const timer = setTimeout(() => {
+    secondsLeft =
+      minutes * 60 -
+      moment
+        .utc(new Date())
+        .local()
+        .diff(moment.utc(startTimer).local(), 'seconds')
+    setRemainingTime(secondsLeft)
+    setDisplaySeconds(secondsLeft - Math.floor(secondsLeft / 60) * 60)
+    setDisplayMinutes(Math.floor(secondsLeft / 60))
+  }, 1000)
+
+  if (remainingTime === 0) {
+    clearTimeout(timer)
+    setModalOpen(true)
+  }*/
+
   return (
     <Card style={styles.singleCard}>
       <CardContent>
@@ -49,7 +88,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
               <Typography
                 variant="body2"
                 component="p"
-              >{`${minutes}:00`}</Typography>
+              >{`${displayMinutes}:${displaySeconds}`}</Typography>
               <Typography variant="body2" component="p">
                 {`${completedStretches} out of ${cohortSize} students are done`}
               </Typography>

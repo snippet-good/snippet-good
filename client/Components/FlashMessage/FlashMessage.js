@@ -5,9 +5,17 @@ import Button from '@material-ui/core/Button'
 
 const FlashMessage = ({ flashMessages, history, deleteFlashMessage }) => {
   const { message, link } = flashMessages
-  if (!message) return <div />
+  if (flashMessages.length) return <div />
   return (
     <div>
+      {/*   <ul>
+        {flashMessages.map(message => {
+
+        })}
+
+
+      </ul>*/}
+
       {flashMessages.message}
 
       <Button
@@ -37,7 +45,7 @@ const mapStateToProps = ({ flashMessages }) => ({ flashMessages })
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteFlashMessage: () => dispatch(deleteFlashMessage())
+    deleteFlashMessage: id => dispatch(deleteFlashMessage(id))
   }
 }
 

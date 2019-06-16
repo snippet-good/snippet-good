@@ -11,6 +11,7 @@ import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
 import moment from 'moment'
+import Timer from '../_shared/Timer'
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -52,36 +53,33 @@ const OpenStretchView = ({
   userDetails,
   history
 }) => {
-  let secondsLeft
+  let initialTotalSecondsLeft
   if (myStretch) {
-    secondsLeft =
+    initialTotalSecondsLeft =
       myStretch.minutes * 60 -
       moment
         .utc(new Date())
         .local()
         .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
   }
+  let [totalSecondsLeft, setTotalSecondsLeft] = useState(
+    initialTotalSecondsLeft || 1
+  )
 
   const classes = useStyles()
   let [modalOpen, setModalOpen] = useState(false)
   const [codePrompt, setCodePrompt] = useState('')
-  const [remainingTime, setRemainingTime] = useState(secondsLeft || 1)
-  const [displayMinutes, setDisplayMinutes] = useState(
-    Math.floor(secondsLeft / 60) || 0
-  )
-  const [displaySeconds, setDisplaySeconds] = useState(
-    secondsLeft - Math.floor(secondsLeft / 60) * 60 || 0
-  )
   const [stretchAnswer, setStretchAnswer] = useState('')
 
   const handleModalClose = () => {
+    history.push('/student')
     setModalOpen(false)
   }
 
   const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
     return createStretchAnswer({
       body: stretchAnswer,
-      timeToSolve: myStretch.minutes * 60 - remainingTime,
+      timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
       cohortstretchId: myCohortStretch.id,
       userId: userDetails.id
     }).then(() => history.push('/student/stretches/submitted'))
@@ -92,31 +90,14 @@ const OpenStretchView = ({
       setCodePrompt(myStretch.codePrompt)
       setStretchAnswer(myStretch.codePrompt)
     }
-    let timer
-    if (myStretch && secondsLeft) {
-      timer = setTimeout(() => {
-        secondsLeft =
-          myStretch.minutes * 60 -
-          moment
-            .utc(new Date())
-            .local()
-            .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
-        setRemainingTime(secondsLeft)
-        setDisplaySeconds(secondsLeft - Math.floor(secondsLeft / 60) * 60)
-        setDisplayMinutes(Math.floor(secondsLeft / 60))
-      }, 1000)
-    }
-    if (remainingTime === 0) {
-      clearTimeout(timer)
-      setModalOpen(true)
-    }
-  })
+  }, [myStretch])
+
   return (
     <div>
       <ConfirmDialogBox
         text="Confirm to submit"
         open={modalOpen}
-        setModalClosed={() => setModalOpen(false)}
+        setModalClosed={handleModalClose}
         args={[stretchAnswer, myStretch, userDetails, history]}
         action={submitStretch}
         showNoButton={false}
@@ -129,10 +110,18 @@ const OpenStretchView = ({
           {myStretch === undefined ? 'loading...' : `${myStretch.textPrompt}`}
         </Typography>
         <Paper>
-          <Typography variant="h3" component="h3">
-            Time Remaining: {displayMinutes}:{' '}
-            {displaySeconds < 10 ? `0${displaySeconds}` : `${displaySeconds}`}
-          </Typography>
+          {myStretch && (
+            <Typography variant="h3">
+              Time Remaining:
+              <Timer
+                minutesForStretch={myStretch.minutes}
+                timeStretchStarted={myCohortStretch.startTimer}
+                action={setModalOpen}
+                args={[true]}
+                {...{ totalSecondsLeft, setTotalSecondsLeft }}
+              />
+            </Typography>
+          )}
         </Paper>
       </Paper>
 
