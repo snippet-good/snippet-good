@@ -99,6 +99,8 @@ class Socket {
   sendClosedStretch(cohortStretch) {
     this.socket.emit('sendClosedStretch', cohortStretch)
   }
+
+  sendStretchAnswer
 }
 
 export default Socket
