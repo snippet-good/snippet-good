@@ -2,6 +2,7 @@ import Socket from './Socket'
 import { GET_USER_DETAILS, LOGOUT } from '../auth/actions'
 import { CREATE_COMMENT } from '../comments/actions'
 import { START_STRETCH_TIMER } from '../cohort-stretches/actions'
+import { SEND_CLOSED_STRETCH } from '../socket/actions'
 
 const socketMiddleware = storeAPI => {
   let socket
@@ -18,6 +19,9 @@ const socketMiddleware = storeAPI => {
         break
       case START_STRETCH_TIMER:
         socket.startStretchTimer(action.cohortStretch)
+        break
+      case SEND_CLOSED_STRETCH:
+        socket.sendClosedStretch(action.cohortStretch)
         break
       default:
         break

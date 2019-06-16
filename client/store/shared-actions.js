@@ -12,6 +12,7 @@ import {
   updateCohortStretchThunk
 } from './cohort-stretches/actions'
 import { addFlashMessage } from './flash-message/actions'
+import { sendClosedStretch } from './socket/actions'
 import store from './store'
 import moment from 'moment'
 import { generateFlashMessageId } from '../utilityfunctions'
@@ -36,6 +37,7 @@ export const closeStretchProcess = cohortStretch => {
           link: `/admin/stretchReview/${id}`
         })
       )
+      dispatch(sendClosedStretch({ ...cohortStretch, status: 'closed' }))
     })
   }
 }
