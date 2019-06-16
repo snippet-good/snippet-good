@@ -78,6 +78,7 @@ export const openStretchProcessThunk = (
           dispatch(
             updateCohortStretchThunk(cohortStretchId, { status: 'closed' })
           )
+          dispatch
         }, stretch.minutes * 1000 * 60)
       })
   }

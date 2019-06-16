@@ -11,3 +11,12 @@ export const checkIfAllDataExists = (...args) => {
   }
   return true
 }
+
+export const generateFlashMessageId = (messages, type) => {
+  const currentMessageIds = messages
+    .filter(fm => fm.id.includes(type))
+    .map(fm => fm.id.split('-')[0])
+  return `${
+    currentMessageIds.length ? Math.max(...currentMessageIds) + 1 : '0'
+  }-${type}`
+}

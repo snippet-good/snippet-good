@@ -4,39 +4,39 @@ import { deleteFlashMessage } from '../../store/flash-message/actions'
 import Button from '@material-ui/core/Button'
 
 const FlashMessage = ({ flashMessages, history, deleteFlashMessage }) => {
-  const { message, link } = flashMessages
-  if (flashMessages.length) return <div />
+  if (!flashMessages.length) return <div />
   return (
     <div>
-      {/*   <ul>
+      <ul>
         {flashMessages.map(message => {
-
+          const { body, link, linkLabel, id } = message
+          return (
+            <li key={id}>
+              {' '}
+              {body}
+              <Button
+                color="primary"
+                size="small"
+                onClick={() => {
+                  history.push(link)
+                  deleteFlashMessage()
+                }}
+              >
+                {linkLabel}
+              </Button>
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  deleteFlashMessage(id)
+                }}
+              >
+                Dismiss Message
+              </Button>
+            </li>
+          )
         })}
-
-
-      </ul>*/}
-
-      {flashMessages.message}
-
-      <Button
-        color="primary"
-        size="small"
-        onClick={() => {
-          history.push(link)
-          deleteFlashMessage()
-        }}
-      >
-        Click here to go to it
-      </Button>
-      <Button
-        color="secondary"
-        size="small"
-        onClick={() => {
-          deleteFlashMessage()
-        }}
-      >
-        Dismiss Message
-      </Button>
+      </ul>
     </div>
   )
 }

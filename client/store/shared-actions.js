@@ -11,7 +11,22 @@ import {
   getAllCohortStretches,
   updateCohortStretchThunk
 } from './cohort-stretches/actions'
+import { addFlashMessage } from './flash-message/actions'
 import moment from 'moment'
+import { generateFlashMessageId } from '../utilityfunctions'
+
+export const closeStretchProcess = (cohortStretch, messages, stretch) => {
+  updateCohortStretchThunk(cohortStretch.id, { status: 'closed' }).then(() => {
+    const { id, cohortName } = cohortStretch
+    const flashMessageId = generateFlashMessageId(messages, 'stretchClosed')
+    addFlashMessage({
+      id: flashMessageId,
+      body: `Stretch ${stretch.title} has been closed in ${cohortName}`,
+      linkLabel: 'Click here to review it',
+      link: `/admin/stretchReview/${id}`
+    })
+  })
+}
 
 export const loadAdminRelatedDataThunk = adminId => {
   return dispatch => {
