@@ -12,20 +12,32 @@ import {
   updateCohortStretchThunk
 } from './cohort-stretches/actions'
 import { addFlashMessage } from './flash-message/actions'
+import store from './store'
 import moment from 'moment'
 import { generateFlashMessageId } from '../utilityfunctions'
 
-export const closeStretchProcess = (cohortStretch, messages, stretch) => {
-  updateCohortStretchThunk(cohortStretch.id, { status: 'closed' }).then(() => {
-    const { id, cohortName } = cohortStretch
-    const flashMessageId = generateFlashMessageId(messages, 'stretchClosed')
-    addFlashMessage({
-      id: flashMessageId,
-      body: `Stretch ${stretch.title} has been closed in ${cohortName}`,
-      linkLabel: 'Click here to review it',
-      link: `/admin/stretchReview/${id}`
+export const closeStretchProcess = cohortStretch => {
+  return dispatch => {
+    return dispatch(
+      updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
+    ).then(() => {
+      const { stretches, flashMessages } = store.getState()
+      const { title } = stretches.find(s => s.id === cohortStretch.stretchId)
+      const { id, cohortName } = cohortStretch
+      const flashMessageId = generateFlashMessageId(
+        flashMessages,
+        'stretchClosed'
+      )
+      dispatch(
+        addFlashMessage({
+          id: flashMessageId,
+          body: `Stretch ${title} has been closed in ${cohortName}`,
+          linkLabel: 'Click here to review it',
+          link: `/admin/stretchReview/${id}`
+        })
+      )
     })
-  })
+  }
 }
 
 export const loadAdminRelatedDataThunk = adminId => {
@@ -60,9 +72,7 @@ export const loadAdminRelatedDataThunk = adminId => {
             .diff(moment.utc(cohortStretch.startTimer).local(), 'seconds')
 
         setTimeout(() => {
-          dispatch(
-            updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
-          )
+          dispatch(closeStretchProcess(cohortStretch))
         }, 1000 * totalSecondsLeft)
       })
     })

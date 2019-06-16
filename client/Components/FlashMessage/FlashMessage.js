@@ -19,7 +19,7 @@ const FlashMessage = ({ flashMessages, history, deleteFlashMessage }) => {
                 size="small"
                 onClick={() => {
                   history.push(link)
-                  deleteFlashMessage()
+                  deleteFlashMessage(id)
                 }}
               >
                 {linkLabel}

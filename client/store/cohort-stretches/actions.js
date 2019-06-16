@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { closeStretchProcess } from '../shared-actions'
 
 // --------------------------------------------------
 // Action types
@@ -75,10 +76,7 @@ export const openStretchProcessThunk = (
         dispatch(updateCohortStretch(cohortStretchId, data))
         dispatch(startStretchTimer(data))
         setTimeout(() => {
-          dispatch(
-            updateCohortStretchThunk(cohortStretchId, { status: 'closed' })
-          )
-          dispatch
+          dispatch(closeStretchProcess(data))
         }, stretch.minutes * 1000 * 60)
       })
   }
