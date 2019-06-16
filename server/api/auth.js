@@ -27,7 +27,6 @@ router.post('/', loginValidations, async (req, res, next) => {
     // This section checks if inputs match database records.
     const { email, password } = req.body
     let user = await User.findOne({ where: { email }, include: CohortUser })
-    user = user.format()
 
     const errors = {}
 

@@ -21,10 +21,10 @@ User.getStudentsOfSingleAdmin = async function(adminId) {
     ]
   })
 
-  return students.map(s => s.formatStudent())
+  return students.map(s => s.format())
 }
 
-User.prototype.formatStudent = function() {
+User.prototype.format = function() {
   const { cohortusers, ...studentValues } = this.dataValues
 
   return {
