@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import FlashMessage from '../FlashMessage'
 import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
 import {
-  getStretchAnswersOfSingleAdminThunk,
+  getAllStretchAnswersThunk,
   getStretchAnswersOfStudentThunk
 } from '../../store/stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
@@ -135,7 +135,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       loadAdminRelatedData: adminId => {
         return Promise.all([
           dispatch(getCohortsOfAdminThunk(adminId)),
-          dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
+          dispatch(getAllStretchAnswersThunk()),
           dispatch(getUsersOfSingleAdminThunk(adminId)),
           ...commonData
         ])

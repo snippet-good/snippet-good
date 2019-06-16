@@ -43,10 +43,12 @@ const mapStateToProps = ({
       }
     })
 
-  const submittedStretches = stretchAnswers.map(sa => {
-    const { title, id } = stretches.find(s => s.id === sa.stretchId)
-    return { ...sa, title, stretchId: id }
-  })
+  const submittedStretches = stretchAnswers
+    .filter(sa => sa.userId === userDetails.id)
+    .map(sa => {
+      const { title, id } = stretches.find(s => s.id === sa.stretchId)
+      return { ...sa, title, stretchId: id }
+    })
 
   return {
     openStretches,
