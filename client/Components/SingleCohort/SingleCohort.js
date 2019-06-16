@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAttendance } from '../../store/attendance/actions'
 
-import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
 import Calendar from 'react-calendar'
+import SingleCohortStretchTables from './SingleCohortStretchTables'
+import CohortStudents from './CohortStudents'
 
 import Attendance from './Attendance'
 
@@ -57,6 +58,7 @@ class SingleCohort extends Component {
               >
                 <Tab label="Attendance" />
                 <Tab label="Stretches" />
+                <Tab label="Students" />
               </Tabs>
             </Grid>
 
@@ -67,18 +69,26 @@ class SingleCohort extends Component {
                   records={state.attendanceRecords}
                 />
               )}
+              {state.tab === 1 && (
+                <SingleCohortStretchTables cohort={props.cohort} />
+              )}
+              {state.tab === 2 && (
+                <CohortStudents cohortStudents={props.cohortStudents} />
+              )}
             </Grid>
           </Grid>
 
           <Grid item xs={1} />
 
-          <Grid item xs={4}>
-            <div style={{ height: '100vh', position: 'fixed', top: '90px' }}>
-              <Calendar
-                onChange={handleCalendarChange}
-                value={state.currentDate}
-              />
-            </div>
+          <Grid
+            item
+            xs={4}
+            style={{ display: 'flex', justifyContent: 'flex-end' }}
+          >
+            <Calendar
+              onChange={handleCalendarChange}
+              value={state.currentDate}
+            />
           </Grid>
         </Grid>
       </div>
