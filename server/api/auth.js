@@ -6,11 +6,6 @@ const {
 
 const loginValidations = require('../validations/login')
 
-User.prototype.format = function() {
-  const { cohortusers, ...userDetails } = this.dataValues
-  return { ...userDetails, cohortIds: cohortusers.map(cu => cu.cohortId) }
-}
-
 // POST, authenticates user
 router.post('/', loginValidations, async (req, res, next) => {
   try {
@@ -26,7 +21,7 @@ router.post('/', loginValidations, async (req, res, next) => {
     // Secondary error handler for login
     // This section checks if inputs match database records.
     const { email, password } = req.body
-    let user = await User.findOne({ where: { email }, include: CohortUser })
+    const user = await User.findOne({ where: { email }, include: CohortUser })
 
     const errors = {}
 
@@ -38,7 +33,7 @@ router.post('/', loginValidations, async (req, res, next) => {
     if (Object.keys(errors).length) return res.status(400).json({ errors })
 
     req.session.userId = user.id
-    res.json(user)
+    res.json(user.format())
     // ----------------------------------------------------------------------
   } catch (err) {
     next(err)
