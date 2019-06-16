@@ -76,6 +76,7 @@ const OpenStretchView = ({
   }
 
   const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
+    console.log('myStretch', myStretch)
     return createStretchAnswer({
       body: stretchAnswer,
       timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
@@ -138,7 +139,13 @@ const OpenStretchView = ({
           />
         ))}
 
-      <Button onClick={submitStretch}>Submit</Button>
+      <Button
+        onClick={() =>
+          submitStretch(stretchAnswer, myStretch, userDetails, history)
+        }
+      >
+        Submit
+      </Button>
     </div>
   )
 }
