@@ -13,7 +13,8 @@ const {
     Category,
     Cohort,
     CohortStretch,
-    CohortUser
+    CohortUser,
+    Attendance
   }
 } = require('../server/db/index')
 

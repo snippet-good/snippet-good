@@ -1,15 +1,12 @@
-const UserMethods = require('./User')
-const StretchMethods = require('./Stretch')
-const CohortStretchMethods = require('./CohortStretch')
-const CohortMethods = require('./Cohort')
-const CommentMethods = require('./Comment')
-const StretchAnswerMethods = require('./StretchAnswer')
+// User-related model methods
+require('./User')
+require('./Attendance')
+require('./Comment')
 
-module.exports = {
-  UserMethods,
-  StretchMethods,
-  CohortStretchMethods,
-  CohortMethods,
-  CommentMethods,
-  StretchAnswerMethods
-}
+// Cohort-related model methods
+require('./Cohort')
+
+// Stretch-related model methods
+require('./Stretch')
+require('./CohortStretch')
+require('./StretchAnswer')

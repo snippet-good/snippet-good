@@ -1,23 +1,26 @@
 const models = require('../models')
 const { User, Cohort, CohortStretch, CohortUser } = models
 
-// These model includes are separated into their own variables for more readability.
-const UserWithIncludes = {
-  model: User,
-  where: { isAdmin: true },
-  attributes: []
-}
-
-const CohortUserWithIncludes = {
-  model: CohortUser,
-  include: [UserWithIncludes]
-}
-
 // These are the main parameters that are used in Sequelize models' find methods.
 const defaults = {
   modelParams: {
     include: [
-      { model: Cohort, attributes: ['name'], include: [CohortUserWithIncludes] }
+      {
+        model: Cohort,
+        attributes: ['name'],
+        include: [
+          {
+            model: CohortUser,
+            include: [
+              {
+                model: User,
+                where: { isAdmin: true },
+                attributes: []
+              }
+            ]
+          }
+        ]
+      }
     ]
   }
 }
