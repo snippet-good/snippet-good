@@ -72,7 +72,6 @@ const OpenStretchView = ({
   const [stretchAnswer, setStretchAnswer] = useState('')
 
   const handleModalClose = () => {
-    history.push('/student')
     setModalOpen(false)
   }
 

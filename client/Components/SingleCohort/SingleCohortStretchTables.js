@@ -99,6 +99,7 @@ const SingleCohortStretchTables = ({
         setModalClosed={handleunscheduleModalClose}
         args={[selectedCohortStretchId]}
         action={deleteCohortStretch}
+        showNoButton={true}
       />
       <ConfirmDialogBox
         text="Are you sure you would like to open the stretch?"
@@ -110,6 +111,7 @@ const SingleCohortStretchTables = ({
           { status: 'open', startTimer: new Date() }
         ]}
         action={openStretchProcess}
+        showNoButton={true}
       />
       <Typography variant="h6" id="tableTitle">
         Open Stretches
