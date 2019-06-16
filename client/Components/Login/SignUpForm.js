@@ -6,6 +6,7 @@ import { createUser } from '../../store/users/actions'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
+import InputLabel from '@material-ui/core/InputLabel'
 
 import TextInputGroup from './TextInputGroup'
 
@@ -31,6 +32,8 @@ const SignUpForm = props => {
     const { name, value } = event.target
     setUserInformation({ ...userInformation, [name]: value })
   }
+
+  const handleSelectChange = event => console.log(event)
 
   // This event handler is invoked when the user presses the submit button
   // on the sign up page. The server will attempt to create a new user.
@@ -101,6 +104,27 @@ const SignUpForm = props => {
         fullWidth={true}
         errors={errors.confirmEmail}
       />
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '24px'
+        }}
+      >
+        <InputLabel>I am a</InputLabel>
+        <Select
+          name="isAdmin"
+          value={userInformation.isAdmin}
+          onChange={handleChange}
+          autoWidth
+          style={{ width: '45%' }}
+        >
+          <MenuItem value={false}>Student</MenuItem>
+          <MenuItem value={true}>Teacher</MenuItem>
+        </Select>
+      </div>
 
       {/* Submit button */}
       <div style={{ margin: '2em 0' }}>

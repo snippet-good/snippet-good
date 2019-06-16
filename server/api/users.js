@@ -47,7 +47,7 @@ router.post('/', loginValidations, async (req, res, next) => {
     const user = await User.create(userInformation)
 
     req.session.userId = user.id
-    res.json(user)
+    res.json(user.format())
     // ----------------------------------------------------------------------
   } catch (err) {
     // This is the secondary error handler for the sign up page.
