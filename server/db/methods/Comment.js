@@ -1,6 +1,6 @@
 const { User, Comment } = require('../models')
 
-const getCommentsOfStretchAnswer = stretchanswerId => {
+Comment.getCommentsOfStretchAnswer = function(stretchanswerId) {
   return Comment.findAll({
     where: { stretchanswerId },
     include: [{ model: User, attributes: ['firstName', 'lastName'] }],
@@ -17,7 +17,7 @@ const getCommentsOfStretchAnswer = stretchanswerId => {
   })
 }
 
-const createNewComment = newComment => {
+Comment.createNewComment = function(newComment) {
   return Promise.all([
     Comment.create(newComment),
     User.findByPk(newComment.userId)
@@ -28,5 +28,3 @@ const createNewComment = newComment => {
     }
   })
 }
-
-module.exports = { getCommentsOfStretchAnswer, createNewComment }

@@ -1,13 +1,12 @@
+// User-related model methods
 require('./User')
 require('./Attendance')
-const CommentMethods = require('./Comment')
+require('./Comment')
 
+// Cohort-related model methods
 require('./Cohort')
 
+// Stretch-related model methods
 require('./Stretch')
 require('./CohortStretch')
 require('./StretchAnswer')
-
-module.exports = {
-  CommentMethods
-}

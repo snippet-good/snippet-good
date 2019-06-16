@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 const models = require('../models')
-const { User, CohortUser, Attendance } = models
+const { User, CohortUser } = models
 
 User.getStudentsOfSingleAdmin = async function(adminId) {
   // Get all of the associated cohorts of user

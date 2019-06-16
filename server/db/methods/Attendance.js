@@ -6,7 +6,7 @@ const { Op } = Sequelize
 /*  This function queries the database for attendance records for a given cohort and date.
 
     @param {string} params.cohortId - The cohort id
-    @param {string} params.createdAt - The date to be queried
+    @param {string} params.date - The date to be queried
 
     @return {Object} - A JS object where the keys are the user id's and the values are the particular Sequelize Attendance object that match the given criteria
 
@@ -30,6 +30,7 @@ Attendance.findUsing = async function(params) {
   )
   const dateQuery = { [Op.gte]: requestedDate, [Op.lt]: dayAfter }
 
+  // This is where the Attendance model is being queried.
   const records = await Attendance.findAll({
     where: { cohortId, createdAt: dateQuery }
   })

@@ -1,4 +1,4 @@
-const { Cohort, User, CohortUser, Attendance } = require('../models')
+const { Cohort, CohortUser } = require('../models')
 
 Cohort.getCohortsOfSingleAdmin = function(adminId) {
   return Cohort.findAll({

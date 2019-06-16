@@ -5,7 +5,7 @@ const { User, Comment, Attendance, Withdrawl } = models
 const { Cohort, CohortUser, CohortStretch } = models
 const { Category, Stretch, StretchAnswer } = models
 
-const { CommentMethods } = require('./methods')
+require('./methods')
 
 function initDb(force = false) {
   return db.authenticate().then(() => {
@@ -72,8 +72,5 @@ function initDb(force = false) {
     return db.sync({ force })
   })
 }
-
-Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
-Comment.createNewComment = CommentMethods.createNewComment
 
 module.exports = { initDb, models }
