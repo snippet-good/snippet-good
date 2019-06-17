@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 import { createStretch, updateStretch } from '../../store/stretches/actions'
-import { startStretchTimerThunk } from '../../store/cohort-stretches/actions'
 
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
@@ -39,14 +38,6 @@ class SingleStretch extends Component {
     if (match.params.id && stretches.length)
       attributes = stretches.find(s => s.id === match.params.id)
     this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
-  }
-
-  startTimer = () => {
-    const { cohortStretches, match } = this.props
-    let currCohortStretch =
-      cohortStretches.find(cs => cs.stretchId === match.params.id) || {}
-    currCohortStretch.startTimer = true
-    this.props.startStretchTimer(currCohortStretch)
   }
 
   handleChange = event => {
@@ -91,7 +82,6 @@ class SingleStretch extends Component {
 
   componentDidMount() {
     this.setStretchDetails()
-    this.startTimer()
   }
 
   componentDidUpdate(prevProps) {
@@ -100,6 +90,10 @@ class SingleStretch extends Component {
       this.setStretchDetails()
       this.setState({ isLoaded: true })
     }
+  }
+
+  displayTextWithLineBreak(text) {
+    return text.split('\n')
   }
 
   render() {
@@ -128,7 +122,11 @@ class SingleStretch extends Component {
                 <div>
                   <InputLabel shrink>Text Prompt</InputLabel>
                   <Typography variant="subtitle1">
-                    {state.textPrompt}
+                    {this.displayTextWithLineBreak(state.textPrompt).map(
+                      line => (
+                        <div key={line}>{line}</div>
+                      )
+                    )}
                   </Typography>
                 </div>
               ) : (
@@ -140,6 +138,7 @@ class SingleStretch extends Component {
                   placeholder="Enter your written prompt here."
                   helperText="This is to be substituted with a rich text editor."
                   fullWidth
+                  multiline="true"
                   margin="normal"
                   InputLabelProps={{
                     shrink: true
@@ -178,9 +177,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   createStretch: newStretch => dispatch(createStretch(newStretch)),
-  updateStretch: updatedStretch => dispatch(updateStretch(updatedStretch)),
-  startStretchTimer: cohortStretch =>
-    dispatch(startStretchTimerThunk(cohortStretch))
+  updateStretch: updatedStretch => dispatch(updateStretch(updatedStretch))
 })
 
 export default connect(

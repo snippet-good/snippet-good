@@ -22,7 +22,7 @@ const addCohortStretch = newCohortStretch => ({
   newCohortStretch
 })
 
-const updateCohortStretch = (cohortStretchId, updatedCohortStretch) => ({
+export const updateCohortStretch = (cohortStretchId, updatedCohortStretch) => ({
   type: UPDATE_COHORT_STRETCH,
   cohortStretchId,
   updatedCohortStretch
@@ -69,8 +69,4 @@ export const deleteCohortStretchThunk = cohortStretchId => {
       .delete(`/api/cohort-stretches/${cohortStretchId}`)
       .then(() => dispatch(deleteCohortStretch(cohortStretchId)))
   }
-}
-
-export const startStretchTimerThunk = cohortStretch => dispatch => {
-  return dispatch(startStretchTimer(cohortStretch))
 }

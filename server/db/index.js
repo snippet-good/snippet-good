@@ -1,16 +1,11 @@
 const db = require('./db')
-const {
-  StretchAnswer,
-  Comment,
-  Cohort,
-  Category,
-  CohortUser,
-  User,
-  Stretch,
-  CohortStretch
-} = require('./models')
+const models = require('./models')
 
-const { UserMethods, CohortMethods, CommentMethods } = require('./methods')
+const { User, Comment, Attendance, Withdrawal } = models
+const { Cohort, CohortUser, CohortStretch } = models
+const { Category, Stretch, StretchAnswer } = models
+
+require('./methods')
 
 function initDb(force = false) {
   return db.authenticate().then(() => {
@@ -55,25 +50,24 @@ function initDb(force = false) {
     Comment.belongsTo(StretchAnswer)
     StretchAnswer.hasMany(Comment)
 
+    // -------------------------------------------------------
+    /* Attendance-related relationships
+
+       Attendance model is a join table that joins students to cohorts.
+       Withdrawl model is a join table that joins students to cohorts.
+    */
+    Attendance.belongsTo(User)
+    User.hasMany(Attendance)
+
+    Attendance.belongsTo(Cohort)
+    Cohort.hasMany(Attendance)
+
+    Withdrawal.belongsTo(CohortUser)
+    CohortUser.hasMany(Withdrawal)
+    // -------------------------------------------------------
+
     return db.sync({ force })
   })
 }
 
-User.getStudentsOfSingleAdmin = UserMethods.getStudentsOfSingleAdmin
-Cohort.getCohortsOfSingleAdmin = CohortMethods.getCohortsOfSingleAdmin
-Comment.getCommentsOfStretchAnswer = CommentMethods.getCommentsOfStretchAnswer
-Comment.createNewComment = CommentMethods.createNewComment
-
-module.exports = {
-  initDb,
-  models: {
-    StretchAnswer,
-    Comment,
-    Cohort,
-    Category,
-    CohortUser,
-    CohortStretch,
-    User,
-    Stretch
-  }
-}
+module.exports = { initDb, models }

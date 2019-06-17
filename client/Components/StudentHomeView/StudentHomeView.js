@@ -22,7 +22,9 @@ const mapStateToProps = ({
   )
     return { userDetails }
   const studentCohorts = cohortUsers.map(cu => cu.cohortId)
-  const cohortStretchIds = stretchAnswers.map(sa => sa.cohortstretchId)
+  const cohortStretchIds = stretchAnswers
+    .filter(sa => sa.userId === userDetails.id)
+    .map(sa => sa.cohortstretchId)
 
   const openStretches = cohortStretches
     .filter(
@@ -43,10 +45,12 @@ const mapStateToProps = ({
       }
     })
 
-  const submittedStretches = stretchAnswers.map(sa => {
-    const { title, id } = stretches.find(s => s.id === sa.stretchId)
-    return { ...sa, title, stretchId: id }
-  })
+  const submittedStretches = stretchAnswers
+    .filter(sa => sa.userId === userDetails.id)
+    .map(sa => {
+      const { title, id } = stretches.find(s => s.id === sa.stretchId)
+      return { ...sa, title, stretchId: id }
+    })
 
   return {
     openStretches,
@@ -71,7 +75,6 @@ const StudentHomeView = ({
   }
 }) => {
   const classes = useStyles()
-
   return (
     <main className={classes.content}>
       {status === 'open' ? (

@@ -14,6 +14,15 @@ const socketFunction = socketServer => {
       }
     })
 
+    socket.on('initializeRoom', userDetails => {
+      userDetails.cohortIds.forEach(cohortId => {
+        socket.join(cohortId)
+        console.log(
+          `${userDetails.id} has joined the room for cohortId ${cohortId}`
+        )
+      })
+    })
+
     socket.on('sendMessage', (commentObject, emitObject) => {
       const { relatedUsers, stretchTitle, cohortName, studentId } = emitObject
 
@@ -32,25 +41,28 @@ const socketFunction = socketServer => {
       }
     })
 
-    socket.on('joinCohortStretchRoom', cohortStretchId => {
-      socket.join(cohortStretchId)
-
-      if (cohortStretchId) {
-        return socketServer.emit(
-          'success',
-          `you have joined room for cohort stretch id ${cohortStretchId}`
-        )
-      } else {
-        return socketServer.emit(
-          'err',
-          `the room for cohort stretch Id ${cohortStretchId} does not exist`
-        )
-      }
+    socket.on('startStretchTimer', cohortStretch => {
+      socket.to(cohortStretch.cohortId).emit('timer-started', cohortStretch)
+      console.log('received request to start stretch timer')
     })
 
-    socket.on('startStretchTimer', cohortStretch => {
-      socket.to(cohortStretch.id).emit('timer-started', cohortStretch)
-      console.log('received request to start stretch timer')
+    socket.on('sendAnswer', (stretchAnswer, adminIds) => {
+      adminIds.forEach(adminId => {
+        if (socketIdsToUserIdsMap[adminId]) {
+          socket
+            .to(`${socketIdsToUserIdsMap[adminId]}`)
+            .emit('answerSubmitted', stretchAnswer)
+        }
+      })
+    })
+
+    socket.on('answerRated', updatedStretchAnswer => {
+      const { userId } = updatedStretchAnswer
+      if (socketIdsToUserIdsMap[userId]) {
+        socket
+          .to(`${socketIdsToUserIdsMap[userId]}`)
+          .emit('receivedAnswerRating', updatedStretchAnswer)
+      }
     })
   })
 }
