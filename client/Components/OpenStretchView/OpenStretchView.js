@@ -79,7 +79,6 @@ const OpenStretchView = ({
   const [stretchAnswer, setStretchAnswer] = useState('')
 
   const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
-    console.log('mycohortstretch', myCohortStretch)
     return createStretchAnswer(
       {
         body: stretchAnswer,

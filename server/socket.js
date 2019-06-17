@@ -55,6 +55,15 @@ const socketFunction = socketServer => {
         }
       })
     })
+
+    socket.on('answerRated', updatedStretchAnswer => {
+      const { userId } = updatedStretchAnswer
+      if (socketIdsToUserIdsMap[userId]) {
+        socket
+          .to(`${socketIdsToUserIdsMap[userId]}`)
+          .emit('receivedAnswerRating', updatedStretchAnswer)
+      }
+    })
   })
 }
 

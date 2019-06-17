@@ -75,7 +75,6 @@ const StudentHomeView = ({
   }
 }) => {
   const classes = useStyles()
-  console.log(openStretches)
   return (
     <main className={classes.content}>
       {status === 'open' ? (

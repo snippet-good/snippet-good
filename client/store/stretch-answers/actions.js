@@ -28,10 +28,15 @@ export const addReceivedStretchAnswer = stretchAnswer => ({
   stretchAnswer
 })
 
-const replaceStretchAnswer = (stretchAnswerId, updatedStretchAnswer) => ({
+export const replaceStretchAnswer = (
+  stretchAnswerId,
+  updatedStretchAnswer,
+  emit
+) => ({
   type: UPDATE_STRETCH_ANSWER,
   stretchAnswerId,
-  updatedStretchAnswer
+  updatedStretchAnswer,
+  emit
 })
 
 const removeStretchAnswer = stretchAnswerId => ({
@@ -73,7 +78,7 @@ export const updateStretchAnswerThunk = (stretchAnswerId, updatedFields) => {
       .put(`/api/stretch-answers/${stretchAnswerId}`, updatedFields)
       .then(res => res.data)
       .then(stretchAnswer =>
-        dispatch(replaceStretchAnswer(stretchAnswerId, stretchAnswer))
+        dispatch(replaceStretchAnswer(stretchAnswerId, stretchAnswer, true))
       )
   }
 }
