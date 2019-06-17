@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { clearAllSetTimouts } from '../setTImeouts/action'
 
 // --------------------------------------------------
 // Action types
@@ -45,7 +44,6 @@ export const logoutUserThunk = history => {
     return axios
       .delete('/api/auth')
       .then(() => dispatch(logutUser()))
-      .then(() => dispatch(clearAllSetTimouts()))
       .then(() => history.push('/'))
   }
 }

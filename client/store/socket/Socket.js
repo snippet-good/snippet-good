@@ -2,6 +2,7 @@ import io from 'socket.io-client'
 import { addComment } from '../comments/actions'
 import { addFlashMessage } from '../flash-message/actions'
 import { updateCohortStretch } from '../cohort-stretches/actions'
+import { addReceivedStretchAnswer } from '../stretch-answers/actions'
 import { generateFlashMessageId } from '../../utilityfunctions'
 
 class Socket {
@@ -33,6 +34,10 @@ class Socket {
           this.generateFlashMessageObjectForOpenStretch(cohortStretch)
         )
       )
+    })
+
+    this.socket.on('answerSubmitted', stretchAnswer => {
+      storeAPI.dispatch(addReceivedStretchAnswer(stretchAnswer))
     })
   }
 
@@ -92,7 +97,9 @@ class Socket {
     this.socket.emit('startStretchTimer', cohortStretch)
   }
 
-  //sendStretchAnswer
+  sendStretchAnswer(stretchAnswer, adminIds) {
+    this.socket.emit('sendAnswer', stretchAnswer, adminIds)
+  }
 }
 
 export default Socket

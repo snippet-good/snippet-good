@@ -16,10 +16,12 @@ import Timer from '../_shared/Timer'
 
 const mapDispatchToProps = dispatch => {
   return {
-    createStretchAnswer: (stretchAnswer, cohortStretchId) =>
-      dispatch(createStretchAnswerThunk(stretchAnswer)).then(() =>
+    createStretchAnswer: (stretchAnswer, cohortStretch) =>
+      dispatch(
+        createStretchAnswerThunk(stretchAnswer, cohortStretch.adminIds)
+      ).then(() =>
         dispatch(
-          updateCohortStretchThunk(cohortStretchId, { status: 'closed' })
+          updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
         )
       )
   }
@@ -77,6 +79,7 @@ const OpenStretchView = ({
   const [stretchAnswer, setStretchAnswer] = useState('')
 
   const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
+    console.log('mycohortstretch', myCohortStretch)
     return createStretchAnswer(
       {
         body: stretchAnswer,
@@ -84,7 +87,7 @@ const OpenStretchView = ({
         cohortstretchId: myCohortStretch.id,
         userId: userDetails.id
       },
-      myCohortStretch.id
+      myCohortStretch
     ).then(() => history.push('/student/stretches/submitted'))
   }
 
@@ -143,7 +146,7 @@ const OpenStretchView = ({
 
       <Button
         onClick={() =>
-          submitStretch(stretchAnswer, myStretch, userDetails, history, true)
+          submitStretch(stretchAnswer, myStretch, userDetails, history)
         }
       >
         Submit

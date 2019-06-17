@@ -20,9 +20,9 @@ const socketMiddleware = storeAPI => {
       case START_STRETCH_TIMER:
         socket.startStretchTimer(action.cohortStretch)
         break
-
       case CREATE_STRETCH_ANSWER:
-        socket.sendStretchAnswer(action.newStretchAnswer)
+        console.log('action', action)
+        socket.sendStretchAnswer(action.newStretchAnswer, action.adminIds)
         break
       default:
         break

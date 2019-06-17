@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import {
-  updateCohortStretchThunk,
-  openStretchProcessThunk
-} from '../../store/cohort-stretches/actions'
+import { openStretchProcessThunk } from '../../store/shared-actions'
 import { parseDateTime } from './helperfunctions'
 import Timer from '../_shared/Timer'
 
@@ -16,12 +13,7 @@ import Button from '@material-ui/core/Button'
 import styles from './styles'
 import moment from 'moment'
 
-const SingleStretchCard = ({
-  stretch,
-  status,
-  updateCohortStretch,
-  openStretchProcess
-}) => {
+const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
   const {
     title,
     minutes,
@@ -105,8 +97,6 @@ const SingleStretchCard = ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateCohortStretch: (id, updatedFields, updatedEntireItem) =>
-      dispatch(updateCohortStretchThunk(id, updatedFields, updatedEntireItem)),
     openStretchProcess: (stretch, cohortStretchId, updatedFields) =>
       dispatch(openStretchProcessThunk(stretch, cohortStretchId, updatedFields))
   }
