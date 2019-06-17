@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { getCohortsOfAdminThunk } from './cohorts/actions'
 import {
   getAllStretchAnswersThunk,
@@ -9,10 +10,11 @@ import { getAllCategories } from './categories/actions'
 import { getAllStretches } from './stretches/actions'
 import {
   getAllCohortStretches,
-  updateCohortStretchThunk
+  updateCohortStretchThunk,
+  updateCohortStretch,
+  startStretchTimer
 } from './cohort-stretches/actions'
 import { addFlashMessage } from './flash-message/actions'
-import { sendClosedStretch } from './socket/actions'
 import store from './store'
 import moment from 'moment'
 import { generateFlashMessageId } from '../utilityfunctions'
@@ -22,23 +24,42 @@ export const closeStretchProcess = cohortStretch => {
     return dispatch(
       updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
     ).then(() => {
-      const { stretches, flashMessages } = store.getState()
+      const { stretches, flashMessages, userDetails } = store.getState()
       const { title } = stretches.find(s => s.id === cohortStretch.stretchId)
       const { id, cohortName } = cohortStretch
       const flashMessageId = generateFlashMessageId(
         flashMessages,
         'stretchClosed'
       )
-      dispatch(
-        addFlashMessage({
-          id: flashMessageId,
-          body: `Stretch ${title} has been closed in ${cohortName}`,
-          linkLabel: 'Click here to review it',
-          link: `/admin/stretchReview/${id}`
-        })
-      )
-      dispatch(sendClosedStretch({ ...cohortStretch, status: 'closed' }))
+      if (userDetails.id) {
+        dispatch(
+          addFlashMessage({
+            id: flashMessageId,
+            body: `Stretch ${title} has been closed in ${cohortName}`,
+            linkLabel: 'Click here to review it',
+            link: `/admin/stretchReview/${id}`
+          })
+        )
+      }
     })
+  }
+}
+
+export const openStretchProcessThunk = (
+  stretch,
+  cohortStretchId,
+  updatedFields
+) => {
+  return dispatch => {
+    return axios
+      .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
+      .then(({ data }) => {
+        dispatch(updateCohortStretch(cohortStretchId, data))
+        dispatch(startStretchTimer(data))
+        setTimeout(() => {
+          dispatch(closeStretchProcess(data))
+        }, stretch.minutes * 1000 * 60)
+      })
   }
 }
 
