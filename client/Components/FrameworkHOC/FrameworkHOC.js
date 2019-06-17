@@ -1,22 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import FlashMessage from '../FlashMessage'
-<<<<<<< HEAD
-import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
-import {
-  getAllStretchAnswersThunk,
-  getAnswersOfCohortsOfStudentThunk
-} from '../../store/stretch-answers/actions'
-import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
-||||||| merged common ancestors
-import { getCohortsOfAdminThunk } from '../../store/cohorts/actions'
-import {
-  getStretchAnswersOfSingleAdminThunk,
-  getStretchAnswersOfStudentThunk
-} from '../../store/stretch-answers/actions'
-import { getUsersOfSingleAdminThunk } from '../../store/users/actions'
-=======
->>>>>>> develop
 import {
   checkIfUserLoggedInThunk,
   logoutUserThunk
@@ -25,7 +9,6 @@ import {
   loadAdminRelatedDataThunk,
   loadStudentRelatedDataThunk
 } from '../../store/shared-actions'
-//import {getAllCohortUsers} from '../../store/cohort-users/actions'
 
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -136,44 +119,10 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       checkIfUserLoggedIn: history =>
         dispatch(checkIfUserLoggedInThunk(history)),
       logoutUser: history => dispatch(logoutUserThunk(history)),
-<<<<<<< HEAD
-      loadAdminRelatedData: adminId => {
-        return Promise.all([
-          dispatch(getCohortsOfAdminThunk(adminId)),
-          dispatch(getAllStretchAnswersThunk()),
-          dispatch(getUsersOfSingleAdminThunk(adminId)),
-          ...commonData
-        ])
-      },
-      loadStudentRelatedData: studentId => {
-        return Promise.all([
-          dispatch(getAnswersOfCohortsOfStudentThunk(studentId)),
-          dispatch(getStudentCohortUsersThunk(studentId)),
-          ...commonData
-        ])
-      }
-||||||| merged common ancestors
-      loadAdminRelatedData: adminId => {
-        return Promise.all([
-          dispatch(getCohortsOfAdminThunk(adminId)),
-          dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
-          dispatch(getUsersOfSingleAdminThunk(adminId)),
-          ...commonData
-        ])
-      },
-      loadStudentRelatedData: studentId => {
-        return Promise.all([
-          dispatch(getStretchAnswersOfStudentThunk(studentId)),
-          dispatch(getStudentCohortUsersThunk(studentId)),
-          ...commonData
-        ])
-      }
-=======
       loadAdminRelatedData: adminId =>
         dispatch(loadAdminRelatedDataThunk(adminId)),
-      loadStudentRelatedData: adminId =>
-        dispatch(loadStudentRelatedDataThunk(adminId))
->>>>>>> develop
+      loadStudentRelatedData: studentId =>
+        dispatch(loadStudentRelatedDataThunk(studentId))
     }
   }
 

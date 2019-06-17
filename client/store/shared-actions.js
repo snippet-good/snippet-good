@@ -1,7 +1,7 @@
 import { getCohortsOfAdminThunk } from './cohorts/actions'
 import {
-  getStretchAnswersOfSingleAdminThunk,
-  getStretchAnswersOfStudentThunk
+  getAllStretchAnswersThunk,
+  getAnswersOfCohortsOfStudentThunk
 } from './stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from './users/actions'
 import { getStudentCohortUsersThunk } from './cohort-users/actions'
@@ -49,7 +49,7 @@ export const loadAdminRelatedDataThunk = adminId => {
       dispatch(getAllStretches()),
       dispatch(getAllCohortStretches()),
       dispatch(getCohortsOfAdminThunk(adminId)),
-      dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
+      dispatch(getAllStretchAnswersThunk()),
       dispatch(getUsersOfSingleAdminThunk(adminId))
     ]).then(data => {
       let [
@@ -87,7 +87,7 @@ export const loadStudentRelatedDataThunk = studentId => {
       dispatch(getAllCategories()),
       dispatch(getAllStretches()),
       dispatch(getAllCohortStretches()),
-      dispatch(getStretchAnswersOfStudentThunk(studentId)),
+      dispatch(getAnswersOfCohortsOfStudentThunk(studentId)),
       dispatch(getStudentCohortUsersThunk(studentId))
     ])
   }
