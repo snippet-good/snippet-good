@@ -36,19 +36,13 @@ const removeStretchAnswer = stretchAnswerId => ({
 // CRUD thunks
 
 // Redux thunk to get all users from API
-export const getAllStretchAnswers = () => dispatch => {
+export const getAllStretchAnswersThunk = () => dispatch => {
   return axios
     .get('/api/stretch-answers')
     .then(res => dispatch(getStretchAnswers(res.data)))
 }
 
-export const getStretchAnswersOfSingleAdminThunk = adminId => dispatch => {
-  return axios
-    .get(`/api/stretch-answers/admin/${adminId}`)
-    .then(res => dispatch(getStretchAnswers(res.data)))
-}
-
-export const getStretchAnswersOfStudentThunk = studentId => dispatch => {
+export const getAnswersOfCohortsOfStudentThunk = studentId => dispatch => {
   return axios
     .get(`/api/stretch-answers/student/${studentId}`)
     .then(res => dispatch(getStretchAnswers(res.data)))

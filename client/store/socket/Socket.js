@@ -34,10 +34,6 @@ class Socket {
         )
       )
     })
-
-    this.socket.on('stretch-closed', cohortStretch => {
-      storeAPI.dispatch(updateCohortStretch(cohortStretch.id, cohortStretch))
-    })
   }
 
   generateFlashMessageObjectForOpenStretch = cohortStretch => {
@@ -96,11 +92,7 @@ class Socket {
     this.socket.emit('startStretchTimer', cohortStretch)
   }
 
-  sendClosedStretch(cohortStretch) {
-    this.socket.emit('sendClosedStretch', cohortStretch)
-  }
-
-  sendStretchAnswer
+  //sendStretchAnswer
 }
 
 export default Socket

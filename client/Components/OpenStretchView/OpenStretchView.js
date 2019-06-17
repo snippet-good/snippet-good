@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
+import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
 import moment from 'moment'
@@ -15,8 +16,12 @@ import Timer from '../_shared/Timer'
 
 const mapDispatchToProps = dispatch => {
   return {
-    createStretchAnswer: stretchAnswer =>
-      dispatch(createStretchAnswerThunk(stretchAnswer))
+    createStretchAnswer: (stretchAnswer, cohortStretchId) =>
+      dispatch(createStretchAnswerThunk(stretchAnswer)).then(() =>
+        dispatch(
+          updateCohortStretchThunk(cohortStretchId, { status: 'closed' })
+        )
+      )
   }
 }
 
@@ -71,24 +76,16 @@ const OpenStretchView = ({
   const [codePrompt, setCodePrompt] = useState('')
   const [stretchAnswer, setStretchAnswer] = useState('')
 
-  const handleModalClose = () => {
-    setModalOpen(false)
-  }
-
-  const submitStretch = (
-    stretchAnswer,
-    myStretch,
-    userDetails,
-    history,
-    updateAdminCount
-  ) => {
-    return createStretchAnswer({
-      body: stretchAnswer,
-      timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
-      cohortstretchId: myCohortStretch.id,
-      userId: userDetails.id,
-      updateAdminCount
-    }).then(() => history.push('/student/stretches/submitted'))
+  const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
+    return createStretchAnswer(
+      {
+        body: stretchAnswer,
+        timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
+        cohortstretchId: myCohortStretch.id,
+        userId: userDetails.id
+      },
+      myCohortStretch.id
+    ).then(() => history.push('/student/stretches/submitted'))
   }
 
   useEffect(() => {
@@ -103,8 +100,7 @@ const OpenStretchView = ({
       <ConfirmDialogBox
         text="Confirm to submit"
         open={modalOpen}
-        setModalClosed={handleModalClose}
-        args={[stretchAnswer, myStretch, userDetails, history, false]}
+        args={[stretchAnswer, myStretch, userDetails, history]}
         action={submitStretch}
         showNoButton={false}
       />

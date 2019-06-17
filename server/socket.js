@@ -45,10 +45,6 @@ const socketFunction = socketServer => {
       socket.to(cohortStretch.cohortId).emit('timer-started', cohortStretch)
       console.log('received request to start stretch timer')
     })
-
-    socket.on('sendClosedStretch', cohortStretch => {
-      socket.to(cohortStretch.cohortId).emit('stretch-closed', cohortStretch)
-    })
   })
 }
 

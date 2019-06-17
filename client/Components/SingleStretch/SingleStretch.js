@@ -97,6 +97,10 @@ class SingleStretch extends Component {
     }
   }
 
+  displayTextWithLineBreak(text) {
+    return text.split('\n')
+  }
+
   render() {
     const { state } = this
     const { handleSubmit, changeMode } = this
@@ -123,7 +127,11 @@ class SingleStretch extends Component {
                 <div>
                   <InputLabel shrink>Text Prompt</InputLabel>
                   <Typography variant="subtitle1">
-                    {state.textPrompt}
+                    {this.displayTextWithLineBreak(state.textPrompt).map(
+                      line => (
+                        <div key={line}>{line}</div>
+                      )
+                    )}
                   </Typography>
                 </div>
               ) : (
@@ -135,6 +143,7 @@ class SingleStretch extends Component {
                   placeholder="Enter your written prompt here."
                   helperText="This is to be substituted with a rich text editor."
                   fullWidth
+                  multiline="true"
                   margin="normal"
                   InputLabelProps={{
                     shrink: true

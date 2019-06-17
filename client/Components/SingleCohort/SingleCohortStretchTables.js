@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import {
   deleteCohortStretchThunk,
-  updateCohortStretchThunk,
-  openStretchProcessThunk
+  updateCohortStretchThunk
 } from '../../store/cohort-stretches/actions'
+import { openStretchProcessThunk } from '../../store/shared-actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 
 import StretchScheduler from '../_shared/StretchScheduler'
