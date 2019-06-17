@@ -2,6 +2,8 @@ const { Op } = require('sequelize')
 const models = require('../models')
 const { User, CohortUser } = models
 
+const bcrypt = require('bcrypt')
+
 User.getStudentsOfSingleAdmin = async function(adminId) {
   // Get all of the associated cohorts of user
   const user = await User.findByPk(adminId, { include: CohortUser })
@@ -22,6 +24,10 @@ User.getStudentsOfSingleAdmin = async function(adminId) {
   })
 
   return students.map(s => s.format())
+}
+
+User.prototype.authenticate = function(password) {
+  return bcrypt.compare(password, this.password)
 }
 
 User.prototype.format = function() {
