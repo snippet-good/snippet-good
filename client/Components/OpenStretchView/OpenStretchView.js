@@ -70,13 +70,11 @@ const OpenStretchView = ({
   let [modalOpen, setModalOpen] = useState(false)
   const [codePrompt, setCodePrompt] = useState('')
   const [stretchAnswer, setStretchAnswer] = useState('')
-  console.log('stretch answer', stretchAnswer)
   const handleModalClose = () => {
     setModalOpen(false)
   }
 
   const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
-    console.log('myStretch', myStretch)
     return createStretchAnswer({
       body: stretchAnswer,
       timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
