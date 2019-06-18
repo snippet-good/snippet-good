@@ -91,15 +91,6 @@ const processUserJSXCode = async (fileName, code) => {
     `${htmlFileStart}${transpiledCode}${htmlFileEnd}`
   )
   return { stringToConsole, message: 'html file successfully written' }
-
-  /*.catch(err => {
-      if (err.message.split(`${fileName}.js:`).length > 1) {
-        err.message = err.message
-          .split(`${fileName}.js:`)[1]
-          .split(/\([0-9]+:[0-9]+\)/)[0]
-      }
-      next(err)
-    })*/
 }
 
 //process JS code coming in from client

@@ -32,7 +32,15 @@ class CodeSection extends Component {
     this.clearCodeResultsBinded = clearCodeResults.bind(this)
   }
 
+  componentDidMount() {
+    this.removeTemporaryUserFiles()
+  }
+
   componentWillUnmount() {
+    this.removeTemporaryUserFiles()
+  }
+
+  removeTemporaryUserFiles() {
     const { language, cohortStretchId } = this.props
     if (language === 'jsx') {
       axios.delete(`/api/code/file-${cohortStretchId}`)
@@ -139,7 +147,7 @@ class CodeSection extends Component {
             <CodeOutput
               codeResponse={codeResponse}
               codeError={codeError}
-              minHeight={`${language === 'jsx' ? '10' : '23rem'}rem`}
+              minHeight={`${language === 'jsx' ? '10' : '23'}rem`}
             />
           </Grid>
         </Grid>

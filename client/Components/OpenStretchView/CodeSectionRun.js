@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import { connect } from 'react-redux'
 import CodeEditor, {
   AuxillaryComponents,
@@ -13,6 +14,7 @@ const {
 } = AuxillaryComponents
 
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
 import { codeSectionStyles } from '../StretchReviewView/styles'
 
 class CodeSectionRun extends Component {
@@ -21,10 +23,26 @@ class CodeSectionRun extends Component {
     this.state = {
       editorTheme: 'monokai',
       codeResponse: '',
-      codeError: ''
+      codeError: '',
+      fileGenerated: false
     }
     this.runCodeBinded = runCode.bind(this)
     this.clearCodeResultsBinded = clearCodeResults.bind(this)
+  }
+
+  componentDidMount() {
+    this.removeTemporaryUserFiles()
+  }
+
+  componentWillUnmount() {
+    this.removeTemporaryUserFiles()
+  }
+
+  removeTemporaryUserFiles() {
+    const { language, cohortStretchId, userDetails } = this.props
+    if (language === 'jsx') {
+      axios.delete(`/api/code/file-${cohortStretchId}-${userDetails.id}`)
+    }
   }
 
   handleChange = ({ target }) => {
@@ -32,12 +50,14 @@ class CodeSectionRun extends Component {
   }
 
   render() {
-    const { editorTheme, codeResponse, codeError } = this.state
+    const { editorTheme, codeResponse, codeError, fileGenerated } = this.state
     const { runCodeBinded, clearCodeResultsBinded, handleChange } = this
     const {
       setStretchAnswer,
       stretchAnswer,
-      stretch: { language, codePrompt }
+      stretch: { language, codePrompt },
+      cohortStretchId,
+      userDetails
     } = this.props
     return (
       <div>
@@ -51,7 +71,14 @@ class CodeSectionRun extends Component {
                 <RunCodeButton
                   color="primary"
                   runCode={runCodeBinded}
-                  code={stretchAnswer}
+                  postPayload={{
+                    code: stretchAnswer,
+                    language,
+                    fileName:
+                      language === 'javascript'
+                        ? ''
+                        : `file-${cohortStretchId}-${userDetails.id}`
+                  }}
                 />
                 <ClearCodeResultsButton
                   color="secondary"
@@ -72,10 +99,37 @@ class CodeSectionRun extends Component {
             />
           </Grid>
           <Grid item xs={6}>
+            {language === 'jsx' && (
+              <Typography
+                variant="subtitle2"
+                style={codeSectionStyles.outputLabels}
+              >
+                JSX Rendering
+              </Typography>
+            )}
+
+            {language === 'jsx' && (
+              <iframe
+                src={
+                  fileGenerated
+                    ? `/temp/file-${cohortStretchId}-${userDetails.id}.html`
+                    : ''
+                }
+                style={codeSectionStyles.iframe}
+              />
+            )}
+            {language === 'jsx' && (
+              <Typography
+                variant="subtitle2"
+                style={codeSectionStyles.outputLabels}
+              >
+                Console
+              </Typography>
+            )}
             <CodeOutput
               codeResponse={codeResponse}
               codeError={codeError}
-              minHeight="23rem"
+              minHeight={`${language === 'jsx' ? '10' : '23'}rem`}
             />
           </Grid>
         </Grid>
@@ -84,8 +138,9 @@ class CodeSectionRun extends Component {
   }
 }
 
-const mapStateToProps = ({ stretches }, { stretchId }) => ({
-  stretch: stretches.find(s => s.id === stretchId)
+const mapStateToProps = ({ stretches, userDetails }, { stretchId }) => ({
+  stretch: stretches.find(s => s.id === stretchId),
+  userDetails
 })
 
 export default connect(mapStateToProps)(CodeSectionRun)

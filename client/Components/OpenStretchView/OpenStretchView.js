@@ -140,6 +140,7 @@ const OpenStretchView = ({
             stretchId={myStretch.id}
             setStretchAnswer={setStretchAnswer}
             stretchAnswer={stretchAnswer}
+            cohortStretchId={myCohortStretch.id}
           />
         ))}
 
