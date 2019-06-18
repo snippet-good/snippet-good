@@ -1,84 +1,22 @@
 const router = require('express').Router()
-const util = require('util')
 const fs = require('fs')
 const path = require('path')
-const { transform } = require('@babel/core')
+const runUserCode = require('./code-edtior-functions')
 
 module.exports = router
 
-const writeFilePromise = (file, code) => {
-  return new Promise((resolve, reject) => {
-    return fs.writeFile(file, code, err => {
-      if (err) reject(err)
-      resolve('file created successfully')
-    })
-  })
-}
-
-const babelTransformPromise = (code, fileName) => {
-  return new Promise((resolve, reject) => {
-    return transform(code, { filename: fileName }, (error, result) => {
-      if (error) {
-        reject(new Error(error))
-      } else {
-        resolve(result.code)
-      }
-    })
-  })
-}
-
-const jsxStart = `<!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <title>Document</title>
-        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-        <body>
-        <div id="app"></div>
-        <script>`
-
-const jsxEnd = `
-                </script>
-            </body>
-        </html>`
-
 router.post('/runcode', (req, res, next) => {
-  try {
-    let { code, fileName, language } = req.body
-    code = `${code}; ReactDOM.render(<App />, document.querySelector('#app'))`
-    const userFilesDir = path.join(__dirname, '..', '..', 'TempUserFiles')
-    if (language === 'jsx') {
-      writeFilePromise(path.join(userFilesDir, `${fileName}.js`), code)
-        .then(() => {
-          return babelTransformPromise(
-            code,
-            path.join(userFilesDir, `${fileName}.js`)
-          )
-        })
-        .then(transpiledCode => {
-          return writeFilePromise(
-            path.join(userFilesDir, `${fileName}.html`),
-            `${jsxStart}${transpiledCode}${jsxEnd}`
-          )
-        })
-        .then(() => res.send('html file successfully written'))
-        .catch(err => next(err))
-    }
-
-    if (language === 'javascript') {
-      let result = ''
-      const myConsoleLog = (...args) => {
-        result = `${result}${util.format(...args)}\n`
+  runUserCode(req.body)
+    .then(result => res.json(result))
+    .catch(err => {
+      if (!req.body.fileName) return next(err)
+      if (err.message.split(`${req.body.fileName}.js:`).length > 1) {
+        err.message = err.message
+          .split(`${req.body.fileName}.js:`)[1]
+          .split(/\([0-9]+:[0-9]+\)/)[0]
       }
-
-      const alteredCode = code.replace(/console\.log/g, 'myConsoleLog')
-      eval(alteredCode)
-      res.send(result)
-    }
-  } catch (error) {
-    next(error)
-  }
+      next(err)
+    })
 })
 
 router.delete('/:fileName', (req, res, next) => {

@@ -15,6 +15,7 @@ const {
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { codeSectionStyles } from './styles'
+import Typography from '@material-ui/core/Typography'
 
 class CodeSection extends Component {
   constructor() {
@@ -33,7 +34,7 @@ class CodeSection extends Component {
 
   componentWillUnmount() {
     const { language, cohortStretchId } = this.props
-    if (language === 'jsx' && this.state.fileGenerated) {
+    if (language === 'jsx') {
       axios.delete(`/api/code/file-${cohortStretchId}`)
     }
   }
@@ -112,17 +113,34 @@ class CodeSection extends Component {
             />
           </Grid>
           <Grid item xs={6}>
-            {language === 'javascript' && (
-              <CodeOutput
-                codeResponse={codeResponse}
-                codeError={codeError}
-                minHeight="23rem"
+            {language === 'jsx' && (
+              <Typography
+                variant="subtitle2"
+                style={codeSectionStyles.outputLabels}
+              >
+                JSX Rendering
+              </Typography>
+            )}
+
+            {language === 'jsx' && (
+              <iframe
+                src={fileGenerated ? `/temp/file-${cohortStretchId}.html` : ''}
+                style={codeSectionStyles.iframe}
               />
             )}
-            {language === 'jsx' && !fileGenerated && <iframe src="" />}
-            {language === 'jsx' && fileGenerated && (
-              <iframe src={`/temp/file-${cohortStretchId}.html`} />
+            {language === 'jsx' && (
+              <Typography
+                variant="subtitle2"
+                style={codeSectionStyles.outputLabels}
+              >
+                Console
+              </Typography>
             )}
+            <CodeOutput
+              codeResponse={codeResponse}
+              codeError={codeError}
+              minHeight={`${language === 'jsx' ? '10' : '23rem'}rem`}
+            />
           </Grid>
         </Grid>
       </div>
