@@ -39,7 +39,11 @@ class CodeSectionRun extends Component {
   }
 
   removeTemporaryUserFiles() {
-    const { language, cohortStretchId, userDetails } = this.props
+    const {
+      stretch: { language },
+      cohortStretchId,
+      userDetails
+    } = this.props
     if (language === 'jsx') {
       axios.delete(`/api/code/file-${cohortStretchId}-${userDetails.id}`)
     }

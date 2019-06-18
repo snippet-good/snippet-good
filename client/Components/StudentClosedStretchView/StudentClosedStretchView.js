@@ -54,7 +54,9 @@ const StudentClosedStretchView = ({
           </Typography>
         </Grid>
       </Grid>
-      <CodeSection {...{ studentAnswer, codePrompt, solutions, language }} />
+      <CodeSection
+        {...{ stretchAnswerId, studentAnswer, codePrompt, solutions, language }}
+      />
       <CommentsSection
         stretchAnswer={stretchAnswer}
         relatedUsers={relatedUsers}

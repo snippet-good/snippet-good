@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import CodeEditor, {
   AuxillaryComponents,
   codeEditorFunctions
@@ -11,7 +12,8 @@ const {
 } = AuxillaryComponents
 
 import Grid from '@material-ui/core/Grid'
-import { buttonsStyles, editorsStyles } from './styles'
+import Typography from '@material-ui/core/Typography'
+import { buttonsStyles, editorsStyles, outputStyles } from './styles'
 
 class SingleCodeComponent extends Component {
   constructor(props) {
@@ -20,14 +22,15 @@ class SingleCodeComponent extends Component {
       code: this.props.savedCode || '',
       savedCode: this.props.savedCode || '',
       codeResponse: '',
-      codeError: ''
+      codeError: '',
+      fileGenerated: false
     }
     this.runCodeBinded = runCode.bind(this)
     this.clearCodeResultsBinded = clearCodeResults.bind(this)
   }
 
-  handleChange = ({ target }) => {
-    this.setState({ [target.name]: target.value })
+  componentDidMount() {
+    this.removeTemporaryUserFiles()
   }
 
   componentDidUpdate(prevProps) {
@@ -37,10 +40,31 @@ class SingleCodeComponent extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.removeTemporaryUserFiles()
+  }
+
+  removeTemporaryUserFiles() {
+    const { language, stretchAnswerId } = this.props
+    if (language === 'jsx') {
+      axios.delete(`/api/code/file-${stretchAnswerId}`)
+    }
+  }
+
+  handleChange = ({ target }) => {
+    this.setState({ [target.name]: target.value })
+  }
+
   render() {
     const { runCodeBinded, clearCodeResultsBinded, handleChange } = this
-    const { code, codeResponse, codeError, savedCode } = this.state
-    const { editorTheme, editorId, language } = this.props
+    const {
+      code,
+      codeResponse,
+      codeError,
+      savedCode,
+      fileGenerated
+    } = this.state
+    const { editorTheme, editorId, language, stretchAnswerId } = this.props
     const { root } = editorsStyles()
     return (
       <Grid container>
@@ -61,8 +85,15 @@ class SingleCodeComponent extends Component {
                 <Grid item xs={12}>
                   <RunCodeButton
                     color="primary"
-                    code={code}
                     runCode={runCodeBinded}
+                    postPayload={{
+                      code,
+                      language,
+                      fileName:
+                        language === 'javascript'
+                          ? ''
+                          : `file-${stretchAnswerId}`
+                    }}
                     style={buttonsStyles.singleButton}
                   />
                 </Grid>
@@ -75,7 +106,57 @@ class SingleCodeComponent extends Component {
               </Grid>
             </Grid>
             <Grid item xs={7}>
-              <CodeOutput {...{ codeResponse, codeError, minHeight: '5rem' }} />
+              <Grid container>
+                <Grid item xs={12}>
+                  {language === 'jsx' && (
+                    <Typography
+                      variant="subtitle2"
+                      style={outputStyles.outputLabels}
+                    >
+                      JSX Rendering
+                    </Typography>
+                  )}
+                </Grid>
+                <Grid item xs={12}>
+                  {language === 'jsx' && (
+                    <iframe
+                      src={
+                        fileGenerated
+                          ? `/temp/file-${stretchAnswerId}.html`
+                          : ''
+                      }
+                      style={outputStyles.iframe}
+                    />
+                  )}
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Grid container>
+            <Grid item xs={3}>
+              <div />
+            </Grid>
+            <Grid item xs={7}>
+              <Grid container>
+                <Grid item xs={12}>
+                  {language === 'jsx' && (
+                    <Typography
+                      variant="subtitle2"
+                      style={outputStyles.outputLabels}
+                    >
+                      Console
+                    </Typography>
+                  )}
+                </Grid>
+                <Grid item xs={12}>
+                  <CodeOutput
+                    {...{ codeResponse, codeError, minHeight: '5rem' }}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
