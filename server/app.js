@@ -22,7 +22,6 @@ app.use('/api', require('./api'))
 
 //route for serving up index.html
 app.get('/', (req, res, next) => {
-  console.log(__dirname)
   res.sendFile(path.join(__dirname, '..', 'client', 'index.html'))
 })
 

@@ -102,9 +102,8 @@ const createStretchObjects = (userIds, categoryIds) => {
       codePrompt: paragraph(),
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
-      minutes: getRandomArrayEntry([10]),
-      language: 'jsx',
-      // i % 2 === 0 ? 'javascript' : 'jsx',
+      minutes: getRandomArrayEntry([2]),
+      language: i % 2 === 0 ? 'javascript' : 'jsx',
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
     }

@@ -107,16 +107,16 @@ class SingleCodeComponent extends Component {
             </Grid>
             <Grid item xs={7}>
               <Grid container>
-                <Grid item xs={12}>
-                  {language === 'jsx' && (
+                {language === 'jsx' && (
+                  <Grid item xs={12}>
                     <Typography
                       variant="subtitle2"
                       style={outputStyles.outputLabels}
                     >
                       JSX Rendering
                     </Typography>
-                  )}
-                </Grid>
+                  </Grid>
+                )}
                 <Grid item xs={12}>
                   {language === 'jsx' && (
                     <iframe
@@ -128,38 +128,45 @@ class SingleCodeComponent extends Component {
                       style={outputStyles.iframe}
                     />
                   )}
+                  {language === 'javascript' && (
+                    <CodeOutput
+                      {...{ codeResponse, codeError, minHeight: '5rem' }}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
 
-        <Grid item xs={12}>
-          <Grid container>
-            <Grid item xs={3}>
-              <div />
-            </Grid>
-            <Grid item xs={7}>
-              <Grid container>
-                <Grid item xs={12}>
-                  {language === 'jsx' && (
-                    <Typography
-                      variant="subtitle2"
-                      style={outputStyles.outputLabels}
-                    >
-                      Console
-                    </Typography>
-                  )}
-                </Grid>
-                <Grid item xs={12}>
-                  <CodeOutput
-                    {...{ codeResponse, codeError, minHeight: '5rem' }}
-                  />
+        {language === 'jsx' && (
+          <Grid item xs={12}>
+            <Grid container>
+              <Grid item xs={3}>
+                <div />
+              </Grid>
+              <Grid item xs={7}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    {language === 'jsx' && (
+                      <Typography
+                        variant="subtitle2"
+                        style={outputStyles.outputLabels}
+                      >
+                        Console
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CodeOutput
+                      {...{ codeResponse, codeError, minHeight: '5rem' }}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        )}
       </Grid>
     )
   }

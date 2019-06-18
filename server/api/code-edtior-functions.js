@@ -99,18 +99,19 @@ const processUserJSCode = code => {
   const myConsoleLog = (...args) => {
     result = `${result}${util.format(...args)}\n`
   }
-  const alteredCode = code.replace(/console\.log\(/g, 'myConsoleLog')
+  const alteredCode = code.replace(/console\.log/g, 'myConsoleLog')
   eval(alteredCode)
   return result
 }
 
-const runUserCode = ({ fileName, code, language }) => {
+const runUserCode = async ({ fileName, code, language }) => {
   if (language === 'jsx') {
     return processUserJSXCode(fileName, code)
   }
 
   if (language === 'javascript') {
-    return processUserJSCode(code)
+    const output = await processUserJSCode(code)
+    return output
   }
 }
 
