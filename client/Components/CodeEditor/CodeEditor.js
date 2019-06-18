@@ -31,11 +31,13 @@ class AceEditor extends Component {
       function() {
         const { editor } = this.state
         const editorSession = editor.getSession()
+        const codePromptRowCount = editorSession.getLength()
         this.configEditor(
           editor,
           editorSession,
           handleCodeChange,
-          codeTargetName
+          codeTargetName,
+          codePromptRowCount
         )
       }
     )

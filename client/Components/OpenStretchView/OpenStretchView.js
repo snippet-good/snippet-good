@@ -70,7 +70,7 @@ const OpenStretchView = ({
   let [modalOpen, setModalOpen] = useState(false)
   const [codePrompt, setCodePrompt] = useState('')
   const [stretchAnswer, setStretchAnswer] = useState('')
-
+  console.log('stretch answer', stretchAnswer)
   const handleModalClose = () => {
     setModalOpen(false)
   }
