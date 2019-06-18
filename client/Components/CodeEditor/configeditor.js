@@ -55,10 +55,14 @@ const configEditor = function(
     handleCodeChange({
       target: {
         name: codeTargetName,
-        value: excludeCodePromptInStretchAnswer(
-          codePromptRowCount,
-          editorSession
-        )
+        value: `${
+          codeTargetName === 'code'
+            ? excludeCodePromptInStretchAnswer(
+                codePromptRowCount,
+                editorSession
+              )
+            : editorSession.getValue()
+        }`
       }
     })
   })

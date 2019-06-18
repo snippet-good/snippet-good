@@ -143,7 +143,7 @@ class SingleStretch extends Component {
                   placeholder="Enter your written prompt here."
                   helperText="This is to be substituted with a rich text editor."
                   fullWidth
-                  multiline="true"
+                  multiline={true}
                   margin="normal"
                   InputLabelProps={{
                     shrink: true
