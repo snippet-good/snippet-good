@@ -1,10 +1,12 @@
-import React, {  useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
-
+import { Link } from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Button from '@material-ui/core/Button'
+
 import { makeStyles } from '@material-ui/core/styles'
 import SingleCohortStretchTables from './SingleCohortStretchTables'
 import { CohortStudents } from './CohortStudents'
@@ -29,6 +31,9 @@ const SingleCohort = ({ cohort, cohortStudents }) => {
       >
         {name}
       </Typography>
+      <Link to={`/admin/cohort/analytics/${cohort.id}`}><Button variant="contained" color="primary">
+        Performance Analytics
+                </Button></Link>
 
       <AppBar position="static" color="default">
         <Tabs
