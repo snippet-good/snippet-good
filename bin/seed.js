@@ -34,7 +34,7 @@ const createUserObjects = () => {
       firstName: firstName(),
       lastName: lastName(),
       email: email(),
-      password: password(),
+      password: '12345',
       isAdmin: i < 3
     }
     users.push(newUser)
