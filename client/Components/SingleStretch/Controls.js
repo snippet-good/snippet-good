@@ -30,6 +30,18 @@ const Controls = props => {
           {mode === 'update' ? 'Save changes' : 'Submit'}
         </Button>
       )}
+
+      {mode === 'update' && (
+        <Button
+          type="button"
+          variant="contained"
+          color="secondary"
+          onClick={() => changeMode('read')}
+          style={styles.button}
+        >
+          Discard Changes
+        </Button>
+      )}
     </div>
   )
 }
