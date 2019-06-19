@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { closeStretchProcess } from '../shared-actions'
 
 // --------------------------------------------------
 // Action types
@@ -61,24 +60,6 @@ export const updateCohortStretchThunk = (cohortStretchId, updatedFields) => {
     return axios
       .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
       .then(({ data }) => dispatch(updateCohortStretch(cohortStretchId, data)))
-  }
-}
-
-export const openStretchProcessThunk = (
-  stretch,
-  cohortStretchId,
-  updatedFields
-) => {
-  return dispatch => {
-    return axios
-      .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
-      .then(({ data }) => {
-        dispatch(updateCohortStretch(cohortStretchId, data))
-        dispatch(startStretchTimer(data))
-        setTimeout(() => {
-          dispatch(closeStretchProcess(data))
-        }, stretch.minutes * 1000 * 60)
-      })
   }
 }
 

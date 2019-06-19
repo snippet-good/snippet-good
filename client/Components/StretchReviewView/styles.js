@@ -20,6 +20,12 @@ const codeSectionStyles = {
   },
   start: {
     textAlign: 'start'
+  },
+  outputLabels: {
+    textAlign: 'center'
+  },
+  iframe: {
+    width: '100%'
   }
 }
 

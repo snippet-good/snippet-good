@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
+import { openStretchProcessThunk } from '../../store/shared-actions'
 import { parseDateTime } from './helperfunctions'
 import Timer from '../_shared/Timer'
 
@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button'
 import styles from './styles'
 import moment from 'moment'
 
-const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
+const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
   const {
     title,
     minutes,
@@ -43,7 +43,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           {title}
         </Typography>
         <Grid container>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Typography variant="body2" component="p">
               <i>Cohort:</i> {cohortName}
             </Typography>
@@ -60,7 +60,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           </Grid>
 
           {status === 'open' && (
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <Timer
                 minutesForStretch={minutes}
                 timeStretchStarted={startTimer}
@@ -73,12 +73,15 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           )}
 
           {status === 'scheduled' && (
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <CardActions>
                 <Button
                   color="primary"
                   onClick={() =>
-                    updateCohortStretch(stretch.id, { status: 'open' })
+                    openStretchProcess(stretch, stretch.id, {
+                      status: 'open',
+                      startTimer: new Date()
+                    })
                   }
                 >
                   Open stretch
@@ -94,8 +97,8 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateCohortStretch: (id, updatedFields, updatedEntireItem) =>
-      dispatch(updateCohortStretchThunk(id, updatedFields, updatedEntireItem))
+    openStretchProcess: (stretch, cohortStretchId, updatedFields) =>
+      dispatch(openStretchProcessThunk(stretch, cohortStretchId, updatedFields))
   }
 }
 

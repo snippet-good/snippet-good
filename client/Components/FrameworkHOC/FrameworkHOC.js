@@ -9,7 +9,6 @@ import {
   loadAdminRelatedDataThunk,
   loadStudentRelatedDataThunk
 } from '../../store/shared-actions'
-//import {getAllCohortUsers} from '../../store/cohort-users/actions'
 
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -122,8 +121,8 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
       logoutUser: history => dispatch(logoutUserThunk(history)),
       loadAdminRelatedData: adminId =>
         dispatch(loadAdminRelatedDataThunk(adminId)),
-      loadStudentRelatedData: adminId =>
-        dispatch(loadStudentRelatedDataThunk(adminId))
+      loadStudentRelatedData: studentId =>
+        dispatch(loadStudentRelatedDataThunk(studentId))
     }
   }
 

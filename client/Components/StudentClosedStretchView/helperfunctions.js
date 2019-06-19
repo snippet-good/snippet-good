@@ -26,7 +26,8 @@ export const getStretchAnswerMetaData = (
     difficulty,
     title,
     textPrompt,
-    codePrompt
+    codePrompt,
+    language
   } = stretches.find(s => s.id === stretchId)
 
   const solutions = cohortStretches
@@ -45,6 +46,7 @@ export const getStretchAnswerMetaData = (
 
   const stretchMetaData = {
     stretchAnswerId: id,
+    language,
     cohortName,
     categoryName: categoryName || 'N/A',
     difficulty: difficulty || 'N/A',

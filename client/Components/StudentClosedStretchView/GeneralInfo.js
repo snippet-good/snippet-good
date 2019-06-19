@@ -18,6 +18,7 @@ const GeneralInfo = ({ stretchMetaData, studentName }) => {
     { field: 'Title', dbColumn: 'title' },
     { field: 'Category', dbColumn: 'categoryName' },
     { field: 'Difficulty (out of 5)', dbColumn: 'difficulty' },
+    { field: 'Language', dbColumn: 'language' },
     { field: 'Rating (out of 5)', dbColumn: 'rating' },
     { field: 'Time Took To Complete', dbColumn: 'timeToSolveString' }
   ].reduce((acc, field) => {
