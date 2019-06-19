@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Typography from '@material-ui/core/Typography'
 
 import DateAndTimePicker from './DateAndTimePicker'
 import CohortSelect from './CohortSelect'
@@ -59,6 +60,12 @@ const StretchScheduler = props => {
       <Paper style={{ padding: '2em' }}>
         <form onSubmit={handleSubmit}>
           <Grid container>
+            <Grid item xs={12} style={{ ...styles.center, ...styles.warning }}>
+              <Typography variant="caption">
+                * any cohorts in red are ones you have already used stretch in
+              </Typography>
+            </Grid>
+
             {/* Date and time picker for scheduling the stretch */}
             <Grid item xs={12} style={styles.center}>
               <DateAndTimePicker
@@ -113,13 +120,18 @@ const StretchScheduler = props => {
 
 const styles = {
   root: {
-    width: '100vw',
-    height: '100vh'
+    width: '70%',
+    height: '100vh',
+    margin: '0 auto'
   },
   center: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  warning: {
+    color: 'red',
+    marginBottom: '15px'
   }
 }
 

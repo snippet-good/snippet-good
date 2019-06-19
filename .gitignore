@@ -3,4 +3,6 @@ public/bundle.*
 .idea
 .npmrc
 CoverageReport
-TempUserFiles
+TempUserFiles/*
+
+!TempUserFiles/blank.txt
