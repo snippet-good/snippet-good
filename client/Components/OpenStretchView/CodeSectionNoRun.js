@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import CodeEditor, { AuxillaryComponents } from '../CodeEditor'
 const { ThemeSelector } = AuxillaryComponents
 import Grid from '@material-ui/core/Grid'
 
-const CodeSectionNoRun = ({ codePrompt, setStretchAnswer }) => {
+const CodeSectionNoRun = ({
+  setStretchAnswer,
+  stretch: { language, codePrompt }
+}) => {
   const [editorTheme, setEditorTheme] = useState('monokai')
   return (
     <Grid container>
@@ -19,10 +23,15 @@ const CodeSectionNoRun = ({ codePrompt, setStretchAnswer }) => {
           initialCode={codePrompt}
           editorTheme={editorTheme}
           handleCodeChange={({ target }) => setStretchAnswer(target.value)}
+          language={language}
         />
       </Grid>
     </Grid>
   )
 }
 
-export default CodeSectionNoRun
+const mapStateToProps = ({ stretches }, { stretchId }) => ({
+  stretch: stretches.find(s => s.id === stretchId)
+})
+
+export default connect(mapStateToProps)(CodeSectionNoRun)

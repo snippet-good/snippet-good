@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid'
 import InputLabel from '@material-ui/core/InputLabel'
 import TextField from '@material-ui/core/TextField'
 import CategorySelect from '../_shared/CategorySelect'
+import DropdownSelect from '../_shared/DropdownSelect'
 import Slider from '@material-ui/lab/Slider'
 
 import { GeneralInfoStyles as styles } from './styles'
@@ -21,7 +22,8 @@ const GeneralInfo = props => {
     categoryName,
     categoryId,
     difficulty,
-    minutes
+    minutes,
+    language
   } = attributes
 
   const handleDifficultyChange = (event, value) =>
@@ -65,6 +67,32 @@ const GeneralInfo = props => {
                 )}
               </div>
 
+              {/* Language select/display */}
+              <div>
+                {mode === 'read' && <InputLabel shrink>Language</InputLabel>}
+                {mode === 'read' ? (
+                  <Typography variant="subtitle2">{language}</Typography>
+                ) : (
+                  <DropdownSelect
+                    data={[
+                      {
+                        id: 1,
+                        name: 'javascript',
+                        nameLowerCase: 'javascript'
+                      },
+                      { id: 2, name: 'JSX', nameLowerCase: 'jsx' }
+                    ]}
+                    dbName="language"
+                    label="Language"
+                    valueColumn="nameLowerCase"
+                    displayColumn="name"
+                    currentSelection={language}
+                    handleChange={handleChange}
+                  />
+                )}
+              </div>
+            </Grid>
+            <Grid item xs={12} style={styles.row}>
               {/* Minutes input/display */}
               <div>
                 <InputLabel shrink>Minutes</InputLabel>

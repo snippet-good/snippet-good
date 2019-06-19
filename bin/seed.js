@@ -34,7 +34,7 @@ const createUserObjects = () => {
       firstName: firstName(),
       lastName: lastName(),
       email: email(),
-      password: password(),
+      password: '12345',
       isAdmin: i < 3
     }
     users.push(newUser)
@@ -103,6 +103,7 @@ const createStretchObjects = (userIds, categoryIds) => {
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
       minutes: getRandomArrayEntry([2]),
+      language: i % 2 === 0 ? 'javascript' : 'jsx',
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
     }
@@ -116,17 +117,6 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
   for (let j = 0; j < cohortIds.length; ++j) {
     let stretchIdsTemp = [...stretchIds]
     for (let i = 0; i < 4; ++i) {
-      /*const scheduledDate = new Date(
-        2019,
-        getRandomArrayEntry([8, 9, 10, 11]),
-        getRandomArrayEntry(
-          Array(31)
-            .fill(0)
-            .map((el, indx) => indx + 1)
-        ),
-        6,
-        40
-      )*/
       const status = i === 0 ? 'scheduled' : i === 1 ? 'open' : 'closed'
       let cohortStretch = {
         status,
