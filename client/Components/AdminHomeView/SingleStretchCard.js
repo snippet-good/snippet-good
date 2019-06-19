@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
+import { openStretchProcessThunk } from '../../store/shared-actions'
 import { parseDateTime } from './helperfunctions'
+import Timer from '../_shared/Timer'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
@@ -10,8 +11,9 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import styles from './styles'
+import moment from 'moment'
 
-const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
+const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
   const {
     title,
     minutes,
@@ -19,8 +21,21 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
     cohortName,
     cohortSize,
     completedStretches,
-    scheduledDate
+    scheduledDate,
+    startTimer
   } = stretch
+
+  let initialTotalSecondsLeft =
+    minutes * 60 -
+    moment
+      .utc(new Date())
+      .local()
+      .diff(moment.utc(startTimer).local(), 'seconds')
+
+  const [totalSecondsLeft, setTotalSecondsLeft] = useState(
+    initialTotalSecondsLeft || 1
+  )
+
   return (
     <Card style={styles.singleCard}>
       <CardContent>
@@ -28,7 +43,7 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           {title}
         </Typography>
         <Grid container>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Typography variant="body2" component="p">
               <i>Cohort:</i> {cohortName}
             </Typography>
@@ -45,11 +60,12 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           </Grid>
 
           {status === 'open' && (
-            <Grid item xs={6}>
-              <Typography
-                variant="body2"
-                component="p"
-              >{`${minutes}:00`}</Typography>
+            <Grid item xs={12} md={6}>
+              <Timer
+                minutesForStretch={minutes}
+                timeStretchStarted={startTimer}
+                {...{ totalSecondsLeft, setTotalSecondsLeft }}
+              />
               <Typography variant="body2" component="p">
                 {`${completedStretches} out of ${cohortSize} students are done`}
               </Typography>
@@ -57,12 +73,15 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
           )}
 
           {status === 'scheduled' && (
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <CardActions>
                 <Button
                   color="primary"
                   onClick={() =>
-                    updateCohortStretch(stretch.id, { status: 'open' })
+                    openStretchProcess(stretch, stretch.id, {
+                      status: 'open',
+                      startTimer: new Date()
+                    })
                   }
                 >
                   Open stretch
@@ -78,8 +97,8 @@ const SingleStretchCard = ({ stretch, status, updateCohortStretch }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateCohortStretch: (id, updatedFields, updatedEntireItem) =>
-      dispatch(updateCohortStretchThunk(id, updatedFields, updatedEntireItem))
+    openStretchProcess: (stretch, cohortStretchId, updatedFields) =>
+      dispatch(openStretchProcessThunk(stretch, cohortStretchId, updatedFields))
   }
 }
 

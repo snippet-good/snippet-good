@@ -63,24 +63,10 @@ export const updateCohortStretchThunk = (cohortStretchId, updatedFields) => {
   }
 }
 
-export const openStretchProcessThunk = (cohortStretchId, updatedFields) => {
-  return dispatch => {
-    return axios
-      .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
-      .then(({ data }) => {
-        dispatch(updateCohortStretch(cohortStretchId, data))
-      })
-  }
-}
-
 export const deleteCohortStretchThunk = cohortStretchId => {
   return dispatch => {
     return axios
       .delete(`/api/cohort-stretches/${cohortStretchId}`)
       .then(() => dispatch(deleteCohortStretch(cohortStretchId)))
   }
-}
-
-export const startStretchTimerThunk = cohortStretch => dispatch => {
-  return dispatch(startStretchTimer(cohortStretch))
 }

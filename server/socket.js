@@ -45,6 +45,25 @@ const socketFunction = socketServer => {
       socket.to(cohortStretch.cohortId).emit('timer-started', cohortStretch)
       console.log('received request to start stretch timer')
     })
+
+    socket.on('sendAnswer', (stretchAnswer, adminIds) => {
+      adminIds.forEach(adminId => {
+        if (socketIdsToUserIdsMap[adminId]) {
+          socket
+            .to(`${socketIdsToUserIdsMap[adminId]}`)
+            .emit('answerSubmitted', stretchAnswer)
+        }
+      })
+    })
+
+    socket.on('answerRated', updatedStretchAnswer => {
+      const { userId } = updatedStretchAnswer
+      if (socketIdsToUserIdsMap[userId]) {
+        socket
+          .to(`${socketIdsToUserIdsMap[userId]}`)
+          .emit('receivedAnswerRating', updatedStretchAnswer)
+      }
+    })
   })
 }
 

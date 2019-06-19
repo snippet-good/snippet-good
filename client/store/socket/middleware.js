@@ -1,8 +1,11 @@
 import Socket from './Socket'
 import { GET_USER_DETAILS, LOGOUT } from '../auth/actions'
 import { CREATE_COMMENT } from '../comments/actions'
-import { JOIN_COHORT_STRETCH_ROOM } from './actions'
-import { UPDATE_COHORT_STRETCH } from '../cohort-stretches/actions'
+import { START_STRETCH_TIMER } from '../cohort-stretches/actions'
+import {
+  CREATE_STRETCH_ANSWER,
+  UPDATE_STRETCH_ANSWER
+} from '../stretch-answers/actions'
 
 const socketMiddleware = storeAPI => {
   let socket
@@ -17,11 +20,16 @@ const socketMiddleware = storeAPI => {
       case LOGOUT:
         socket.disconnectUser()
         break
-      case JOIN_COHORT_STRETCH_ROOM:
-        socket.joinCohortStretchRoom(action.cohortStretchId)
+      case START_STRETCH_TIMER:
+        socket.startStretchTimer(action.cohortStretch)
         break
-      case UPDATE_COHORT_STRETCH:
-        socket.startStretchTimer(action.updatedCohortStretch)
+      case CREATE_STRETCH_ANSWER:
+        socket.sendStretchAnswer(action.newStretchAnswer, action.adminIds)
+        break
+      case UPDATE_STRETCH_ANSWER:
+        if (action.emit) {
+          socket.sendAnswerRating(action.updatedStretchAnswer)
+        }
         break
       default:
         break

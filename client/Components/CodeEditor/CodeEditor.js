@@ -6,6 +6,7 @@ class AceEditor extends Component {
     super(props)
     this.state = {
       editor: {},
+      editorSession: {},
       editorId: this.props.editorId ? `ace-${this.props.editorId}` : 'ace'
     }
     this.configEditor = configEditor
@@ -13,6 +14,7 @@ class AceEditor extends Component {
 
   componentDidMount() {
     const {
+      language,
       editorTheme,
       handleCodeChange,
       codeTargetName,
@@ -20,29 +22,25 @@ class AceEditor extends Component {
       initialCode
     } = this.props
 
-    this.setState(
-      curState => {
-        const editor = ace.edit(curState.editorId)
-        if (initialCode) editor.setValue(initialCode)
-        if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)
-        editor.setReadOnly(!!readOnly)
-        return { ...curState, editor }
-      },
-      function() {
-        const { editor } = this.state
-        const editorSession = editor.getSession()
-        this.configEditor(
-          editor,
-          editorSession,
-          handleCodeChange,
-          codeTargetName
-        )
-      }
+    const editor = ace.edit(this.state.editorId)
+    const editorSession = editor.getSession()
+    this.configEditor(
+      editor,
+      editorSession,
+      { initialCode, editorTheme, language, readOnly: !!readOnly },
+      handleCodeChange,
+      codeTargetName
     )
+
+    this.setState({ editor, editorSession })
   }
 
   componentDidUpdate(prevProps) {
-    const { editorTheme, readOnly, initialCode } = this.props
+    const { language, editorTheme, readOnly, initialCode } = this.props
+    if (prevProps.language !== language && language !== '') {
+      this.state.editorSession.setMode(`ace/mode/${language}`)
+      this.state.editor.setValue('')
+    }
     if (prevProps.initialCode !== initialCode && initialCode !== '') {
       this.state.editor.setValue(initialCode)
     }

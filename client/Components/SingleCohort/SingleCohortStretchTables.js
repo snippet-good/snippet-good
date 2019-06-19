@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import {
   deleteCohortStretchThunk,
-  updateCohortStretchThunk,
-  openStretchProcessThunk
+  updateCohortStretchThunk
 } from '../../store/cohort-stretches/actions'
+import { openStretchProcessThunk } from '../../store/shared-actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 
 import StretchScheduler from '../_shared/StretchScheduler'
@@ -79,9 +79,10 @@ const SingleCohortStretchTables = ({
 
   // open stretch modal event handlers
   const handleopenStretchModalClose = () => setOpenStretchModalOpen(false)
-  const handleopenStretchModalOpen = id => {
+  const handleopenStretchModalOpen = cohortStretch => {
     setOpenStretchModalOpen(true)
-    setCohortStretchId(id)
+    setCohortStretch(cohortStretch)
+    setCohortStretchId(cohortStretch.id)
   }
 
   return (
@@ -98,16 +99,19 @@ const SingleCohortStretchTables = ({
         setModalClosed={handleunscheduleModalClose}
         args={[selectedCohortStretchId]}
         action={deleteCohortStretch}
+        showNoButton={true}
       />
       <ConfirmDialogBox
         text="Are you sure you would like to open the stretch?"
         open={openStretchModalOpen}
         setModalClosed={handleopenStretchModalClose}
         args={[
+          stretches.find(s => s.id === selectedCohortStretch.stretchId),
           selectedCohortStretchId,
           { status: 'open', startTimer: new Date() }
         ]}
         action={openStretchProcess}
+        showNoButton={true}
       />
       <Typography variant="h6" id="tableTitle">
         Open Stretches
@@ -176,7 +180,7 @@ const SingleCohortStretchTables = ({
                 </TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => handleopenStretchModalOpen(cohortStretch.id)}
+                    onClick={() => handleopenStretchModalOpen(cohortStretch)}
                   >
                     {' '}
                     Open{' '}
@@ -259,8 +263,8 @@ const mapDispatchToProps = dispatch => {
     deleteCohortStretch: id => dispatch(deleteCohortStretchThunk(id)),
     updateCohortStretch: (id, updatedFields) =>
       dispatch(updateCohortStretchThunk(id, updatedFields)),
-    openStretchProcess: (cohortStretchId, updatedFields) =>
-      dispatch(openStretchProcessThunk(cohortStretchId, updatedFields))
+    openStretchProcess: (stretch, cohortStretchId, updatedFields) =>
+      dispatch(openStretchProcessThunk(stretch, cohortStretchId, updatedFields))
   }
 }
 

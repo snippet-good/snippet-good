@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import CodeEditor, {
   AuxillaryComponents,
   codeEditorFunctions
@@ -14,6 +15,7 @@ const {
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { codeSectionStyles } from './styles'
+import Typography from '@material-ui/core/Typography'
 
 class CodeSection extends Component {
   constructor() {
@@ -23,10 +25,26 @@ class CodeSection extends Component {
       code: '',
       solution: '',
       codeResponse: '',
-      codeError: ''
+      codeError: '',
+      fileGenerated: false
     }
     this.runCodeBinded = runCode.bind(this)
     this.clearCodeResultsBinded = clearCodeResults.bind(this)
+  }
+
+  componentDidMount() {
+    this.removeTemporaryUserFiles()
+  }
+
+  componentWillUnmount() {
+    this.removeTemporaryUserFiles()
+  }
+
+  removeTemporaryUserFiles() {
+    const { language, cohortStretchId } = this.props
+    if (language === 'jsx') {
+      axios.delete(`/api/code/file-${cohortStretchId}`)
+    }
   }
 
   handleChange = ({ target }) => {
@@ -40,13 +58,21 @@ class CodeSection extends Component {
   }
 
   render() {
-    const { editorTheme, code, codeResponse, codeError, solution } = this.state
+    const {
+      editorTheme,
+      code,
+      codeResponse,
+      codeError,
+      solution,
+      fileGenerated
+    } = this.state
     const {
       runCodeBinded,
       clearCodeResultsBinded,
       handleChange,
       showSolution
     } = this
+    const { language, cohortStretchId } = this.props
     return (
       <div>
         <Grid container>
@@ -69,7 +95,12 @@ class CodeSection extends Component {
                 <RunCodeButton
                   color="primary"
                   runCode={runCodeBinded}
-                  code={code}
+                  postPayload={{
+                    code,
+                    language,
+                    fileName:
+                      language === 'javascript' ? '' : `file-${cohortStretchId}`
+                  }}
                 />
                 <ClearCodeResultsButton
                   color="secondary"
@@ -86,13 +117,37 @@ class CodeSection extends Component {
               initialCode={solution}
               editorTheme={editorTheme}
               handleCodeChange={handleChange}
+              language={language}
             />
           </Grid>
           <Grid item xs={6}>
+            {language === 'jsx' && (
+              <Typography
+                variant="subtitle2"
+                style={codeSectionStyles.outputLabels}
+              >
+                JSX Rendering
+              </Typography>
+            )}
+
+            {language === 'jsx' && (
+              <iframe
+                src={fileGenerated ? `/temp/file-${cohortStretchId}.html` : ''}
+                style={codeSectionStyles.iframe}
+              />
+            )}
+            {language === 'jsx' && (
+              <Typography
+                variant="subtitle2"
+                style={codeSectionStyles.outputLabels}
+              >
+                Console
+              </Typography>
+            )}
             <CodeOutput
               codeResponse={codeResponse}
               codeError={codeError}
-              minHeight="23rem"
+              minHeight={`${language === 'jsx' ? '10' : '23'}rem`}
             />
           </Grid>
         </Grid>
