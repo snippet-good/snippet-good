@@ -116,21 +116,20 @@ const createStretchObjects = (userIds, categoryIds) => {
 // eslint-disable-next-line complexity
 const createCohortStretchObjects = (cohortIds, stretchIds) => {
   let cohortStretches = []
+
   for (let j = 0; j < cohortIds.length; ++j) {
     let stretchIdsTemp = [...stretchIds]
     for (let i = 0; i < 10; ++i) {
       const status = i < 2 ? 'scheduled' : i === 2 ? 'open' : 'closed'
-      const localDate = moment.utc(new Date()).local()
-      const dateScheduled = localDate.add(10, 'days')
-      const dateClosed = localDate.subtract(90, 'days')
+
+      let dateOpen = new Date()
+      let dateScheduled = new Date()
+      dateScheduled.setDate(dateScheduled.getDate() + 10)
+      let dateClosed = new Date()
+      dateClosed.setDate(dateClosed.getDate() - 90)
       const scheduledDate =
-        i < 2 ? dateScheduled : i === 2 ? localDate : dateClosed
-      const startTimer =
-        i < 2
-          ? null
-          : i === 2
-          ? localDate.add(10, 'm')
-          : dateClosed.add(10, 'm')
+        i < 2 ? dateScheduled : i === 2 ? dateOpen : dateClosed
+      const startTimer = i < 2 ? null : i === 2 ? dateOpen : dateClosed
 
       let cohortStretch = {
         status,
