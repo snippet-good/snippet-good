@@ -77,6 +77,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
+      data.codePrompt += `\n \n/*your code below --------------------------------------------------------------*/`
       this.props
         .createStretch({ ...data, authorId: this.props.userDetails.id })
         .then(({ newStretch: { id } }) =>
@@ -101,6 +102,7 @@ class SingleStretch extends Component {
     return text.split('\n')
   }
 
+
   notScheduleStretch = () => {
     const { history } = this.props
     const { stretchId } = this.state
@@ -115,6 +117,50 @@ class SingleStretch extends Component {
     const { handleChange, notScheduleStretch } = this
     const { mode, authorId, language, modalOpen, stretchId } = state
     return (
+
+      <form onSubmit={handleSubmit}>
+        <div style={styles.root}>
+          <Grid container spacing={2} style={styles.sub}>
+            <Grid item xs={12}>
+              <Controls
+                mode={mode}
+                changeMode={changeMode}
+                authorId={authorId}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <GeneralInfo attributes={state} handleChange={handleChange} />
+            </Grid>
+
+            <Grid item xs={12} style={GeneralInfoStyles.root}>
+              {mode === 'read' ? (
+                <div>
+                  <InputLabel shrink>Text Prompt</InputLabel>
+                  <Typography variant="subtitle1">
+                    {this.displayTextWithLineBreak(state.textPrompt).map(
+                      line => (
+                        <div key={line}>{line}</div>
+                      )
+                    )}
+                  </Typography>
+                </div>
+              ) : (
+                <TextField
+                  id="standard-full-width"
+                  name="textPrompt"
+                  label="Text Prompt"
+                  value={state.textPrompt}
+                  placeholder="Enter your written prompt here."
+                  helperText="This is to be substituted with a rich text editor."
+                  fullWidth
+                  multiline={true}
+                  margin="normal"
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  onChange={handleChange}
+
       <div>
         <StretchScheduler
           open={modalOpen}
@@ -131,6 +177,7 @@ class SingleStretch extends Component {
                   mode={mode}
                   changeMode={changeMode}
                   authorId={authorId}
+                
                 />
               </Grid>
 
