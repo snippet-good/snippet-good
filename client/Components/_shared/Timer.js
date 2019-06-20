@@ -8,6 +8,7 @@ const Timer = ({
   timeStretchStarted,
   totalSecondsLeft,
   setTotalSecondsLeft,
+  answeringWhenStretchOpen,
   action,
   args
 }) => {
@@ -15,12 +16,13 @@ const Timer = ({
     if (minutesForStretch) {
       if (totalSecondsLeft > 0) {
         setTimeout(() => {
-          const newTotalSecondsLeft =
-            minutesForStretch * 60 -
-            moment
-              .utc(new Date())
-              .local()
-              .diff(moment.utc(timeStretchStarted).local(), 'seconds')
+          let newTotalSecondsLeft = answeringWhenStretchOpen
+            ? minutesForStretch * 60 -
+              moment
+                .utc(new Date())
+                .local()
+                .diff(moment.utc(timeStretchStarted).local(), 'seconds')
+            : totalSecondsLeft - 1
           setTotalSecondsLeft(newTotalSecondsLeft)
         }, 1000)
       } else if (totalSecondsLeft === 0 && action) {

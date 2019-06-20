@@ -17,12 +17,28 @@ const addClosingCurlyBracket = (editor, editorSession) => {
   }
 }
 
+const excludeCodePromptInStretchAnswer = (
+  codePromptRowCount,
+  editorSession
+) => {
+  let documentRowCount = editorSession.getLength()
+  const arrayOfStretchLines = editorSession.getLines(
+    codePromptRowCount,
+    documentRowCount
+  )
+  return arrayOfStretchLines.reduce((acc, line) => {
+    acc += `${line} \n`
+    return acc
+  }, [])
+}
+
 const configEditor = function(
   editor,
   editorSession,
   userOptions,
   handleCodeChange,
-  codeTargetName
+  codeTargetName,
+  codePromptRowCount
 ) {
   const { initialCode, editorTheme, language, readOnly } = userOptions
   editorSession.setMode(`ace/mode/${language}`)
@@ -43,7 +59,17 @@ const configEditor = function(
   editorSession.on('change', () => {
     addClosingCurlyBracket(editor, editorSession)
     handleCodeChange({
-      target: { name: codeTargetName, value: editorSession.getValue() }
+      target: {
+        name: codeTargetName,
+        value: `${
+          codeTargetName === 'codeAnswer'
+            ? excludeCodePromptInStretchAnswer(
+                codePromptRowCount,
+                editorSession
+              )
+            : editorSession.getValue()
+        }`
+      }
     })
   })
 }

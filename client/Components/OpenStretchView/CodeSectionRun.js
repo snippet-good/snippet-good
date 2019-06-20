@@ -95,7 +95,7 @@ class CodeSectionRun extends Component {
         <Grid container>
           <Grid item xs={6}>
             <CodeEditor
-              codeTargetName="code"
+              codeTargetName="codeAnswer"
               initialCode={codePrompt}
               editorTheme={editorTheme}
               handleCodeChange={({ target }) => setStretchAnswer(target.value)}

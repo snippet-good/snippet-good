@@ -22,12 +22,19 @@ router.post('/runcode', (req, res, next) => {
 router.delete('/:fileName', (req, res, next) => {
   const userFilesDir = path.join(__dirname, '..', '..', 'TempUserFiles')
   fs.unlink(path.join(userFilesDir, `${req.params.fileName}.js`), err => {
-    if (err) console.log(err)
+    if (err)
+      console.log(
+        `./TempUserFiles/${req.params.fileName}.js file does not exist`
+      )
+    console.log(`./TempUserFiles/${req.params.fileName}.js file deleted`)
     return fs.unlink(
       path.join(userFilesDir, `${req.params.fileName}.html`),
       error => {
-        if (error) return console.log(error)
-        res.send('files successfully deleted')
+        if (error)
+          return console.log(
+            `./TempUserFiles/${req.params.fileName}.html file does not exist`
+          )
+        res.sendStatus(204)
       }
     )
   })

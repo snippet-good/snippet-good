@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
 import CodeEditor from '../CodeEditor'
+import StretchScheduler from '../_shared/StretchScheduler'
 
 import { GeneralInfoStyles, SingleStretchStyles as styles } from './styles'
 
@@ -25,7 +26,8 @@ class SingleStretch extends Component {
     minutes: '',
     language: 'javascript',
     authorId: '',
-    isLoaded: false
+    isLoaded: false,
+    modalOpen: false
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
@@ -68,15 +70,19 @@ class SingleStretch extends Component {
             categoryName,
             difficulty,
             textPrompt,
-            codePrompt
+            codePrompt,
+            stretchId: ''
           })
         })
     }
 
     if (this.state.mode === 'create') {
+      data.codePrompt += `\n \n/*your code below --------------------------------------------------------------*/`
       this.props
         .createStretch({ ...data, authorId: this.props.userDetails.id })
-        .then(() => this.props.history.push('/admin/stretches'))
+        .then(({ newStretch: { id } }) =>
+          this.setState({ modalOpen: true, stretchId: id })
+        )
     }
   }
 
@@ -96,70 +102,88 @@ class SingleStretch extends Component {
     return text.split('\n')
   }
 
+  notScheduleStretch = () => {
+    const { history } = this.props
+    const { stretchId } = this.state
+    this.setState({ modalOpen: false }, () => {
+      history.push(`/admin/singleStretch/${stretchId}`)
+    })
+  }
+
   render() {
     const { state } = this
     const { handleSubmit, changeMode } = this
-    const { handleChange } = this
-    const { mode, authorId, language } = state
+    const { handleChange, notScheduleStretch } = this
+    const { mode, authorId, language, modalOpen, stretchId } = state
+
     return (
-      <form onSubmit={handleSubmit}>
-        <div style={styles.root}>
-          <Grid container spacing={2} style={styles.sub}>
-            <Grid item xs={12}>
-              <Controls
-                mode={mode}
-                changeMode={changeMode}
-                authorId={authorId}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <GeneralInfo attributes={state} handleChange={handleChange} />
-            </Grid>
-
-            <Grid item xs={12} style={GeneralInfoStyles.root}>
-              {mode === 'read' ? (
-                <div>
-                  <InputLabel shrink>Text Prompt</InputLabel>
-                  <Typography variant="subtitle1">
-                    {this.displayTextWithLineBreak(state.textPrompt).map(
-                      line => (
-                        <div key={line}>{line}</div>
-                      )
-                    )}
-                  </Typography>
-                </div>
-              ) : (
-                <TextField
-                  id="standard-full-width"
-                  name="textPrompt"
-                  label="Text Prompt"
-                  value={state.textPrompt}
-                  placeholder="Enter your written prompt here."
-                  helperText="This is to be substituted with a rich text editor."
-                  fullWidth
-                  multiline="true"
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  onChange={handleChange}
+      <div>
+        <StretchScheduler
+          open={modalOpen}
+          onClose={notScheduleStretch}
+          mode="create"
+          type="question"
+          attributes={{ id: stretchId }}
+        />
+        <form onSubmit={handleSubmit}>
+          <div style={styles.root}>
+            <Grid container spacing={2} style={styles.sub}>
+              <Grid item xs={12}>
+                <Controls
+                  mode={mode}
+                  changeMode={changeMode}
+                  authorId={authorId}
                 />
-              )}
-            </Grid>
+              </Grid>
 
-            <Grid item xs={12}>
-              <CodeEditor
-                initialCode={state.initialCode}
-                codeTargetName="codePrompt"
-                handleCodeChange={handleChange}
-                language={language}
-                readOnly={mode === 'read'}
-              />
+              <Grid item xs={12}>
+                <GeneralInfo attributes={state} handleChange={handleChange} />
+              </Grid>
+
+              <Grid item xs={12} style={GeneralInfoStyles.root}>
+                {mode === 'read' ? (
+                  <div>
+                    <InputLabel shrink>Text Prompt</InputLabel>
+                    <Typography variant="subtitle1">
+                      {this.displayTextWithLineBreak(state.textPrompt).map(
+                        line => (
+                          <div key={line}>{line}</div>
+                        )
+                      )}
+                    </Typography>
+                  </div>
+                ) : (
+                  <TextField
+                    id="standard-full-width"
+                    name="textPrompt"
+                    label="Text Prompt"
+                    value={state.textPrompt}
+                    placeholder="Enter your written prompt here."
+                    helperText="This is to be substituted with a rich text editor."
+                    fullWidth
+                    multiline={true}
+                    margin="normal"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    onChange={handleChange}
+                  />
+                )}
+              </Grid>
+
+              <Grid item xs={12}>
+                <CodeEditor
+                  initialCode={state.initialCode}
+                  codeTargetName="codePrompt"
+                  handleCodeChange={handleChange}
+                  language={language}
+                  readOnly={mode === 'read'}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </div>
-      </form>
+          </div>
+        </form>
+      </div>
     )
   }
 }
