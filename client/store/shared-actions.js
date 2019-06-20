@@ -62,7 +62,7 @@ export const openStretchProcessThunk = (
   }
 }
 
-const closeStretchesOverdue = (cohortStretch, stretch, dispatch) => {
+const closeStretchesOverdueg = (cohortStretch, stretch, dispatch) => {
   const totalSecondsLeft =
     stretch.minutes * 60 -
     moment
