@@ -21,6 +21,7 @@ export const getStretchAnswerMetaData = (
   const { stretchId, scheduledDate, adminIds } = cohortStretches.find(
     cs => cs.id === cohortstretchId
   )
+
   const {
     categoryName,
     difficulty,
@@ -43,7 +44,6 @@ export const getStretchAnswerMetaData = (
       if (a.dropdownTitle === 'Cohort Solution') return -1
       return a.dropdownTitle - b.dropdownTitle
     })
-
   const stretchMetaData = {
     stretchAnswerId: id,
     language,
