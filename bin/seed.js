@@ -100,7 +100,7 @@ const createStretchObjects = (userIds, categoryIds) => {
     let stretch = {
       title: words(),
       textPrompt: paragraph(),
-      codePrompt: paragraph(),
+      codePrompt: `${paragraph()}\n \n/*your code below --------------------------------------------------------------*/`,
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
       minutes: getRandomArrayEntry([2]),
@@ -184,7 +184,8 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
           60 * 3,
           60 * 4,
           60 * 5
-        ])
+        ]),
+        submittedOnTime: Math.random() <= 0.8
       }
       stretchAnswers.push(stretchAnswer)
     }
@@ -211,7 +212,8 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
           Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
         userId: students[studentsIndex[j]],
         cohortstretchId: csOpen[i].id,
-        timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10])
+        timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10]),
+        submittedOnTime: true
       }
       stretchAnswers.push(stretchAnswer)
     }

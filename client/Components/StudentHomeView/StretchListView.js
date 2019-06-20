@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
+import TableSortLabel from '@material-ui/core/TableSortLabel'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
+import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,101 +21,113 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function StretchListView(props) {
+function StretchListView({ stretches, status }) {
   const classes = useStyles()
-  function createOpenStretchData(
-    cohortStretchId,
-    title,
-    categoryName,
-    difficulty
-  ) {
-    return { cohortStretchId, title, categoryName, difficulty }
-  }
-  function createSubmittedStretchData(
-    stretchAnswerId,
-    title,
-    cohortName,
-    rating,
-    stretchId
-  ) {
-    return { stretchAnswerId, title, cohortName, rating, stretchId }
+  let [orderDirection, setOrderDirection] = useState('desc')
+  let [orderColumn, setOrderColumn] = useState('')
+  const onRequestSort = column => {
+    setOrderColumn(column)
+    setOrderDirection(orderDirection === 'desc' ? 'asc' : 'desc')
   }
 
-  const rows = []
-  if (props.openStretches) {
-    for (let i = 0; i < props.openStretches.length; ++i) {
-      rows.push(
-        createOpenStretchData(
-          props.openStretches[i].cohortStretchId,
-          props.openStretches[i].title,
-          props.openStretches[i].categoryName,
-          props.openStretches[i].difficulty
-        )
-      )
-    }
-  } else if (props.submittedStretches) {
-    for (let i = 0; i < props.submittedStretches.length; ++i) {
-      rows.push(
-        createSubmittedStretchData(
-          props.submittedStretches[i].id,
-          props.submittedStretches[i].title,
-          props.submittedStretches[i].cohortName,
-          props.submittedStretches[i].rating,
-          props.submittedStretches[i].stretchId
-        )
-      )
-    }
+  let stretchesSorted = stretches
+  if (orderColumn) {
+    stretchesSorted = stretchesSorted.sort((a, b) => {
+      if (a[orderColumn] < b[orderColumn])
+        return orderDirection === 'desc' ? 1 : -1
+      if (a[orderColumn] > b[orderColumn])
+        return orderDirection === 'desc' ? -1 : 1
+      return 0
+    })
   }
+
+  const tableColumnNames = {
+    open: ['Title', 'Category', 'Cohort'],
+    submitted: [
+      'Title',
+      'Date Stretch Opened',
+      'Category',
+      'Cohort',
+      'Submitted On Time'
+    ],
+    missed: ['Title', 'Date Stretch Opened', 'Category', 'Cohort']
+  }
+  const dbColumnNames = {
+    open: ['title', 'categoryName', 'cohortName'],
+    submitted: [
+      'title',
+      'startTimer',
+      'categoryName',
+      'cohortName',
+      'submittedOnTime'
+    ],
+    missed: ['title', 'startTimer', 'categoryName', 'cohortName']
+  }
+  const links = {
+    open: { start: '/student/stretch/', idField: 'cohortStretchId' },
+    submitted: { start: '/student/stretchAnswer/', idField: 'stretchAnswerId' },
+    missed: { start: '/student/stretch/', idField: 'cohortStretchId' }
+  }
+
   return (
     <Paper className={classes.root}>
-      {props.openStretches ? (
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Category</TableCell>
-              <TableCell align="right">Difficulty</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, indx) => (
-              <TableRow key={indx}>
-                <TableCell component="th" scope="row">
-                  <Link to={`/student/stretch/${row.cohortStretchId}`}>
-                    {row.title}
-                  </Link>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            {tableColumnNames[status].map((column, index) => {
+              return (
+                <TableCell
+                  key={index}
+                  align={index === 0 ? 'inherit' : 'right'}
+                >
+                  <TableSortLabel
+                    direction={orderDirection}
+                    active={orderColumn === column}
+                    onClick={() => onRequestSort(dbColumnNames[status][index])}
+                  >
+                    {' '}
+                    {column}
+                  </TableSortLabel>
                 </TableCell>
-                <TableCell align="right">{row.categoryName}</TableCell>
-                <TableCell align="right">{row.difficulty}</TableCell>
+              )
+            })}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {stretchesSorted.map((s, idx) => {
+            return (
+              <TableRow key={idx}>
+                {dbColumnNames[status].map((field, idx) => {
+                  const { start, idField } = links[status]
+                  if (idx === 0) {
+                    return (
+                      <TableCell key={idx} component="th" scope="row">
+                        <Link to={`${start}${s[idField]}`}>{s[field]}</Link>
+                      </TableCell>
+                    )
+                  }
+                  return (
+                    <TableCell key={idx} align="right">
+                      {field === 'startTimer' &&
+                        moment
+                          .utc(s[field])
+                          .local()
+                          .format('LL')}
+                      {field === 'submittedOnTime' && (
+                        <i
+                          className={`far fa-${s[field] ? 'smile' : 'frown'}`}
+                        />
+                      )}
+                      {!['startTimer', 'submittedOnTime'].includes(field) &&
+                        s[field]}
+                    </TableCell>
+                  )
+                })}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Rating</TableCell>
-              <TableCell align="right">Cohort</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, indx) => (
-              <TableRow key={indx}>
-                <TableCell component="th" scope="row">
-                  <Link to={`/student/stretchAnswer/${row.stretchAnswerId}`}>
-                    {row.title}
-                  </Link>
-                </TableCell>
-
-                <TableCell align="right">{row.rating}</TableCell>
-                <TableCell align="right">{row.cohortName}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
+            )
+          })}
+        </TableBody>
+      </Table>
     </Paper>
   )
 }

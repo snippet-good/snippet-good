@@ -19,14 +19,16 @@ import store from './store'
 import moment from 'moment'
 import { generateFlashMessageId } from '../utilityfunctions'
 
-export const closeStretchProcess = cohortStretch => {
+export const closeStretchProcess = cohortStretchId => {
   return dispatch => {
     return dispatch(
-      updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
-    ).then(() => {
+      updateCohortStretchThunk(cohortStretchId, { status: 'closed' })
+    ).then(({ updatedCohortStretch }) => {
       const { stretches, flashMessages, userDetails } = store.getState()
-      const { title } = stretches.find(s => s.id === cohortStretch.stretchId)
-      const { id, cohortName } = cohortStretch
+      const { title } = stretches.find(
+        s => s.id === updatedCohortStretch.stretchId
+      )
+      const { id, cohortName } = updatedCohortStretch
       const flashMessageId = generateFlashMessageId(
         flashMessages,
         'stretchClosed'
@@ -56,10 +58,23 @@ export const openStretchProcessThunk = (
       .then(({ data }) => {
         dispatch(updateCohortStretch(cohortStretchId, data))
         dispatch(startStretchTimer(data))
-        setTimeout(() => {
-          dispatch(closeStretchProcess(data))
-        }, stretch.minutes * 1000 * 60)
       })
+  }
+}
+
+const closeStretchesOverdue = (cohortStretch, stretch, dispatch) => {
+  const totalSecondsLeft =
+    stretch.minutes * 60 -
+    moment
+      .utc(new Date())
+      .local()
+      .diff(moment.utc(cohortStretch.startTimer).local(), 'seconds')
+  if (totalSecondsLeft <= 1) {
+    return dispatch(
+      updateCohortStretchThunk(cohortStretch.id, {
+        status: 'closed'
+      })
+    )
   }
 }
 
@@ -85,19 +100,13 @@ export const loadAdminRelatedDataThunk = adminId => {
       const openCohortStretches = cohortStretches.filter(
         cs => cs.status === 'open' && cohortIds.includes(cs.cohortId)
       )
-      openCohortStretches.forEach(cohortStretch => {
-        const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
-        const totalSecondsLeft =
-          stretch.minutes * 60 -
-          moment
-            .utc(new Date())
-            .local()
-            .diff(moment.utc(cohortStretch.startTimer).local(), 'seconds')
 
-        setTimeout(() => {
-          dispatch(closeStretchProcess(cohortStretch))
-        }, 1000 * totalSecondsLeft)
-      })
+      return Promise.all(
+        openCohortStretches.map(cohortStretch => {
+          const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
+          return closeStretchesOverdue(cohortStretch, stretch, dispatch)
+        })
+      )
     })
   }
 }
@@ -110,6 +119,25 @@ export const loadStudentRelatedDataThunk = studentId => {
       dispatch(getAllCohortStretches()),
       dispatch(getAnswersOfCohortsOfStudentThunk(studentId)),
       dispatch(getStudentCohortUsersThunk(studentId))
-    ])
+    ]).then(data => {
+      let [
+        categories,
+        { stretches },
+        { cohortStretches },
+        stretchAnswers,
+        { cohortUsers }
+      ] = data
+
+      const cohortIds = cohortUsers.map(c => c.cohortId)
+      const openCohortStretches = cohortStretches.filter(
+        cs => cs.status === 'open' && cohortIds.includes(cs.cohortId)
+      )
+      return Promise.all(
+        openCohortStretches.map(cohortStretch => {
+          const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
+          return closeStretchesOverdue(cohortStretch, stretch, dispatch)
+        })
+      )
+    })
   }
 }

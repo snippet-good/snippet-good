@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { getFilteredStretchesOfAdmin } from './helperfunctions'
-import SingleStretchCard from './SingleStretchCard'
+import SingleStretchCard from '../_shared/SingleStretchCard'
 
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'

@@ -24,12 +24,14 @@ class AceEditor extends Component {
 
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
+    const codePromptRowCount = initialCode ? initialCode.split('\n').length : ''
     this.configEditor(
       editor,
       editorSession,
       { initialCode, editorTheme, language, readOnly: !!readOnly },
       handleCodeChange,
-      codeTargetName
+      codeTargetName,
+      codePromptRowCount
     )
 
     this.setState({ editor, editorSession })
