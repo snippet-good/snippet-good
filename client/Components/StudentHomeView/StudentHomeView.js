@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import StretchListView from './StretchListView'
 import { checkIfAllDataExists } from '../../utilityfunctions'
+import { getOpenAndMissedStretches, getStretchAnswers } from './helperfunctions'
 
 const mapStateToProps = ({
   userDetails,
@@ -22,39 +23,28 @@ const mapStateToProps = ({
   )
     return { userDetails }
   const studentCohorts = cohortUsers.map(cu => cu.cohortId)
-  const cohortStretchIds = stretchAnswers
-    .filter(sa => sa.userId === userDetails.id)
-    .map(sa => sa.cohortstretchId)
-
-  const openStretches = cohortStretches
-    .filter(
-      cs =>
-        studentCohorts.includes(cs.cohortId) &&
-        !cohortStretchIds.includes(cs.id) &&
-        cs.status === 'open'
-    )
-    .map(cs => {
-      const stretch = stretches.find(s => s.id === cs.stretchId)
-      const { id, ...stretchFields } = stretch
-      const { allowAnswersToBeRun } = cs
-      return {
-        ...stretchFields,
-        stretchId: id,
-        cohortStretchId: cs.id,
-        allowAnswersToBeRun
-      }
-    })
-
-  const submittedStretches = stretchAnswers
-    .filter(sa => sa.userId === userDetails.id)
-    .map(sa => {
-      const { title, id } = stretches.find(s => s.id === sa.stretchId)
-      return { ...sa, title, stretchId: id }
-    })
+  const studentStretchAnswers = stretchAnswers.filter(
+    sa => sa.userId === userDetails.id
+  )
+  const cohortStretchIdsOfAnswers = studentStretchAnswers.map(
+    sa => sa.cohortstretchId
+  )
+  const { openStretches, missedStretches } = getOpenAndMissedStretches(
+    cohortStretchIdsOfAnswers,
+    studentCohorts,
+    stretches,
+    cohortStretches
+  )
+  const submittedStretches = getStretchAnswers(
+    studentStretchAnswers,
+    stretches,
+    cohortStretches
+  )
 
   return {
     openStretches,
     submittedStretches,
+    missedStretches,
     userDetails
   }
 }
@@ -70,6 +60,7 @@ const useStyles = makeStyles(theme => ({
 const StudentHomeView = ({
   openStretches,
   submittedStretches,
+  missedStretches,
   match: {
     params: { status }
   }
@@ -77,9 +68,14 @@ const StudentHomeView = ({
   const classes = useStyles()
   return (
     <main className={classes.content}>
-      {status === 'open' && <StretchListView openStretches={openStretches} />}
+      {status === 'open' && (
+        <StretchListView stretches={openStretches || []} status={status} />
+      )}
       {status === 'submitted' && (
-        <StretchListView submittedStretches={submittedStretches} />
+        <StretchListView stretches={submittedStretches || []} status={status} />
+      )}
+      {status === 'missed' && (
+        <StretchListView stretches={missedStretches || []} status={status} />
       )}
     </main>
   )

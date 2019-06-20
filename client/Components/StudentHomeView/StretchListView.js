@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
+import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,9 +20,75 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function StretchListView(props) {
+function StretchListView({ stretches, status }) {
   const classes = useStyles()
-  function createOpenStretchData(
+
+  const tableColumnNames = {
+    open: ['Title', 'Category', 'Cohort'],
+    submitted: ['Title', 'Date', 'Category', 'Cohort'],
+    missed: ['Title', 'Date', 'Category', 'Cohort']
+  }
+  const dbColumnNames = {
+    open: ['title', 'categoryName', 'cohortName'],
+    submitted: ['title', 'startTimer', 'categoryName', 'cohortName'],
+    missed: ['title', 'startTimer', 'categoryName', 'cohortName']
+  }
+  const links = {
+    open: { start: '/student/stretch/', idField: 'cohortStretchId' },
+    submitted: { start: '/student/stretchAnswer/', idField: 'stretchAnswerId' },
+    missed: { start: '/student/stretch/', idField: 'cohortStretchId' }
+  }
+
+  return (
+    <Paper className={classes.root}>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            {tableColumnNames[status].map((column, index) => {
+              return (
+                <TableCell key={index} align={index === 0 ? '' : 'right'}>
+                  {column}
+                </TableCell>
+              )
+            })}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {stretches.map((s, idx) => {
+            return (
+              <TableRow key={idx}>
+                {dbColumnNames[status].map((field, idx) => {
+                  const { start, idField } = links[status]
+                  if (idx === 0) {
+                    return (
+                      <TableCell component="th" scope="row">
+                        <Link to={`${start}${s[idField]}`}>{s[field]}</Link>
+                      </TableCell>
+                    )
+                  }
+                  return (
+                    <TableCell key={idx} align="right">
+                      {field !== 'startTimer'
+                        ? s[field]
+                        : moment
+                            .utc(s[field])
+                            .local()
+                            .format('LL')}
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </Table>
+    </Paper>
+  )
+}
+
+export default StretchListView
+
+/* function createOpenStretchData(
     cohortStretchId,
     title,
     categoryName,
@@ -63,59 +130,4 @@ function StretchListView(props) {
         )
       )
     }
-  }
-  return (
-    <Paper className={classes.root}>
-      {props.openStretches ? (
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Category</TableCell>
-              <TableCell align="right">Difficulty</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, indx) => (
-              <TableRow key={indx}>
-                <TableCell component="th" scope="row">
-                  <Link to={`/student/stretch/${row.cohortStretchId}`}>
-                    {row.title}
-                  </Link>
-                </TableCell>
-                <TableCell align="right">{row.categoryName}</TableCell>
-                <TableCell align="right">{row.difficulty}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Rating</TableCell>
-              <TableCell align="right">Cohort</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, indx) => (
-              <TableRow key={indx}>
-                <TableCell component="th" scope="row">
-                  <Link to={`/student/stretchAnswer/${row.stretchAnswerId}`}>
-                    {row.title}
-                  </Link>
-                </TableCell>
-
-                <TableCell align="right">{row.rating}</TableCell>
-                <TableCell align="right">{row.cohortName}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
-    </Paper>
-  )
-}
-
-export default StretchListView
+  }*/

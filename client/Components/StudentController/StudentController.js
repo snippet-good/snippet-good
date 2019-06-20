@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { Route } from 'react-router-dom'
 import StudentHomeView from '../StudentHomeView'
 import OpenStretchView from '../OpenStretchView'
-import StudentClosedStretchView from '../StudentClosedStretchView'
+import StudentClosedStretchView from '../SIngleClosedStretchViev'
 import FrameworkHOC from '../FrameworkHOC'
 import StudentSidebar from '../StudentSidebar'
 
