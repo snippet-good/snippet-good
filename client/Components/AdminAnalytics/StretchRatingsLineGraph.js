@@ -1,0 +1,209 @@
+import React, { Component } from 'react'
+import { scaleLinear, scalePoint } from 'd3-scale'
+import { max } from 'd3-array'
+import { select } from 'd3-selection'
+import { axisBottom, axisLeft } from 'd3-axis'
+import { curveMonotoneX, line } from 'd3-shape'
+import d3Tip from 'd3-tip'
+import { transition } from "d3-transition";
+
+class StretchRatingsLineGraph extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            filter: this.props.filter
+        }
+    }
+
+    componentDidMount() {
+        this.createLineChart()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // if (nextProps.filter !== this.props.filter) {
+        //     let node = select(this.node)
+        //     node.select(".stretchLine")
+        //         .transition()
+        //         .duration(1000)
+        //         .attr("d", valueline(formattedData))
+        //         .on("end", () => this.setState({ filter: nextProps.filter }))
+        this.createLineChart()
+        //}
+    }
+
+    createLineChart = () => {
+        //get all stretch ratings by cohort in an object
+        var ratingByStretch = {}
+
+        console.log('STRETCHES STATE', this.props.stretches)
+        console.log('STRETCHANSWERS STATE', this.props.stretchAnswers)
+
+        if (this.state.filter === 'time') {
+            this.props.stretchAnswers.map(stretch => {
+                if (Object.keys(ratingByStretch).includes(stretch.stretchTitle)) {
+                    ratingByStretch[stretch.stretchTitle].push(stretch.timeToSolve)
+                } else {
+                    ratingByStretch[stretch.stretchTitle] = [stretch.timeToSolve]
+                }
+            })
+        } else {
+            this.props.stretchAnswers.map(stretch => {
+                if (Object.keys(ratingByStretch).includes(stretch.stretchTitle)) {
+                    ratingByStretch[stretch.stretchTitle].push(stretch.rating)
+                } else {
+                    ratingByStretch[stretch.stretchTitle] = [stretch.rating]
+                }
+            })
+        }
+
+        //Average all scores
+        Object.keys(ratingByStretch).map(key => {
+            let total = ratingByStretch[key].reduce((p, c) => (p + c))
+            ratingByStretch[key] = (total / ratingByStretch[key].length)
+        })
+
+        //formatting for D3
+        const formattedData = []
+        Object.keys(ratingByStretch).map(key => {
+            var stretch = this.props.stretches.find(stretch => stretch.title === key)
+            formattedData.push({
+                'Stretch': key, 'Avg': ratingByStretch[key],
+                'Category': stretch.categoryName, 'Difficulty': stretch.difficulty, 'Time': stretch.minutes
+            })
+        })
+        console.log('FORMATTED:', formattedData)
+
+        // set the dimensions and margins of the graph
+        var margin = { top: 20, right: 20, bottom: 40, left: 40 },
+            width = 500 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        const node = this.node
+
+        const dataMax = max(formattedData.map(d => d.Avg))
+        const yScale = scaleLinear()
+            .domain([0, dataMax])
+            .range([height, 0])
+
+        const xScale = scalePoint()
+            .range([0, width])
+            .domain(formattedData.map(d => d.Stretch))
+
+        // define the line
+        var valueline = line()
+            .x(function (d) { return xScale(d.Stretch); })
+            .y(function (d) { return yScale(d.Avg); })
+            .curve(curveMonotoneX)
+
+        var tip = d3Tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .style('background', '#d3d3d3')
+            .style('opacity', 1e-6)
+            .html(function (d) {
+                return ("<strong>Category:</strong> <span style='color:red'>" + d.Category + "</span> <br><strong>Difficulty:</strong> <span style='color:red'>" + d.Difficulty + "</span><br><strong>Minutes:</strong> <span style='color:red'>" + d.Time + "</span>")
+            })
+
+        // append the svg obgect to the body of the page
+        // appends a 'group' element to 'svg'
+        // moves the 'group' element to the top left margin
+        var svg = select(node)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")")
+
+        svg.call(tip)
+
+        // Add the X Axis
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(axisBottom(xScale));
+
+        // Add the Y Axis
+        svg.append("g")
+            .call(axisLeft(yScale));
+
+        //testing
+        svg.append('path')
+            .data([formattedData])
+            //.exit().remove()
+            //.enter()
+            //.append('path')
+            .attr("class", "line")
+            .attr("d", valueline(formattedData))
+            .style("stroke", '#3f51b5')
+            .style("stroke-width", 5)
+            .style("stroke-linejoin", "round")
+            .style("fill", "none")
+
+        // svg.selectAll('.stretchLine')
+        //     .data([formattedData])
+        //     .transition()
+        //     .duration(750)
+        //     .attr('d', d => line(d.values));
+
+        svg.selectAll("circle")
+            .data(formattedData)
+            .enter()
+            .append("circle")
+            .attr("cx", d => xScale(d.Stretch))
+            .attr("cy", d => yScale(d.Avg))
+            .attr("r", 8)
+            .style("fill", "grey")
+            .attr("id", function (d, i) { return "_" + i; })
+            // Treating mouseover event
+            .on("mouseover", function (d, i) {
+                select("#_" + i)
+                    .transition().duration(500)
+                    .style("fill", '#3f51b5')
+                    .attr("r", 15)
+                    .style("stroke-width", 0)
+                tip.show(d, this)
+                // .style("font-size", 24)
+            })
+            .on("mouseout", (d, i) => {
+                select("#_" + i)
+                    .transition().duration(500)
+                    .attr("r", 8)
+                    .style("fill", "grey")
+                tip.hide()
+            })
+
+        // text label for the x axis
+        svg.append("text")
+            .attr("transform",
+                "translate(" + (width / 2) + " ," +
+                (height + margin.top + 20) + ")")
+            .style("text-anchor", "middle")
+            .text("Stretch");
+
+        // text label for the y axis
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text(this.props.filter === 'rating' ? "Average submission rating" : "Average submission time")
+
+        //title
+        svg.append("text")
+            .attr("x", (width / 2))
+            .attr("y", 0 + (margin.top))
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("text-decoration", "underline")
+            .text(`Cohort Stretch Performance`)
+    }
+
+    render() {
+        return (
+            <svg ref={node => this.node = node} >
+            </svg >
+        )
+    }
+}
+
+export default StretchRatingsLineGraph

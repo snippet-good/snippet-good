@@ -19,7 +19,6 @@ class TimeBarChart extends Component {
     createBarChart = () => {
 
         //get all stretch ratings by cohort in an object
-        console.log(this.props.stretchAnswers)
         var timesByCohort = {}
         this.props.stretchAnswers.map(stretch => {
             if (Object.keys(timesByCohort).includes(stretch.cohortName)) {
@@ -46,7 +45,7 @@ class TimeBarChart extends Component {
             height = 500 - margin.top - margin.bottom;
 
         const node = this.node
-        //const data = Object.keys(ratingsByCohort).map(key => ratingsByCohort[key])
+
         const dataMax = max(formattedData.map(d => d.Avg))
         const yScale = scaleLinear()
             .domain([0, dataMax])
@@ -70,6 +69,10 @@ class TimeBarChart extends Component {
             .enter()
             .append('rect')
             .style('fill', '#3f51b5')
+            .attr("height", height)
+            .attr("width", 0)//this is the initial value
+            .transition()
+            .duration(1500)
             .attr('x', d => xScale(d.Cohort))
             .attr('width', xScale.bandwidth())
             .attr('y', d => yScale(d.Avg))
@@ -120,7 +123,6 @@ class TimeBarChart extends Component {
     }
 
     render() {
-        console.log('here')
         return (
             <svg ref={node => this.node = node}>
             </svg>
