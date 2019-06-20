@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 const getStretchAndFormat = (stretches, stretchId) => {
   const { id, ...otherStretchFields } = stretches.find(s => s.id === stretchId)
   return { stretchId: id, ...otherStretchFields }
@@ -36,11 +38,11 @@ export const getOpenAndMissedStretches = (
 ) => {
   return cohortStretches.reduce(
     (acc, cs) => {
-      if (
+      const stretchOpen =
         studentCohorts.includes(cs.cohortId) &&
         !cohortStretchIdsOfAnswers.includes(cs.id) &&
         cs.status === 'open'
-      ) {
+      if (stretchOpen) {
         acc.openStretches.push(formatCohortStretch(cs, stretches))
       }
       if (

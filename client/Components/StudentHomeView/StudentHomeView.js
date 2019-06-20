@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import StretchListView from './StretchListView'
+import OpenStretchCards from './OpenStretchCards'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 import { getOpenAndMissedStretches, getStretchAnswers } from './helperfunctions'
 
@@ -57,6 +58,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+// eslint-disable-next-line complexity
 const StudentHomeView = ({
   openStretches,
   submittedStretches,
@@ -68,6 +70,9 @@ const StudentHomeView = ({
   const classes = useStyles()
   return (
     <main className={classes.content}>
+      {status === undefined && (
+        <OpenStretchCards stretches={openStretches || []} />
+      )}
       {status === 'open' && (
         <StretchListView stretches={openStretches || []} status={status} />
       )}

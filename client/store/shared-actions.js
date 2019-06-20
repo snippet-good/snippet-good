@@ -19,14 +19,16 @@ import store from './store'
 import moment from 'moment'
 import { generateFlashMessageId } from '../utilityfunctions'
 
-export const closeStretchProcess = cohortStretch => {
+export const closeStretchProcess = cohortStretchId => {
   return dispatch => {
     return dispatch(
-      updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
-    ).then(() => {
+      updateCohortStretchThunk(cohortStretchId, { status: 'closed' })
+    ).then(({ updatedCohortStretch }) => {
       const { stretches, flashMessages, userDetails } = store.getState()
-      const { title } = stretches.find(s => s.id === cohortStretch.stretchId)
-      const { id, cohortName } = cohortStretch
+      const { title } = stretches.find(
+        s => s.id === updatedCohortStretch.stretchId
+      )
+      const { id, cohortName } = updatedCohortStretch
       const flashMessageId = generateFlashMessageId(
         flashMessages,
         'stretchClosed'
@@ -56,9 +58,9 @@ export const openStretchProcessThunk = (
       .then(({ data }) => {
         dispatch(updateCohortStretch(cohortStretchId, data))
         dispatch(startStretchTimer(data))
-        setTimeout(() => {
+        /* setTimeout(() => {
           dispatch(closeStretchProcess(data))
-        }, stretch.minutes * 1000 * 60)
+        }, stretch.minutes * 1000 * 60)*/
       })
   }
 }
@@ -77,13 +79,13 @@ const closeStretchOrOtherAction = (cohortStretch, stretch, dispatch, type) => {
       })
     )
   }
-  if (type === 'admin') {
+  /*if (type === 'admin') {
     return setTimeout(() => {
       dispatch(closeStretchProcess(cohortStretch))
     }, 1000 * totalSecondsLeft)
   } else {
     return true
-  }
+  }*/
 }
 
 export const loadAdminRelatedDataThunk = adminId => {

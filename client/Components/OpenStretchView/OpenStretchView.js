@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
-import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
+import { updateCohortStretch } from '../../store/cohort-stretches/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
 import moment from 'moment'
@@ -21,7 +21,10 @@ const mapDispatchToProps = dispatch => {
         createStretchAnswerThunk(stretchAnswer, cohortStretch.adminIds)
       ).then(() =>
         dispatch(
-          updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
+          updateCohortStretch(cohortStretch.id, {
+            ...cohortStretch,
+            status: 'closed'
+          })
         )
       )
   }
@@ -111,6 +114,7 @@ const OpenStretchView = ({
         open={modalOpen}
         args={[stretchAnswer, myStretch, userDetails, history]}
         action={submitStretch}
+        setModalClosed={() => setModalOpen(true)}
         showNoButton={false}
       />
       <Paper className={classes.root}>
