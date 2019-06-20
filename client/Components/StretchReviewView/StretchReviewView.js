@@ -8,7 +8,11 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { textPromptStyles } from './styles'
 
-const StretchReviewView = ({ attributes, currentCohortStretch }) => {
+const StretchReviewView = ({
+  attributes,
+  currentCohortStretch,
+  cohortStretchId
+}) => {
   if (!attributes) return <div>Data still loading</div>
   const { textPrompt, codePrompt, ...otherStretchFields } = attributes
 
@@ -33,6 +37,8 @@ const StretchReviewView = ({ attributes, currentCohortStretch }) => {
         <Grid item xs={12}>
           <CodeSection
             solution={`${codePrompt}\n\n${currentCohortStretch.solution}`}
+            language={otherStretchFields.language}
+            cohortStretchId={cohortStretchId}
           />
         </Grid>
       </Grid>
@@ -61,7 +67,7 @@ const mapStateToProps = (
 
   const attributes = { mode: 'read', ...selectedStretch }
 
-  return { attributes, currentCohortStretch }
+  return { attributes, currentCohortStretch, cohortStretchId }
 }
 
 export default connect(mapStateToProps)(StretchReviewView)

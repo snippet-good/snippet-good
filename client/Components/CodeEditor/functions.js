@@ -1,21 +1,31 @@
 import axios from 'axios'
 
-const runCode = function(code) {
-  return axios
-    .post('/api/code/runcode', { code })
-    .then(res => {
-      this.setState({
-        codeResponse: String(res.data),
-        codeError: ''
+const runCode = function(postPayload) {
+  this.setState({ fileGenerated: false }, function() {
+    return axios
+      .post('/api/code/runcode', postPayload)
+      .then(res => {
+        const stateObject =
+          postPayload.language === 'javascript'
+            ? {
+                codeResponse: String(res.data),
+                codeError: ''
+              }
+            : {
+                codeResponse: String(res.data.stringToConsole),
+                codeError: '',
+                fileGenerated: true
+              }
+        this.setState(stateObject, () => console.log(this.state))
       })
-    })
-    .catch(({ response: { data } }) => {
-      this.setState({ codeError: data, codeResponse: '' })
-    })
+      .catch(({ response: { data } }) => {
+        this.setState({ codeError: data, codeResponse: '' })
+      })
+  })
 }
 
 const clearCodeResults = function() {
-  this.setState({ codeResponse: '', codeError: '' })
+  this.setState({ codeResponse: '', codeError: '', fileGenerated: false })
 }
 
 export default { runCode, clearCodeResults }

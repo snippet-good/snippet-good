@@ -6,6 +6,7 @@ import {
   deleteCohortStretchThunk,
   updateCohortStretchThunk
 } from '../../store/cohort-stretches/actions'
+import { openStretchProcessThunk } from '../../store/shared-actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 
 import StretchScheduler from '../_shared/StretchScheduler'
@@ -23,11 +24,13 @@ const SingleCohortStretchTables = ({
   cohortStretches,
   stretches,
   deleteCohortStretch,
-  updateCohortStretch
+  updateCohortStretch,
+  openStretchProcess
 }) => {
   if (!checkIfAllDataExists(cohort, cohortStretches, stretches)) {
     return <div>No open, scheduled, or submitted stretches for cohort</div>
   }
+
   let [rescheduleModalOpen, setRescheduleModalOpen] = useState(false)
   let [unscheduleModalOpen, setunscheduleModalOpen] = useState(false)
   let [openStretchModalOpen, setOpenStretchModalOpen] = useState(false)
@@ -76,9 +79,10 @@ const SingleCohortStretchTables = ({
 
   // open stretch modal event handlers
   const handleopenStretchModalClose = () => setOpenStretchModalOpen(false)
-  const handleopenStretchModalOpen = id => {
+  const handleopenStretchModalOpen = cohortStretch => {
     setOpenStretchModalOpen(true)
-    setCohortStretchId(id)
+    setCohortStretch(cohortStretch)
+    setCohortStretchId(cohortStretch.id)
   }
 
   return (
@@ -95,13 +99,19 @@ const SingleCohortStretchTables = ({
         setModalClosed={handleunscheduleModalClose}
         args={[selectedCohortStretchId]}
         action={deleteCohortStretch}
+        showNoButton={true}
       />
       <ConfirmDialogBox
         text="Are you sure you would like to open the stretch?"
         open={openStretchModalOpen}
         setModalClosed={handleopenStretchModalClose}
-        args={[selectedCohortStretchId, { status: 'open' }]}
-        action={updateCohortStretch}
+        args={[
+          stretches.find(s => s.id === selectedCohortStretch.stretchId),
+          selectedCohortStretchId,
+          { status: 'open', startTimer: new Date() }
+        ]}
+        action={openStretchProcess}
+        showNoButton={true}
       />
       <Typography variant="h6" id="tableTitle">
         Open Stretches
@@ -170,7 +180,7 @@ const SingleCohortStretchTables = ({
                 </TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => handleopenStretchModalOpen(cohortStretch.id)}
+                    onClick={() => handleopenStretchModalOpen(cohortStretch)}
                   >
                     {' '}
                     Open{' '}
@@ -252,7 +262,9 @@ const mapDispatchToProps = dispatch => {
   return {
     deleteCohortStretch: id => dispatch(deleteCohortStretchThunk(id)),
     updateCohortStretch: (id, updatedFields) =>
-      dispatch(updateCohortStretchThunk(id, updatedFields))
+      dispatch(updateCohortStretchThunk(id, updatedFields)),
+    openStretchProcess: (stretch, cohortStretchId, updatedFields) =>
+      dispatch(openStretchProcessThunk(stretch, cohortStretchId, updatedFields))
   }
 }
 

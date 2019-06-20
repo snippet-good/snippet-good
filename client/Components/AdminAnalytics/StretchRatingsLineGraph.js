@@ -3,35 +3,58 @@ import { scaleLinear, scalePoint } from 'd3-scale'
 import { max } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft } from 'd3-axis'
-import { line } from 'd3-shape'
+import { curveMonotoneX, line } from 'd3-shape'
 import d3Tip from 'd3-tip'
+import { transition } from "d3-transition";
 
 class StretchRatingsLineGraph extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            filter: this.props.filter
+        }
     }
+
     componentDidMount() {
         this.createLineChart()
     }
-    componentDidUpdate() {
+
+    componentWillReceiveProps(nextProps) {
+        // if (nextProps.filter !== this.props.filter) {
+        //     let node = select(this.node)
+        //     node.select(".stretchLine")
+        //         .transition()
+        //         .duration(1000)
+        //         .attr("d", valueline(formattedData))
+        //         .on("end", () => this.setState({ filter: nextProps.filter }))
         this.createLineChart()
+        //}
     }
 
     createLineChart = () => {
         //get all stretch ratings by cohort in an object
         var ratingByStretch = {}
 
-        console.log(this.props.stretches)
-        console.log(this.props.cohortStretches)
+        console.log('STRETCHES STATE', this.props.stretches)
+        console.log('STRETCHANSWERS STATE', this.props.stretchAnswers)
 
-
-        this.props.stretchAnswers.map(stretch => {
-            if (Object.keys(ratingByStretch).includes(stretch.stretchId)) {
-                ratingByStretch[stretch.stretchId].push(stretch.rating)
-            } else {
-                ratingByStretch[stretch.stretchId] = [stretch.rating]
-            }
-        })
+        if (this.state.filter === 'time') {
+            this.props.stretchAnswers.map(stretch => {
+                if (Object.keys(ratingByStretch).includes(stretch.stretchTitle)) {
+                    ratingByStretch[stretch.stretchTitle].push(stretch.timeToSolve)
+                } else {
+                    ratingByStretch[stretch.stretchTitle] = [stretch.timeToSolve]
+                }
+            })
+        } else {
+            this.props.stretchAnswers.map(stretch => {
+                if (Object.keys(ratingByStretch).includes(stretch.stretchTitle)) {
+                    ratingByStretch[stretch.stretchTitle].push(stretch.rating)
+                } else {
+                    ratingByStretch[stretch.stretchTitle] = [stretch.rating]
+                }
+            })
+        }
 
         //Average all scores
         Object.keys(ratingByStretch).map(key => {
@@ -42,7 +65,7 @@ class StretchRatingsLineGraph extends Component {
         //formatting for D3
         const formattedData = []
         Object.keys(ratingByStretch).map(key => {
-            var stretch = this.props.stretches.find(stretch => stretch.id === key)
+            var stretch = this.props.stretches.find(stretch => stretch.title === key)
             formattedData.push({
                 'Stretch': key, 'Avg': ratingByStretch[key],
                 'Category': stretch.categoryName, 'Difficulty': stretch.difficulty, 'Time': stretch.minutes
@@ -69,13 +92,14 @@ class StretchRatingsLineGraph extends Component {
         // define the line
         var valueline = line()
             .x(function (d) { return xScale(d.Stretch); })
-            .y(function (d) { return yScale(d.Avg); });
+            .y(function (d) { return yScale(d.Avg); })
+            .curve(curveMonotoneX)
 
         var tip = d3Tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .style('background', '#d3d3d3')
-            .style('opacity', '10')
+            .style('opacity', 1e-6)
             .html(function (d) {
                 return ("<strong>Category:</strong> <span style='color:red'>" + d.Category + "</span> <br><strong>Difficulty:</strong> <span style='color:red'>" + d.Difficulty + "</span><br><strong>Minutes:</strong> <span style='color:red'>" + d.Time + "</span>")
             })
@@ -100,15 +124,25 @@ class StretchRatingsLineGraph extends Component {
         // Add the Y Axis
         svg.append("g")
             .call(axisLeft(yScale));
-        // Add the valueline path.
-        svg.append("path")
+
+        //testing
+        svg.append('path')
             .data([formattedData])
+            //.exit().remove()
+            //.enter()
+            //.append('path')
             .attr("class", "line")
             .attr("d", valueline(formattedData))
             .style("stroke", '#3f51b5')
             .style("stroke-width", 5)
             .style("stroke-linejoin", "round")
             .style("fill", "none")
+
+        // svg.selectAll('.stretchLine')
+        //     .data([formattedData])
+        //     .transition()
+        //     .duration(750)
+        //     .attr('d', d => line(d.values));
 
         svg.selectAll("circle")
             .data(formattedData)
@@ -152,7 +186,7 @@ class StretchRatingsLineGraph extends Component {
             .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
-            .text("Average submission rating")
+            .text(this.props.filter === 'rating' ? "Average submission rating" : "Average submission time")
 
         //title
         svg.append("text")
@@ -161,8 +195,7 @@ class StretchRatingsLineGraph extends Component {
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             .style("text-decoration", "underline")
-            .text(`Cohort Stretch Performance`);
-
+            .text(`Cohort Stretch Performance`)
     }
 
     render() {

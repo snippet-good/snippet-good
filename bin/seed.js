@@ -13,7 +13,8 @@ const {
     Category,
     Cohort,
     CohortStretch,
-    CohortUser
+    CohortUser,
+    Attendance
   }
 } = require('../server/db/index')
 
@@ -33,7 +34,7 @@ const createUserObjects = () => {
       firstName: firstName(),
       lastName: lastName(),
       email: email(),
-      password: password(),
+      password: '12345',
       isAdmin: i < 3
     }
     users.push(newUser)
@@ -101,7 +102,8 @@ const createStretchObjects = (userIds, categoryIds) => {
       codePrompt: paragraph(),
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
-      minutes: getRandomArrayEntry([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+      minutes: getRandomArrayEntry([2]),
+      language: i % 2 === 0 ? 'javascript' : 'jsx',
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
     }
@@ -122,17 +124,8 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
         solution: paragraph(),
         cohortId: cohortIds[j],
         stretchId: getRandomArrayEntry(stretchIdsTemp),
-        scheduledDate: new Date(
-          2019,
-          getRandomArrayEntry([8, 9, 10, 11]),
-          getRandomArrayEntry(
-            Array(31)
-              .fill(0)
-              .map((el, indx) => indx + 1)
-          ),
-          6,
-          40
-        )
+        scheduledDate: new Date(),
+        startTimer: new Date()
       }
       cohortStretches.push(cohortStretch)
       stretchIdsTemp = stretchIdsTemp.filter(
@@ -171,7 +164,13 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
           Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
         userId: students[studentsIndex[j]],
         cohortstretchId: csClosed[i].id,
-        timeToSolve: getRandomArrayEntry([(60 * 1), (60 * 2), (60 * 3), (60 * 4), (60 * 5)])
+        timeToSolve: getRandomArrayEntry([
+          60 * 1,
+          60 * 2,
+          60 * 3,
+          60 * 4,
+          60 * 5
+        ])
       }
       stretchAnswers.push(stretchAnswer)
     }

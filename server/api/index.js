@@ -8,6 +8,7 @@ router.use('/auth', require('./auth'))
 router.use('/users', require('./users'))
 router.use('/cohorts', require('./cohorts'))
 router.use('/cohort-users', require('./cohort-users'))
+router.use('/attendance', require('./attendance'))
 
 // Stretch-related API
 router.use('/categories', require('./categories'))

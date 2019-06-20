@@ -7,6 +7,7 @@ export const GET_STRETCH_ANSWERS = 'GET_STRETCH_ANSWERS'
 export const CREATE_STRETCH_ANSWER = 'CREATE_STRETCH_ANSWER'
 export const UPDATE_STRETCH_ANSWER = 'UPDATE_STRETCH_ANSWER'
 export const DELETE_STRETCH_ANSWER = 'DELETE_STRETCH_ANSWER'
+export const ADD_RECEIVED_STRETCH_ANSWER = 'ADD_RECEIVED_STRETCH_ANSWER'
 
 // --------------------------------------------------
 // Action creators
@@ -16,15 +17,26 @@ const getStretchAnswers = stretchAnswers => ({
   stretchAnswers
 })
 
-const createStretchAnswer = newStretchAnswer => ({
+export const createStretchAnswer = (newStretchAnswer, adminIds) => ({
   type: CREATE_STRETCH_ANSWER,
-  newStretchAnswer
+  newStretchAnswer,
+  adminIds
 })
 
-const replaceStretchAnswer = (stretchAnswerId, updatedStretchAnswer) => ({
+export const addReceivedStretchAnswer = stretchAnswer => ({
+  type: ADD_RECEIVED_STRETCH_ANSWER,
+  stretchAnswer
+})
+
+export const replaceStretchAnswer = (
+  stretchAnswerId,
+  updatedStretchAnswer,
+  emit
+) => ({
   type: UPDATE_STRETCH_ANSWER,
   stretchAnswerId,
-  updatedStretchAnswer
+  updatedStretchAnswer,
+  emit
 })
 
 const removeStretchAnswer = stretchAnswerId => ({
@@ -36,29 +48,28 @@ const removeStretchAnswer = stretchAnswerId => ({
 // CRUD thunks
 
 // Redux thunk to get all users from API
-export const getAllStretchAnswers = () => dispatch => {
+export const getAllStretchAnswersThunk = () => dispatch => {
   return axios
     .get('/api/stretch-answers')
     .then(res => dispatch(getStretchAnswers(res.data)))
 }
 
-export const getStretchAnswersOfSingleAdminThunk = adminId => dispatch => {
-  return axios
-    .get(`/api/stretch-answers/admin/${adminId}`)
-    .then(res => dispatch(getStretchAnswers(res.data)))
-}
-
-export const getStretchAnswersOfStudentThunk = studentId => dispatch => {
+export const getAnswersOfCohortsOfStudentThunk = studentId => dispatch => {
   return axios
     .get(`/api/stretch-answers/student/${studentId}`)
     .then(res => dispatch(getStretchAnswers(res.data)))
 }
 
-export const createStretchAnswerThunk = newStretchAnswer => dispatch => {
+export const createStretchAnswerThunk = (
+  newStretchAnswer,
+  adminIds
+) => dispatch => {
   return axios
     .post(`/api/stretch-answers/create`, { newStretchAnswer })
     .then(res => res.data)
-    .then(stretchAnswer => dispatch(createStretchAnswer(stretchAnswer)))
+    .then(stretchAnswer =>
+      dispatch(createStretchAnswer(stretchAnswer, adminIds))
+    )
 }
 
 export const updateStretchAnswerThunk = (stretchAnswerId, updatedFields) => {
@@ -67,7 +78,7 @@ export const updateStretchAnswerThunk = (stretchAnswerId, updatedFields) => {
       .put(`/api/stretch-answers/${stretchAnswerId}`, updatedFields)
       .then(res => res.data)
       .then(stretchAnswer =>
-        dispatch(replaceStretchAnswer(stretchAnswerId, stretchAnswer))
+        dispatch(replaceStretchAnswer(stretchAnswerId, stretchAnswer, true))
       )
   }
 }

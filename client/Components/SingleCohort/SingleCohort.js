@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import { Link } from 'react-router-dom'
@@ -6,53 +6,106 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Button from '@material-ui/core/Button'
-
 import { makeStyles } from '@material-ui/core/styles'
+import { getAttendance } from '../../store/attendance/actions'
+import Grid from '@material-ui/core/Grid'
+import Calendar from 'react-calendar'
 import SingleCohortStretchTables from './SingleCohortStretchTables'
-import { CohortStudents } from './CohortStudents'
+import CohortStudents from './CohortStudents'
+import Attendance from './Attendance'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    width: 500
+
+class SingleCohort extends Component {
+  state = {
+    tab: 0,
+    currentDate: new Date(),
+    attendanceRecords: {}
   }
-}))
 
-const SingleCohort = ({ cohort, cohortStudents }) => {
-  const { root } = useStyles()
-  const { name } = cohort
-  const [value, setValue] = useState('stretches')
+  getAttendance = async (currentDate = this.state.currentDate) => {
+    const cohortId = this.props.match.params.id
+    const attendanceRecords = await getAttendance(cohortId, currentDate)
+    this.setState({ attendanceRecords })
+  }
 
-  return (
-    <div className={root}>
-      <Typography
-        variant="h5"
-        gutterBottom
+  // This event handler handles changes on the Calendar component.
+  handleCalendarChange = async currentDate => {
+    await this.getAttendance(currentDate)
+    this.setState({ currentDate })
+  }
+
+  handleTabsChange = (event, tab) => this.setState({ tab })
+
+  async componentDidMount() {
+    await this.getAttendance()
+  }
+
+  render() {
+    const { state, props } = this
+    const { handleCalendarChange, handleTabsChange } = this
+    const { cohort } = props
+
+    return (
+      <div
+        style={{ display: 'flex', justifyContent: 'center', width: '100vw' }}
       >
-        {name}
-      </Typography>
-      <Link to={`/admin/cohort/analytics/${cohort.id}`}><Button variant="contained" color="primary">
-        Performance Analytics
+        <Grid container spacing={2} style={{ width: '98%' }}>
+          <Grid item xs={12}>
+            <Typography variant="h3">
+              {cohort.name}
+            </Typography>
+            <Link to={`/admin/cohort/analytics/${cohort.id}`}><Button variant="contained" color="primary">
+              Performance Analytics
                 </Button></Link>
+          </Grid>
+          <Grid item xs={7}>
+            <Grid item xs={12}>
+              <Tabs
+                value={state.tab}
+                onChange={handleTabsChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+                style={{ marginBottom: '2em' }}
+              >
+                <Tab label="Attendance" />
+                <Tab label="Stretches" />
+                <Tab label="Students" />
+              </Tabs>
+            </Grid>
 
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={(event, newValue) => setValue(newValue)}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-        >
-          <Tab value="stretches" label="Stretches" />
-          <Tab value="students" label="Students" />
-        </Tabs>
-      </AppBar>
-      {value === 'stretches' && <SingleCohortStretchTables cohort={cohort} />}
-      {value === 'students' && (
-        <CohortStudents cohortStudents={cohortStudents} />
-      )}
-    </div>
-  )
+            <Grid item xs={12}>
+              {state.tab === 0 && (
+                <Attendance
+                  cohortId={props.match.params.id}
+                  records={state.attendanceRecords}
+                />
+              )}
+              {state.tab === 1 && (
+                <SingleCohortStretchTables cohort={props.cohort} />
+              )}
+              {state.tab === 2 && (
+                <CohortStudents cohortStudents={props.cohortStudents} />
+              )}
+            </Grid>
+          </Grid>
+
+          <Grid item xs={1} />
+
+          <Grid
+            item
+            xs={4}
+            style={{ display: 'flex', justifyContent: 'flex-end' }}
+          >
+            <Calendar
+              onChange={handleCalendarChange}
+              value={state.currentDate}
+            />
+          </Grid>
+        </Grid>
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
@@ -62,8 +115,4 @@ const mapStateToProps = ({ cohorts, users }, { match: { params } }) => ({
   cohort: cohorts.find(cohort => cohort.id === params.id) || {}
 })
 
-
-
-export default connect(
-  mapStateToProps
-)(SingleCohort)
+export default connect(mapStateToProps)(SingleCohort)
