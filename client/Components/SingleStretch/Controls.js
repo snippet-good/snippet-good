@@ -13,12 +13,11 @@ const Controls = props => {
   return (
     <div style={styles.root}>
       {/* This is the update button. This button will only show in 'read' mode. */}
-      {mode === 'read' && (
+      {mode === 'read' && authorId === userDetails.id && (
         <Button
           variant="contained"
           style={{ ...styles.updateButton }}
           onClick={setModeToUpdate}
-          disabled={authorId !== userDetails.id}
         >
           Update
         </Button>
