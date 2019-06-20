@@ -63,6 +63,29 @@ export const openStretchProcessThunk = (
   }
 }
 
+const closeStretchOrOtherAction = (cohortStretch, stretch, dispatch, type) => {
+  const totalSecondsLeft =
+    stretch.minutes * 60 -
+    moment
+      .utc(new Date())
+      .local()
+      .diff(moment.utc(cohortStretch.startTimer).local(), 'seconds')
+  if (totalSecondsLeft <= 1) {
+    return dispatch(
+      updateCohortStretchThunk(cohortStretch.id, {
+        status: 'closed'
+      })
+    )
+  }
+  if (type === 'admin') {
+    return setTimeout(() => {
+      dispatch(closeStretchProcess(cohortStretch))
+    }, 1000 * totalSecondsLeft)
+  } else {
+    return true
+  }
+}
+
 export const loadAdminRelatedDataThunk = adminId => {
   return dispatch => {
     return Promise.all([
@@ -85,19 +108,18 @@ export const loadAdminRelatedDataThunk = adminId => {
       const openCohortStretches = cohortStretches.filter(
         cs => cs.status === 'open' && cohortIds.includes(cs.cohortId)
       )
-      openCohortStretches.forEach(cohortStretch => {
-        const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
-        const totalSecondsLeft =
-          stretch.minutes * 60 -
-          moment
-            .utc(new Date())
-            .local()
-            .diff(moment.utc(cohortStretch.startTimer).local(), 'seconds')
 
-        setTimeout(() => {
-          dispatch(closeStretchProcess(cohortStretch))
-        }, 1000 * totalSecondsLeft)
-      })
+      return Promise.all(
+        openCohortStretches.map(cohortStretch => {
+          const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
+          return closeStretchOrOtherAction(
+            cohortStretch,
+            stretch,
+            dispatch,
+            'admin'
+          )
+        })
+      )
     })
   }
 }
@@ -110,6 +132,30 @@ export const loadStudentRelatedDataThunk = studentId => {
       dispatch(getAllCohortStretches()),
       dispatch(getAnswersOfCohortsOfStudentThunk(studentId)),
       dispatch(getStudentCohortUsersThunk(studentId))
-    ])
+    ]).then(data => {
+      let [
+        categories,
+        { stretches },
+        { cohortStretches },
+        stretchAnswers,
+        { cohortUsers }
+      ] = data
+
+      const cohortIds = cohortUsers.map(c => c.cohortId)
+      const openCohortStretches = cohortStretches.filter(
+        cs => cs.status === 'open' && cohortIds.includes(cs.cohortId)
+      )
+      return Promise.all(
+        openCohortStretches.map(cohortStretch => {
+          const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
+          return closeStretchOrOtherAction(
+            cohortStretch,
+            stretch,
+            dispatch,
+            'student'
+          )
+        })
+      )
+    })
   }
 }

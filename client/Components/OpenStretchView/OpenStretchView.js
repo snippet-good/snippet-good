@@ -68,7 +68,11 @@ const OpenStretchView = ({
         .utc(new Date())
         .local()
         .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
+    if (initialTotalSecondsLeft < 0) {
+      return <Typography>Sorry. Stretch is already closed.</Typography>
+    }
   }
+
   let [totalSecondsLeft, setTotalSecondsLeft] = useState(
     initialTotalSecondsLeft || 1
   )

@@ -77,12 +77,9 @@ const StudentHomeView = ({
   const classes = useStyles()
   return (
     <main className={classes.content}>
-      {status === 'open' ? (
-        <StretchListView openStretches={openStretches} />
-      ) : status === 'submitted' ? (
+      {status === 'open' && <StretchListView openStretches={openStretches} />}
+      {status === 'submitted' && (
         <StretchListView submittedStretches={submittedStretches} />
-      ) : (
-        <div />
       )}
     </main>
   )
