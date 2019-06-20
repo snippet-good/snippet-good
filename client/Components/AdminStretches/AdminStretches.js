@@ -264,7 +264,7 @@ class AdminStretches extends Component {
                 const cohortsAlreadyUsedStretch = cohortStretches
                   .filter(cs => cs.stretchId === stretch.id)
                   .map(cs => cs.cohortId)
-                const disableButton = cohorts.every(c =>
+                const giveWarning = cohorts.every(c =>
                   cohortsAlreadyUsedStretch.includes(c.id)
                 )
                 return (
@@ -280,21 +280,18 @@ class AdminStretches extends Component {
                     <TableCell>
                       <Tooltip
                         title={
-                          disableButton
-                            ? 'You have already used this stretch in all your cohorts'
+                          giveWarning
+                            ? 'Warning: You have already used this stretch in all your cohorts'
                             : ''
                         }
                         placement="top-end"
                       >
-                        <div>
-                          <Button
-                            color="secondary"
-                            onClick={() => handleModalOpen(stretch)}
-                            disabled={disableButton}
-                          >
-                            Schedule
-                          </Button>
-                        </div>
+                        <Button
+                          color="secondary"
+                          onClick={() => handleModalOpen(stretch)}
+                        >
+                          Schedule
+                        </Button>
                       </Tooltip>
                     </TableCell>
                   </TableRow>

@@ -1,6 +1,6 @@
 const { initDb } = require('../server/db/index')
 const {
-  internet: { userName, email, password },
+  internet: { userName, email },
   name: { firstName, lastName },
   lorem: { paragraph, words }
 } = require('faker')
@@ -17,6 +17,7 @@ const {
     Attendance
   }
 } = require('../server/db/index')
+const moment = require('moment')
 
 const createSeedInstances = (model, data) => {
   return Promise.all(data.map(item => model.create(item)))
@@ -28,13 +29,13 @@ const getRandomArrayEntry = arr => {
 
 const createUserObjects = () => {
   let users = []
-  for (let i = 0; i < 9; ++i) {
+  for (let i = 0; i < 23; ++i) {
     let newUser = {
       userName: userName(),
       firstName: firstName(),
       lastName: lastName(),
       email: email(),
-      password: password(),
+      password: '12345',
       isAdmin: i < 3
     }
     users.push(newUser)
@@ -72,13 +73,13 @@ const createCohortUserObjects = (cohorts, users) => {
     let studentsIndex
     if (k === 0) {
       cohortInstructorsIndex = [0, 1]
-      studentsIndex = [0, 1, 2, 3]
+      studentsIndex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     } else if (k === 1) {
       cohortInstructorsIndex = [0, 2]
-      studentsIndex = [4, 5, 0, 1]
+      studentsIndex = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     } else {
       cohortInstructorsIndex = [2, 1]
-      studentsIndex = [2, 3, 4, 5]
+      studentsIndex = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
     }
     for (let c = 0; c < 2; ++c) {
       cohortUsers.push({
@@ -86,7 +87,7 @@ const createCohortUserObjects = (cohorts, users) => {
         userId: instructors[cohortInstructorsIndex[c]]
       })
     }
-    for (let s = 0; s < 4; ++s) {
+    for (let s = 0; s < 10; ++s) {
       cohortUsers.push({ cohortId, userId: students[studentsIndex[s]] })
     }
   }
@@ -95,7 +96,7 @@ const createCohortUserObjects = (cohorts, users) => {
 
 const createStretchObjects = (userIds, categoryIds) => {
   let stretches = []
-  for (let i = 0; i < 6; ++i) {
+  for (let i = 0; i < 15; ++i) {
     let stretch = {
       title: words(),
       textPrompt: paragraph(),
@@ -103,6 +104,7 @@ const createStretchObjects = (userIds, categoryIds) => {
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
       minutes: getRandomArrayEntry([2]),
+      language: 'jsx',
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
     }
@@ -111,31 +113,32 @@ const createStretchObjects = (userIds, categoryIds) => {
   return stretches
 }
 
+// eslint-disable-next-line complexity
 const createCohortStretchObjects = (cohortIds, stretchIds) => {
   let cohortStretches = []
+
   for (let j = 0; j < cohortIds.length; ++j) {
     let stretchIdsTemp = [...stretchIds]
-    for (let i = 0; i < 4; ++i) {
-      /*const scheduledDate = new Date(
-        2019,
-        getRandomArrayEntry([8, 9, 10, 11]),
-        getRandomArrayEntry(
-          Array(31)
-            .fill(0)
-            .map((el, indx) => indx + 1)
-        ),
-        6,
-        40
-      )*/
-      const status = i === 0 ? 'scheduled' : i === 1 ? 'open' : 'closed'
+    for (let i = 0; i < 10; ++i) {
+      const status = i < 2 ? 'scheduled' : i === 2 ? 'open' : 'closed'
+
+      let dateOpen = new Date()
+      let dateScheduled = new Date()
+      dateScheduled.setDate(dateScheduled.getDate() + 10)
+      let dateClosed = new Date()
+      dateClosed.setDate(dateClosed.getDate() - 90)
+      const scheduledDate =
+        i < 2 ? dateScheduled : i === 2 ? dateOpen : dateClosed
+      const startTimer = i < 2 ? null : i === 2 ? dateOpen : dateClosed
+
       let cohortStretch = {
         status,
         allowAnswersToBeRun: Math.random() <= 0.5,
         solution: paragraph(),
         cohortId: cohortIds[j],
         stretchId: getRandomArrayEntry(stretchIdsTemp),
-        scheduledDate: new Date(),
-        startTimer: new Date()
+        scheduledDate,
+        startTimer
       }
       cohortStretches.push(cohortStretch)
       stretchIdsTemp = stretchIdsTemp.filter(
@@ -150,23 +153,24 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
 // eslint-disable-next-line complexity
 const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
   let stretchAnswers = []
-  let obj = {}
+  let obj = {
+    cs0: [0, 1, 2, 3, 4],
+    cs1: [5, 6, 7, 8, 9],
+    cs2: [0, 2, 4, 6, 8],
+    cs3: [1, 3, 5, 7, 9],
+    cs4: [0, 3, 5, 8, 9],
+    cs5: [1, 2, 4, 5, 7],
+    cs6: [3, 4, 6, 8, 9]
+  }
   let studentsIndex
   const csClosed = cohortStretchs.filter(cs => cs.status === 'closed')
-
   for (let i = 0; i < csClosed.length; ++i) {
     const { cohortId } = csClosed[i]
     const students = cohortUsers
       .filter(cu => cu.cohortId === cohortId)
       .map(cu => cu.userId)
-
-    if (!obj[cohortId]) {
-      studentsIndex = [0, 1, 2]
-      obj[cohortId] = true
-    } else {
-      studentsIndex = [3, 0, 1]
-    }
-    for (let j = 0; j < 3; ++j) {
+    studentsIndex = obj[`cs${i % 7}`]
+    for (let j = 0; j < 5; ++j) {
       let stretchAnswer = {
         body: paragraph(),
         isSolved: Math.random() <= 0.5 ? Math.random() <= 0.5 : null,
@@ -180,7 +184,8 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
           60 * 3,
           60 * 4,
           60 * 5
-        ])
+        ]),
+        submittedOnTime: Math.random() <= 0.8
       }
       stretchAnswers.push(stretchAnswer)
     }
@@ -195,9 +200,9 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
     if (i === 0) {
       studentsIndex = [0, 2]
     } else if (i === 1) {
-      studentsIndex = [1]
+      studentsIndex = [5]
     } else {
-      studentsIndex = [3, 1]
+      studentsIndex = [7, 8]
     }
     for (let j = 0; j < studentsIndex.length; ++j) {
       let stretchAnswer = {
@@ -207,7 +212,8 @@ const createStretchAnswerObjects = (cohortStretchs, cohortUsers) => {
           Math.random() <= 0.5 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
         userId: students[studentsIndex[j]],
         cohortstretchId: csOpen[i].id,
-        timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10])
+        timeToSolve: getRandomArrayEntry([1, 2, 3, 4, 5, 5, 7, 8, 9, 10]),
+        submittedOnTime: true
       }
       stretchAnswers.push(stretchAnswer)
     }
@@ -276,9 +282,7 @@ const syncAndSeed = async () => {
   )
 
   const adminIds = createdUsers.filter(u => u.isAdmin).map(u => u.id)
-  /*const cohortUsersAdmin = createdCohortUsers
-    .filter(cu => adminIds.includes(cu.userId))
-    .map(cu => cu.id)*/
+
   const cohortUsersStudents = createdCohortUsers.filter(
     cu => !adminIds.includes(cu.userId)
   )

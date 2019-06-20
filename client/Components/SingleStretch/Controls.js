@@ -13,12 +13,11 @@ const Controls = props => {
   return (
     <div style={styles.root}>
       {/* This is the update button. This button will only show in 'read' mode. */}
-      {mode === 'read' && (
+      {mode === 'read' && authorId === userDetails.id && (
         <Button
           variant="contained"
           style={{ ...styles.updateButton }}
           onClick={setModeToUpdate}
-          disabled={authorId !== userDetails.id}
         >
           Update
         </Button>
@@ -28,6 +27,18 @@ const Controls = props => {
       {mode !== 'read' && (
         <Button type="submit" variant="contained" color="primary">
           {mode === 'update' ? 'Save changes' : 'Submit'}
+        </Button>
+      )}
+
+      {mode === 'update' && (
+        <Button
+          type="button"
+          variant="contained"
+          color="secondary"
+          onClick={() => changeMode('read')}
+          style={styles.button}
+        >
+          Discard Changes
         </Button>
       )}
     </div>

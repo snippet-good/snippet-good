@@ -1,7 +1,8 @@
+import axios from 'axios'
 import { getCohortsOfAdminThunk } from './cohorts/actions'
 import {
-  getStretchAnswersOfSingleAdminThunk,
-  getStretchAnswersOfStudentThunk
+  getAllStretchAnswersThunk,
+  getAnswersOfCohortsOfStudentThunk
 } from './stretch-answers/actions'
 import { getUsersOfSingleAdminThunk } from './users/actions'
 import { getStudentCohortUsersThunk } from './cohort-users/actions'
@@ -9,36 +10,71 @@ import { getAllCategories } from './categories/actions'
 import { getAllStretches } from './stretches/actions'
 import {
   getAllCohortStretches,
-  updateCohortStretchThunk
+  updateCohortStretchThunk,
+  updateCohortStretch,
+  startStretchTimer
 } from './cohort-stretches/actions'
 import { addFlashMessage } from './flash-message/actions'
-import { sendClosedStretch } from './socket/actions'
 import store from './store'
 import moment from 'moment'
 import { generateFlashMessageId } from '../utilityfunctions'
 
-export const closeStretchProcess = cohortStretch => {
+export const closeStretchProcess = cohortStretchId => {
   return dispatch => {
     return dispatch(
-      updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
-    ).then(() => {
-      const { stretches, flashMessages } = store.getState()
-      const { title } = stretches.find(s => s.id === cohortStretch.stretchId)
-      const { id, cohortName } = cohortStretch
+      updateCohortStretchThunk(cohortStretchId, { status: 'closed' })
+    ).then(({ updatedCohortStretch }) => {
+      const { stretches, flashMessages, userDetails } = store.getState()
+      const { title } = stretches.find(
+        s => s.id === updatedCohortStretch.stretchId
+      )
+      const { id, cohortName } = updatedCohortStretch
       const flashMessageId = generateFlashMessageId(
         flashMessages,
         'stretchClosed'
       )
-      dispatch(
-        addFlashMessage({
-          id: flashMessageId,
-          body: `Stretch ${title} has been closed in ${cohortName}`,
-          linkLabel: 'Click here to review it',
-          link: `/admin/stretchReview/${id}`
-        })
-      )
-      dispatch(sendClosedStretch({ ...cohortStretch, status: 'closed' }))
+      if (userDetails.id) {
+        dispatch(
+          addFlashMessage({
+            id: flashMessageId,
+            body: `Stretch ${title} has been closed in ${cohortName}`,
+            linkLabel: 'Click here to review it',
+            link: `/admin/stretchReview/${id}`
+          })
+        )
+      }
     })
+  }
+}
+
+export const openStretchProcessThunk = (
+  stretch,
+  cohortStretchId,
+  updatedFields
+) => {
+  return dispatch => {
+    return axios
+      .put(`/api/cohort-stretches/${cohortStretchId}`, updatedFields)
+      .then(({ data }) => {
+        dispatch(updateCohortStretch(cohortStretchId, data))
+        dispatch(startStretchTimer(data))
+      })
+  }
+}
+
+const closeStretchesOverdue = (cohortStretch, stretch, dispatch) => {
+  const totalSecondsLeft =
+    stretch.minutes * 60 -
+    moment
+      .utc(new Date())
+      .local()
+      .diff(moment.utc(cohortStretch.startTimer).local(), 'seconds')
+  if (totalSecondsLeft <= 1) {
+    return dispatch(
+      updateCohortStretchThunk(cohortStretch.id, {
+        status: 'closed'
+      })
+    )
   }
 }
 
@@ -49,7 +85,7 @@ export const loadAdminRelatedDataThunk = adminId => {
       dispatch(getAllStretches()),
       dispatch(getAllCohortStretches()),
       dispatch(getCohortsOfAdminThunk(adminId)),
-      dispatch(getStretchAnswersOfSingleAdminThunk(adminId)),
+      dispatch(getAllStretchAnswersThunk()),
       dispatch(getUsersOfSingleAdminThunk(adminId))
     ]).then(data => {
       let [
@@ -64,19 +100,13 @@ export const loadAdminRelatedDataThunk = adminId => {
       const openCohortStretches = cohortStretches.filter(
         cs => cs.status === 'open' && cohortIds.includes(cs.cohortId)
       )
-      openCohortStretches.forEach(cohortStretch => {
-        const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
-        const totalSecondsLeft =
-          stretch.minutes * 60 -
-          moment
-            .utc(new Date())
-            .local()
-            .diff(moment.utc(cohortStretch.startTimer).local(), 'seconds')
 
-        setTimeout(() => {
-          dispatch(closeStretchProcess(cohortStretch))
-        }, 1000 * totalSecondsLeft)
-      })
+      return Promise.all(
+        openCohortStretches.map(cohortStretch => {
+          const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
+          return closeStretchesOverdue(cohortStretch, stretch, dispatch)
+        })
+      )
     })
   }
 }
@@ -87,8 +117,27 @@ export const loadStudentRelatedDataThunk = studentId => {
       dispatch(getAllCategories()),
       dispatch(getAllStretches()),
       dispatch(getAllCohortStretches()),
-      dispatch(getStretchAnswersOfStudentThunk(studentId)),
+      dispatch(getAnswersOfCohortsOfStudentThunk(studentId)),
       dispatch(getStudentCohortUsersThunk(studentId))
-    ])
+    ]).then(data => {
+      let [
+        categories,
+        { stretches },
+        { cohortStretches },
+        stretchAnswers,
+        { cohortUsers }
+      ] = data
+
+      const cohortIds = cohortUsers.map(c => c.cohortId)
+      const openCohortStretches = cohortStretches.filter(
+        cs => cs.status === 'open' && cohortIds.includes(cs.cohortId)
+      )
+      return Promise.all(
+        openCohortStretches.map(cohortStretch => {
+          const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
+          return closeStretchesOverdue(cohortStretch, stretch, dispatch)
+        })
+      )
+    })
   }
 }

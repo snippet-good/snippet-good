@@ -5,7 +5,7 @@ const {
 
 // GET, retrieves all stretch answers from the database
 router.get('/', (req, res, next) => {
-  StretchAnswer.findAll()
+  StretchAnswer.getAllAnswersWithExtraFields()
     .then(stretchAnswers => res.json(stretchAnswers))
     .catch(next)
 })
@@ -19,7 +19,7 @@ router.get('/admin/:adminId', (req, res, next) => {
 
 // GET all StrecthAnswers of studentId
 router.get('/student/:studentId', (req, res, next) => {
-  StretchAnswer.getAnswersOfStudent(req.params.studentId)
+  StretchAnswer.getAnswersOfCohortsOfStudent(req.params.studentId)
     .then(stretchAnswers => res.json(stretchAnswers))
     .catch(next)
 })

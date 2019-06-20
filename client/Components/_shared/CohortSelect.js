@@ -7,7 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
 
 const CohortSelect = props => {
-  const { style, cohorts, cohortId, stretchId } = props
+  const { style, cohorts, cohortId } = props
   const { handleChange } = props
 
   return (
@@ -20,11 +20,17 @@ const CohortSelect = props => {
           style={{ ...style }}
           onChange={handleChange}
         >
-          {cohorts.map(c => (
-            <MenuItem key={c.id} value={c.id}>
-              {c.name}
-            </MenuItem>
-          ))}
+          {cohorts.map(c => {
+            return (
+              <MenuItem
+                key={c.id}
+                value={c.id}
+                style={c.alreadyUsed ? { color: 'red' } : {}}
+              >
+                {c.name}
+              </MenuItem>
+            )
+          })}
         </Select>
       </div>
     </div>
@@ -42,7 +48,10 @@ const mapStateToProps = ({ cohorts, cohortStretches }, { stretchId }) => {
     .filter(cs => cs.stretchId === stretchId)
     .map(cs => cs.cohortId)
   return {
-    cohorts: cohorts.filter(c => !cohortsAlreadyUsedStretch.includes(c.id))
+    cohorts: cohorts.map(cohort => ({
+      ...cohort,
+      alreadyUsed: cohortsAlreadyUsedStretch.includes(cohort.id)
+    }))
   }
 }
 

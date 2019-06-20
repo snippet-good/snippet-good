@@ -72,4 +72,11 @@ const buttonsStyles = {
   }
 }
 
-export { useStyles, editorsStyles, buttonsStyles }
+const outputStyles = {
+  outputLabels: {
+    textAlign: 'center'
+  },
+  iframe: { width: '100%' }
+}
+
+export { useStyles, editorsStyles, buttonsStyles, outputStyles }
