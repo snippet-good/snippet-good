@@ -7,6 +7,7 @@ import FrameworkHOC from '../FrameworkHOC'
 import StretchReviewView from '../StretchReviewView'
 import StudentClosedStretchView from '../SIngleClosedStretchViev'
 import StretchAnalytics from '../AdminAnalytics/StretchAnalytics'
+import CohortAnalytics from '../AdminAnalytics/CohortAnalytics'
 
 class AdminController extends Component {
   render() {
@@ -47,16 +48,19 @@ class AdminController extends Component {
         />
 
         {/* path to go to Admin stretch dashboard for a stretch  */}
+
+        <Route exact path="/admin/stretch/analytics/:id"
+          component={StretchAnalytics} />
+
+        <Route exact path="/admin/cohort/analytics/:id"
+          component={CohortAnalytics} />
+
         <Route
           exact
           path="/admin/stretch/analytics/"
           component={StretchAnalytics}
         />
-        <Route
-          exact
-          path="/admin/stretch/analytics/:id"
-          component={StretchAnalytics}
-        />
+
       </div>
     )
   }

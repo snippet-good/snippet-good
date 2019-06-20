@@ -3,6 +3,7 @@ import { scaleLinear, scaleBand } from 'd3-scale'
 import { max } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft } from 'd3-axis'
+import 'd3-transition'
 
 class RatingBarChart extends Component {
     constructor(props) {
@@ -69,12 +70,29 @@ class RatingBarChart extends Component {
             .enter()
             .append('rect')
             .style('fill', '#3f51b5')
+            .attr("height", height)
+            .attr("width", 0)//this is the initial value
+            .transition()
+            .duration(1500)
             .attr('x', d => xScale(d.Cohort))
-            .attr('width', xScale.bandwidth())
+            .attr('width', (d) => formattedData.length > 0 ? xScale.bandwidth() : xScale.bandwidth() / 2)
             .attr('y', d => yScale(d.Avg))
             .attr('height', d => height - yScale(d.Avg))
             .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+                "translate(" + margin.left + "," + margin.top + ")")
+        // .on("mouseover", d => {
+        //     div.transition()
+        //         .duration(200)
+        //         .style("opacity", .9);
+        //     div.html(formatTime(d.date) + "<br/>" + d.close)
+        //         .style("left", (d3.event.pageX) + "px")
+        //         .style("top", (d3.event.pageY - 28) + "px");
+        // })
+        // .on("mouseout", function (d) {
+        //     div.transition()
+        //         .duration(500)
+        //         .style("opacity", 0);
+        // });
 
         select(node)
             .selectAll('rect')

@@ -41,7 +41,7 @@ const DropdownSelect = props => {
 
 DropdownSelect.defaultProps = {
   style: { width: '100%' },
-  handleChange: () => {}
+  handleChange: () => { }
 }
 
 export default DropdownSelect
