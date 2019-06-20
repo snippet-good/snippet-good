@@ -62,7 +62,7 @@ const configEditor = function(
       target: {
         name: codeTargetName,
         value: `${
-          codeTargetName === 'code'
+          codeTargetName === 'codeAnswer'
             ? excludeCodePromptInStretchAnswer(
                 codePromptRowCount,
                 editorSession
