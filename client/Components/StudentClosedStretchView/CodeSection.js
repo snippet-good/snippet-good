@@ -37,6 +37,7 @@ class CodeSection extends Component {
     const { center, select, solutionSelect } = editorsStyles()
     const { editorTheme, solution } = this.state
     const { handleChange } = this
+
     return (
       <Grid container justify="center" spacing={2}>
         <Grid item xs={12} style={center}>

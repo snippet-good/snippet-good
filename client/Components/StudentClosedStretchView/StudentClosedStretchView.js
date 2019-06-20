@@ -36,6 +36,7 @@ const StudentClosedStretchView = ({
     relatedUsers
   } = allStretchAnswerRelatedData
   const { language } = stretchMetaData
+
   return (
     <div styles={root}>
       <GeneralInfo

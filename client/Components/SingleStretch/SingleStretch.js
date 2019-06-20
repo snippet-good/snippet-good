@@ -74,6 +74,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
+      data.codePrompt += `\n \n/*your code below --------------------------------------------------------------*/`
       this.props
         .createStretch({ ...data, authorId: this.props.userDetails.id })
         .then(() => this.props.history.push('/admin/stretches'))
@@ -95,6 +96,8 @@ class SingleStretch extends Component {
   displayTextWithLineBreak(text) {
     return text.split('\n')
   }
+
+  appendPromptWithSolutionMarker(text) {}
 
   render() {
     const { state } = this
@@ -138,7 +141,7 @@ class SingleStretch extends Component {
                   placeholder="Enter your written prompt here."
                   helperText="This is to be substituted with a rich text editor."
                   fullWidth
-                  multiline="true"
+                  multiline={true}
                   margin="normal"
                   InputLabelProps={{
                     shrink: true
