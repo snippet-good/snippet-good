@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import StretchRatingsLineGraph from './StretchRatingsLineGraph'
+import StretchTimeLineGraph from './StretchTimeLineGraph'
 import { connect } from 'react-redux'
 
 import Select from '@material-ui/core/Select'
@@ -52,6 +53,8 @@ class CohortAnalytics extends Component {
                 <div>
                     <Container>
                         <StretchRatingsLineGraph stretchAnswers={stretchAnswersFiltered}
+                            stretches={stretches} cohortStretches={cohortStretches} filter={selected} />
+                        <StretchTimeLineGraph stretchAnswers={stretchAnswersFiltered}
                             stretches={stretches} cohortStretches={cohortStretches} filter={selected} />
                     </Container>
                 </div>
