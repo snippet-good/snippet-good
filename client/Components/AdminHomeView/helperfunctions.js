@@ -1,5 +1,4 @@
 import { checkIfAllDataExists } from '../../utilityfunctions'
-import moment from 'moment'
 
 const getNumberOfStudentsPerCohorts = students => {
   if (!students.length) return {}
@@ -53,6 +52,7 @@ export const getFilteredStretchesOfAdmin = (
     .map(cs => ({
       ...cs,
       ...stretchesTitlesMap[cs.stretchId],
+      cohortStretchId: cs.id,
       cohortSize: numberOfStudentsPerCohorts[cs.cohortId],
       completedStretches: numberOfStretches[cs.id] || 0
     }))
@@ -63,15 +63,4 @@ export const getFilteredStretchesOfAdmin = (
       },
       { scheduled: [], open: [] }
     )
-}
-
-export const parseDateTime = datetime => {
-  const localDateTime = moment.utc(datetime).local()
-  const hour = localDateTime.hour()
-  const suffix = hour <= 12 ? 'AM' : 'PM'
-  return `Scheduled for ${
-    hour <= 12 ? hour : hour - 12
-  }:${localDateTime.minute()} ${suffix} on ${
-    localDateTime.format('LL').split(',')[0]
-  }`
 }

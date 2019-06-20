@@ -1,7 +1,14 @@
+/* eslint-disable complexity */
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { openStretchProcessThunk } from '../../store/shared-actions'
-import { parseDateTime } from './helperfunctions'
+import {
+  openStretchProcessThunk,
+  closeStretchProcess
+} from '../../store/shared-actions'
+import { updateCohortStretch } from '../../store/cohort-stretches/actions'
+import { parseDateTime } from '../../utilityfunctions'
+import { Link } from 'react-router-dom'
+
 import Timer from '../_shared/Timer'
 
 import Card from '@material-ui/core/Card'
@@ -10,19 +17,35 @@ import CardActions from '@material-ui/core/CardActions'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-import styles from './styles'
 import moment from 'moment'
 
-const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
+const styles = {
+  singleCard: {
+    marginBottom: '10px'
+  }
+}
+
+const SingleStretchCard = ({
+  stretch,
+  status,
+  openStretchProcess,
+  closeStretchProcess,
+  updateCohortStretch,
+  userDetails,
+  cohortStretch
+}) => {
   const {
     title,
     minutes,
     category,
+    categoryName,
     cohortName,
     cohortSize,
     completedStretches,
     scheduledDate,
-    startTimer
+    startTimer,
+    stretchId,
+    cohortStretchId
   } = stretch
 
   let initialTotalSecondsLeft =
@@ -40,7 +63,15 @@ const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
     <Card style={styles.singleCard}>
       <CardContent>
         <Typography variant="subtitle2" color="primary">
-          {title}
+          <Link
+            to={
+              userDetails.isAdmin
+                ? `/admin/singleStretch/${stretchId}`
+                : `/student/stretch/${cohortStretchId}`
+            }
+          >
+            {title}
+          </Link>
         </Typography>
         <Grid container>
           <Grid item xs={12} md={6}>
@@ -50,7 +81,7 @@ const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
 
             <Typography variant="body2" component="p">
               <i>Category: </i>
-              {category}
+              {userDetails.isAdmin ? category : categoryName}
             </Typography>
             {status === 'scheduled' && (
               <Typography variant="body2" component="p">
@@ -64,15 +95,27 @@ const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
               <Timer
                 minutesForStretch={minutes}
                 timeStretchStarted={startTimer}
+                action={
+                  userDetails.isAdmin
+                    ? closeStretchProcess
+                    : updateCohortStretch
+                }
+                args={
+                  userDetails.isAdmin
+                    ? [cohortStretchId]
+                    : [cohortStretch.id, { ...cohortStretch, status: 'closed' }]
+                }
                 {...{ totalSecondsLeft, setTotalSecondsLeft }}
               />
-              <Typography variant="body2" component="p">
-                {`${completedStretches} out of ${cohortSize} students are done`}
-              </Typography>
+              {userDetails.isAdmin && (
+                <Typography variant="body2" component="p">
+                  {`${completedStretches} out of ${cohortSize} students are done`}
+                </Typography>
+              )}
             </Grid>
           )}
 
-          {status === 'scheduled' && (
+          {status === 'scheduled' && userDetails.isAdmin && (
             <Grid item xs={12} md={6}>
               <CardActions>
                 <Button
@@ -95,14 +138,28 @@ const SingleStretchCard = ({ stretch, status, openStretchProcess }) => {
   )
 }
 
+const mapStateToProps = (
+  { userDetails, cohortStretches },
+  { stretch: { cohortStretchId } }
+) => ({
+  userDetails,
+  cohortStretch: cohortStretches.find(cs => cs.id === cohortStretchId)
+})
+
 const mapDispatchToProps = dispatch => {
   return {
     openStretchProcess: (stretch, cohortStretchId, updatedFields) =>
-      dispatch(openStretchProcessThunk(stretch, cohortStretchId, updatedFields))
+      dispatch(
+        openStretchProcessThunk(stretch, cohortStretchId, updatedFields)
+      ),
+    closeStretchProcess: cohortStretchId =>
+      dispatch(closeStretchProcess(cohortStretchId)),
+    updateCohortStretch: (id, cohortStretch) =>
+      dispatch(updateCohortStretch(id, cohortStretch))
   }
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SingleStretchCard)
