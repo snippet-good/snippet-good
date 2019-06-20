@@ -61,6 +61,7 @@ const OpenStretchView = ({
   history
 }) => {
   let initialTotalSecondsLeft
+  let answeringWhenStretchOpen = true
   if (myStretch) {
     initialTotalSecondsLeft =
       myStretch.minutes * 60 -
@@ -69,7 +70,8 @@ const OpenStretchView = ({
         .local()
         .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
     if (initialTotalSecondsLeft < 0) {
-      return <Typography>Sorry. Stretch is already closed.</Typography>
+      initialTotalSecondsLeft = myStretch.minutes * 60
+      answeringWhenStretchOpen = false
     }
   }
 
@@ -88,7 +90,8 @@ const OpenStretchView = ({
         body: stretchAnswer,
         timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
         cohortstretchId: myCohortStretch.id,
-        userId: userDetails.id
+        userId: userDetails.id,
+        submittedOnTime: answeringWhenStretchOpen
       },
       myCohortStretch
     ).then(() => history.push('/student/stretches/submitted'))
@@ -126,7 +129,11 @@ const OpenStretchView = ({
                 timeStretchStarted={myCohortStretch.startTimer}
                 action={setModalOpen}
                 args={[true]}
-                {...{ totalSecondsLeft, setTotalSecondsLeft }}
+                {...{
+                  totalSecondsLeft,
+                  setTotalSecondsLeft,
+                  answeringWhenStretchOpen
+                }}
               />
             </Typography>
           )}

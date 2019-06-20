@@ -18,10 +18,11 @@ export const getStretchAnswers = (
   cohortStretches
 ) => {
   return studentStretchAnswers.map(sa => {
-    const { id, cohortstretchId } = sa
+    const { id, cohortstretchId, submittedOnTime } = sa
     const cohortStretch = cohortStretches.find(cs => cs.id === cohortstretchId)
     return {
       stretchAnswerId: id,
+      submittedOnTime,
       ...formatCohortStretch(cohortStretch, stretches)
     }
   })

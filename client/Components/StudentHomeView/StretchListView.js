@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
+import TableSortLabel from '@material-ui/core/TableSortLabel'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import moment from 'moment'
@@ -22,15 +23,44 @@ const useStyles = makeStyles(theme => ({
 
 function StretchListView({ stretches, status }) {
   const classes = useStyles()
+  let [orderDirection, setOrderDirection] = useState('desc')
+  let [orderColumn, setOrderColumn] = useState('')
+  const onRequestSort = column => {
+    setOrderColumn(column)
+    setOrderDirection(orderDirection === 'desc' ? 'asc' : 'desc')
+  }
+
+  let stretchesSorted = stretches
+  if (orderColumn) {
+    stretchesSorted = stretchesSorted.sort((a, b) => {
+      if (a[orderColumn] < b[orderColumn])
+        return orderDirection === 'desc' ? 1 : -1
+      if (a[orderColumn] > b[orderColumn])
+        return orderDirection === 'desc' ? -1 : 1
+      return 0
+    })
+  }
 
   const tableColumnNames = {
     open: ['Title', 'Category', 'Cohort'],
-    submitted: ['Title', 'Date', 'Category', 'Cohort'],
-    missed: ['Title', 'Date', 'Category', 'Cohort']
+    submitted: [
+      'Title',
+      'Date Stretch Opened',
+      'Category',
+      'Cohort',
+      'Submitted On Time'
+    ],
+    missed: ['Title', 'Date Stretch Opened', 'Category', 'Cohort']
   }
   const dbColumnNames = {
     open: ['title', 'categoryName', 'cohortName'],
-    submitted: ['title', 'startTimer', 'categoryName', 'cohortName'],
+    submitted: [
+      'title',
+      'startTimer',
+      'categoryName',
+      'cohortName',
+      'submittedOnTime'
+    ],
     missed: ['title', 'startTimer', 'categoryName', 'cohortName']
   }
   const links = {
@@ -46,34 +76,50 @@ function StretchListView({ stretches, status }) {
           <TableRow>
             {tableColumnNames[status].map((column, index) => {
               return (
-                <TableCell key={index} align={index === 0 ? '' : 'right'}>
-                  {column}
+                <TableCell
+                  key={index}
+                  align={index === 0 ? 'inherit' : 'right'}
+                >
+                  <TableSortLabel
+                    direction={orderDirection}
+                    active={orderColumn === column}
+                    onClick={() => onRequestSort(dbColumnNames[status][index])}
+                  >
+                    {' '}
+                    {column}
+                  </TableSortLabel>
                 </TableCell>
               )
             })}
           </TableRow>
         </TableHead>
         <TableBody>
-          {stretches.map((s, idx) => {
+          {stretchesSorted.map((s, idx) => {
             return (
               <TableRow key={idx}>
                 {dbColumnNames[status].map((field, idx) => {
                   const { start, idField } = links[status]
                   if (idx === 0) {
                     return (
-                      <TableCell component="th" scope="row">
+                      <TableCell key={idx} component="th" scope="row">
                         <Link to={`${start}${s[idField]}`}>{s[field]}</Link>
                       </TableCell>
                     )
                   }
                   return (
                     <TableCell key={idx} align="right">
-                      {field !== 'startTimer'
-                        ? s[field]
-                        : moment
-                            .utc(s[field])
-                            .local()
-                            .format('LL')}
+                      {field === 'startTimer' &&
+                        moment
+                          .utc(s[field])
+                          .local()
+                          .format('LL')}
+                      {field === 'submittedOnTime' && (
+                        <i
+                          className={`far fa-${s[field] ? 'smile' : 'frown'}`}
+                        />
+                      )}
+                      {!['startTimer', 'submittedOnTime'].includes(field) &&
+                        s[field]}
                     </TableCell>
                   )
                 })}
@@ -87,47 +133,3 @@ function StretchListView({ stretches, status }) {
 }
 
 export default StretchListView
-
-/* function createOpenStretchData(
-    cohortStretchId,
-    title,
-    categoryName,
-    difficulty
-  ) {
-    return { cohortStretchId, title, categoryName, difficulty }
-  }
-  function createSubmittedStretchData(
-    stretchAnswerId,
-    title,
-    cohortName,
-    rating,
-    stretchId
-  ) {
-    return { stretchAnswerId, title, cohortName, rating, stretchId }
-  }
-
-  const rows = []
-  if (props.openStretches) {
-    for (let i = 0; i < props.openStretches.length; ++i) {
-      rows.push(
-        createOpenStretchData(
-          props.openStretches[i].cohortStretchId,
-          props.openStretches[i].title,
-          props.openStretches[i].categoryName,
-          props.openStretches[i].difficulty
-        )
-      )
-    }
-  } else if (props.submittedStretches) {
-    for (let i = 0; i < props.submittedStretches.length; ++i) {
-      rows.push(
-        createSubmittedStretchData(
-          props.submittedStretches[i].id,
-          props.submittedStretches[i].title,
-          props.submittedStretches[i].cohortName,
-          props.submittedStretches[i].rating,
-          props.submittedStretches[i].stretchId
-        )
-      )
-    }
-  }*/

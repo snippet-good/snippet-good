@@ -25,6 +25,13 @@ const StretchAnswer = db.define('stretchanswer', {
   },
   timeToSolve: {
     type: db.Sequelize.INTEGER
+  },
+  submittedOnTime: {
+    type: db.Sequelize.BOOLEAN,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   }
 })
 
