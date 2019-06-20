@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
   createCohortStretch,
@@ -18,12 +18,13 @@ import DateAndTimePicker from './DateAndTimePicker'
 import CohortSelect from './CohortSelect'
 
 const StretchScheduler = props => {
-  const { attributes, open, onClose, mode } = props
+  const { attributes, open, onClose, mode, type } = props
   const { id } = attributes
 
   const [scheduledDate, setScheduledDate] = useState(new Date())
   const [selectedCohortId, setSelectedCohortId] = useState('')
   const [allowAnswersToBeRun, setAllowAnswersToBeRun] = useState(false)
+  const [displayType, setDisplayType] = useState(type)
 
   const handleCohortIdChange = event => setSelectedCohortId(event.target.value)
 
@@ -31,13 +32,15 @@ const StretchScheduler = props => {
     if (mode === 'update') {
       return props.updateScheduledDate(id, { scheduledDate })
     } else {
-      return props.scheduleStretch({
-        status: 'scheduled',
-        scheduledDate,
-        allowAnswersToBeRun,
-        stretchId: id,
-        cohortId: selectedCohortId
-      })
+      return props
+        .scheduleStretch({
+          status: 'scheduled',
+          scheduledDate,
+          allowAnswersToBeRun,
+          stretchId: id,
+          cohortId: selectedCohortId
+        })
+        .then(() => props.history.push(`/admin/cohort/${selectedCohortId}`))
     }
   }
 
@@ -58,61 +61,82 @@ const StretchScheduler = props => {
       disableAutoFocus={true}
     >
       <Paper style={{ padding: '2em' }}>
-        <form onSubmit={handleSubmit}>
-          <Grid container>
-            <Grid item xs={12} style={{ ...styles.center, ...styles.warning }}>
-              <Typography variant="caption">
-                * any cohorts in red are ones you have already used stretch in
-              </Typography>
-            </Grid>
+        {displayType === 'question' && (
+          <Typography variant="body1">
+            Would you like to also schedule this stretch?
+            <Button color="primary" onClick={() => setDisplayType('scheduler')}>
+              Yes
+            </Button>
+            <Button color="secondary" onClick={onClose}>
+              No
+            </Button>
+          </Typography>
+        )}
 
-            {/* Date and time picker for scheduling the stretch */}
-            <Grid item xs={12} style={styles.center}>
-              <DateAndTimePicker
-                name="scheduledDate"
-                label="Scheduled Date"
-                value={scheduledDate}
-                handleChange={setScheduledDate}
-              />
-            </Grid>
+        {displayType !== 'question' && (
+          <form onSubmit={handleSubmit}>
+            <Grid container>
+              {mode === 'create' && (
+                <Grid
+                  item
+                  xs={12}
+                  style={{ ...styles.center, ...styles.warning }}
+                >
+                  <Typography variant="caption">
+                    * any cohorts in red are ones you have already used stretch
+                    in
+                  </Typography>
+                </Grid>
+              )}
 
-            <Grid item xs={12} style={{ height: '20px' }} />
-            {mode === 'create' && (
-              <Grid item xs={12}>
-                <CohortSelect
-                  cohortId={selectedCohortId}
-                  handleChange={handleCohortIdChange}
-                  stretchId={id}
-                />
-              </Grid>
-            )}
-
-            <Grid item xs={12} style={{ height: '20px' }} />
-            {mode === 'create' && (
+              {/* Date and time picker for scheduling the stretch */}
               <Grid item xs={12} style={styles.center}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={allowAnswersToBeRun}
-                      onChange={({ target }) =>
-                        setAllowAnswersToBeRun(target.checked)
-                      }
-                      color="primary"
-                    />
-                  }
-                  label="Check this box if you want to allow students to run code while completing the stretch"
+                <DateAndTimePicker
+                  name="scheduledDate"
+                  label="Scheduled Date"
+                  value={scheduledDate}
+                  handleChange={setScheduledDate}
                 />
               </Grid>
-            )}
 
-            <Grid item xs={12} style={{ height: '20px' }} />
-            <Grid item xs={12} style={styles.center}>
-              <Button type="submit" variant="contained" color="primary">
-                Schedule
-              </Button>
+              <Grid item xs={12} style={{ height: '20px' }} />
+              {mode === 'create' && (
+                <Grid item xs={12}>
+                  <CohortSelect
+                    cohortId={selectedCohortId}
+                    handleChange={handleCohortIdChange}
+                    stretchId={id}
+                  />
+                </Grid>
+              )}
+
+              <Grid item xs={12} style={{ height: '20px' }} />
+              {mode === 'create' && (
+                <Grid item xs={12} style={styles.center}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={allowAnswersToBeRun}
+                        onChange={({ target }) =>
+                          setAllowAnswersToBeRun(target.checked)
+                        }
+                        color="primary"
+                      />
+                    }
+                    label="Check this box if you want to allow students to run code while completing the stretch"
+                  />
+                </Grid>
+              )}
+
+              <Grid item xs={12} style={{ height: '20px' }} />
+              <Grid item xs={12} style={styles.center}>
+                <Button type="submit" variant="contained" color="primary">
+                  Schedule
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
+          </form>
+        )}
       </Paper>
     </Modal>
   )
@@ -135,7 +159,7 @@ const styles = {
   }
 }
 
-const mapStateToProps = ({ cohorts }) => ({ cohorts })
+const mapStateToProps = ({ cohorts }, { history }) => ({ cohorts, history })
 
 const mapDispatchToProps = dispatch => ({
   scheduleStretch: data => dispatch(createCohortStretch(data)),
@@ -146,4 +170,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(StretchScheduler)
+)(withRouter(StretchScheduler))

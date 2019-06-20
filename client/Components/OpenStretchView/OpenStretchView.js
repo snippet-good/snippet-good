@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
-import { updateCohortStretchThunk } from '../../store/cohort-stretches/actions'
+import { updateCohortStretch } from '../../store/cohort-stretches/actions'
 import { checkIfAllDataExists } from '../../utilityfunctions'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
 import moment from 'moment'
@@ -21,7 +21,10 @@ const mapDispatchToProps = dispatch => {
         createStretchAnswerThunk(stretchAnswer, cohortStretch.adminIds)
       ).then(() =>
         dispatch(
-          updateCohortStretchThunk(cohortStretch.id, { status: 'closed' })
+          updateCohortStretch(cohortStretch.id, {
+            ...cohortStretch,
+            status: 'closed'
+          })
         )
       )
   }
@@ -61,6 +64,7 @@ const OpenStretchView = ({
   history
 }) => {
   let initialTotalSecondsLeft
+  let answeringWhenStretchOpen = true
   if (myStretch) {
     initialTotalSecondsLeft =
       myStretch.minutes * 60 -
@@ -68,7 +72,12 @@ const OpenStretchView = ({
         .utc(new Date())
         .local()
         .diff(moment.utc(myCohortStretch.startTimer).local(), 'seconds')
+    if (initialTotalSecondsLeft < 0) {
+      initialTotalSecondsLeft = myStretch.minutes * 60
+      answeringWhenStretchOpen = false
+    }
   }
+
   let [totalSecondsLeft, setTotalSecondsLeft] = useState(
     initialTotalSecondsLeft || 1
   )
@@ -84,7 +93,8 @@ const OpenStretchView = ({
         body: stretchAnswer,
         timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
         cohortstretchId: myCohortStretch.id,
-        userId: userDetails.id
+        userId: userDetails.id,
+        submittedOnTime: answeringWhenStretchOpen
       },
       myCohortStretch
     ).then(() => history.push('/student/stretches/submitted'))
@@ -104,6 +114,7 @@ const OpenStretchView = ({
         open={modalOpen}
         args={[stretchAnswer, myStretch, userDetails, history]}
         action={submitStretch}
+        setModalClosed={() => setModalOpen(true)}
         showNoButton={false}
       />
       <Paper className={classes.root}>
@@ -122,7 +133,11 @@ const OpenStretchView = ({
                 timeStretchStarted={myCohortStretch.startTimer}
                 action={setModalOpen}
                 args={[true]}
-                {...{ totalSecondsLeft, setTotalSecondsLeft }}
+                {...{
+                  totalSecondsLeft,
+                  setTotalSecondsLeft,
+                  answeringWhenStretchOpen
+                }}
               />
             </Typography>
           )}
