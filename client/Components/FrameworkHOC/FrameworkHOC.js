@@ -70,7 +70,7 @@ const FrameworkHOC = (MainComponent, Sidebar) => {
                 history.push(`/${userDetails.isAdmin ? 'admin' : 'student'}`)
               }
             >
-              Codejar
+              CodeJar
             </Typography>
 
             <section className={classes.rightToolbar}>
