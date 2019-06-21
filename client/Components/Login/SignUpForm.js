@@ -33,8 +33,6 @@ const SignUpForm = props => {
     setUserInformation({ ...userInformation, [name]: value })
   }
 
-  const handleSelectChange = event => console.log(event)
-
   // This event handler is invoked when the user presses the submit button
   // on the sign up page. The server will attempt to create a new user.
   const handleSubmit = event => {
