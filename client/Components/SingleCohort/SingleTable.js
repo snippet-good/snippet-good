@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Table from '@material-ui/core/Table'
-import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
@@ -14,6 +13,8 @@ import StretchScheduler from '../_shared/StretchScheduler'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
 import ScheduledStretchButtons from './ScheduledStretchButtons'
 import ClosedStretchLinks from './ClosedStretchLinks'
+import SortedTableHead from '../_shared/SortedTableHead'
+import { sortData } from '../../utilityfunctions'
 
 const SingleTable = ({
   data,
@@ -28,6 +29,8 @@ const SingleTable = ({
   let [unscheduleModalOpen, setunscheduleModalOpen] = useState(false)
   let [openStretchModalOpen, setOpenStretchModalOpen] = useState(false)
   let [selectedCohortStretch, setCohortStretch] = useState({})
+  let [orderDirection, setOrderDirection] = useState('desc')
+  let [orderColumn, setOrderColumn] = useState('')
 
   // StretchScheduler modal event handlers
   const handleRescheduleModalClose = () => setRescheduleModalOpen(false)
@@ -53,6 +56,8 @@ const SingleTable = ({
     setCohortStretch(cohortStretch)
   }
 
+  let dataDisplay =
+    orderColumn === '' ? data : sortData(data, orderColumn, orderDirection)
   return (
     <div>
       <StretchScheduler
@@ -82,28 +87,20 @@ const SingleTable = ({
         showNoButton={true}
       />
       <Table>
-        <TableHead>
-          <TableRow>
-            {tableColumnNames.map((column, index) => {
-              if (column !== '') {
-                return (
-                  <TableCell key={index}>
-                    {/*} <TableSortLabel
-                  direction={orderDirection}
-                  active={orderColumn === column}
-                  onClick={() => onRequestSort(dbColumnNames[status][index])}
-            >*/}{' '}
-                    {column}
-                    {/* </TableSortLabel>*/}
-                  </TableCell>
-                )
-              }
-              return <TableCell key={index} />
-            })}
-          </TableRow>
-        </TableHead>
+        <SortedTableHead
+          columns={tableColumnNames.map((name, index) => ({
+            displayName: name,
+            dataName: dbColumnNames[index]
+          }))}
+          {...{
+            setOrderDirection,
+            orderDirection,
+            setOrderColumn,
+            orderColumn
+          }}
+        />
         <TableBody>
-          {data.map((item, idx) => {
+          {dataDisplay.map((item, idx) => {
             return (
               <TableRow key={idx}>
                 {dbColumnNames.map((field, idx) => {

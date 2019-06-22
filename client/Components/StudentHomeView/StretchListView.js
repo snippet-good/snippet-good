@@ -4,11 +4,11 @@ import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableSortLabel from '@material-ui/core/TableSortLabel'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import moment from 'moment'
+import { sortData } from '../../utilityfunctions'
+import SortedTableHead from '../_shared/SortedTableHead'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,20 +25,9 @@ function StretchListView({ stretches, status }) {
   const classes = useStyles()
   let [orderDirection, setOrderDirection] = useState('desc')
   let [orderColumn, setOrderColumn] = useState('')
-  const onRequestSort = column => {
-    setOrderColumn(column)
-    setOrderDirection(orderDirection === 'desc' ? 'asc' : 'desc')
-  }
-
   let stretchesSorted = stretches
   if (orderColumn) {
-    stretchesSorted = stretchesSorted.sort((a, b) => {
-      if (a[orderColumn] < b[orderColumn])
-        return orderDirection === 'desc' ? 1 : -1
-      if (a[orderColumn] > b[orderColumn])
-        return orderDirection === 'desc' ? -1 : 1
-      return 0
-    })
+    stretchesSorted = sortData(stretchesSorted, orderColumn, orderDirection)
   }
 
   const tableColumnNames = {
@@ -72,27 +61,19 @@ function StretchListView({ stretches, status }) {
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            {tableColumnNames[status].map((column, index) => {
-              return (
-                <TableCell
-                  key={index}
-                  align={index === 0 ? 'inherit' : 'right'}
-                >
-                  <TableSortLabel
-                    direction={orderDirection}
-                    active={orderColumn === column}
-                    onClick={() => onRequestSort(dbColumnNames[status][index])}
-                  >
-                    {' '}
-                    {column}
-                  </TableSortLabel>
-                </TableCell>
-              )
-            })}
-          </TableRow>
-        </TableHead>
+        <SortedTableHead
+          columns={tableColumnNames[status].map((name, index) => ({
+            displayName: name,
+            dataName: dbColumnNames[status][index]
+          }))}
+          align="right"
+          {...{
+            setOrderDirection,
+            orderDirection,
+            setOrderColumn,
+            orderColumn
+          }}
+        />
         <TableBody>
           {stretchesSorted.map((s, idx) => {
             return (
