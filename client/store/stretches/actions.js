@@ -12,7 +12,11 @@ export const DELETE_STRETCH = 'DELETE_STRETCH'
 // Action creators
 
 const getStretches = stretches => ({ type: GET_STRETCHES, stretches })
-const addStretch = newStretch => ({ type: CREATE_STRETCH, newStretch })
+export const addStretch = (newStretch, emit) => ({
+  type: CREATE_STRETCH,
+  newStretch,
+  emit
+})
 const replaceStretch = updatedStretch => ({
   type: UPDATE_STRETCH,
   updatedStretch
@@ -33,7 +37,7 @@ export const getAllStretches = () => dispatch => {
 export const createStretch = newStretch => dispatch => {
   return axios
     .post('/api/stretches', newStretch)
-    .then(res => dispatch(addStretch(res.data)))
+    .then(res => dispatch(addStretch(res.data, true)))
 }
 
 export const updateStretch = updatedStretch => dispatch => {
