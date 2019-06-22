@@ -18,6 +18,8 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import SingleTable from './SingleTable'
+import { formatCohortStretch } from '../StudentHomeView/helperfunctions'
 
 const SingleCohortStretchTables = ({
   cohort,
@@ -44,24 +46,20 @@ const SingleCohortStretchTables = ({
   const openCohortStretches =
     thisCohortStretches
       .filter(cohortStretches => cohortStretches.status === 'open')
-      .map(cs => ({
-        ...cs,
-        stretch: stretches.find(s => s.id === cs.stretchId)
-      })) || []
+      .map(cs => formatCohortStretch(cs, stretches)) || []
   const closedCohortStretches =
     thisCohortStretches
       .filter(cohortStretches => cohortStretches.status === 'closed')
-      .map(cs => ({
-        ...cs,
-        stretch: stretches.find(s => s.id === cs.stretchId)
-      })) || []
+      .map(cs => formatCohortStretch(cs, stretches)) || []
   const scheduledCohortStretches =
     thisCohortStretches
       .filter(cohortStretches => cohortStretches.status === 'scheduled')
-      .map(cs => ({
-        ...cs,
-        stretch: stretches.find(s => s.id === cs.stretchId)
-      })) || []
+      .map(cs => formatCohortStretch(cs, stretches)) || []
+  const groupedStretches = {
+    open: openCohortStretches,
+    scheduled: scheduledCohortStretches,
+    closed: closedCohortStretches
+  }
 
   // StretchScheduler modal event handlers
   const handleRescheduleModalClose = () => setRescheduleModalOpen(false)
@@ -84,6 +82,29 @@ const SingleCohortStretchTables = ({
     setCohortStretch(cohortStretch)
     setCohortStretchId(cohortStretch.id)
   }
+
+  const baseColumnNames = ['Title', 'Author', 'Category', 'Difficulty']
+  const tableColumnNames = {
+    open: baseColumnNames,
+    scheduled: [...baseColumnNames, 'Scheduled Date'],
+    closed: [...baseColumnNames, 'Date Used On ']
+  }
+  const baseDBColumnNames = [
+    'title',
+    'authorName',
+    'categoryName',
+    'difficulty'
+  ]
+  const dbColumnNames = {
+    open: baseDBColumnNames,
+    scheduled: [...baseDBColumnNames, 'scheduledDate'],
+    closed: [...baseDBColumnNames, 'startTimer']
+  }
+  const tables = [
+    { title: 'Open Stretches', key: 'open' },
+    { title: 'Scheduled Stretches', key: 'scheduled' },
+    { title: 'Closed Stretches', key: 'closed' }
+  ]
 
   return (
     <div>
@@ -113,7 +134,23 @@ const SingleCohortStretchTables = ({
         action={openStretchProcess}
         showNoButton={true}
       />
-      <Typography variant="h6" id="tableTitle">
+      {tables.map(table => {
+        const { key, title } = table
+        return (
+          <div key={key}>
+            <Typography variant="h6" id="tableTitle">
+              {title}
+            </Typography>
+            <SingleTable
+              data={groupedStretches[key]}
+              dbColumnNames={dbColumnNames[key]}
+              tableColumnNames={tableColumnNames[key]}
+            />
+          </div>
+        )
+      })}
+
+      {/*   <Typography variant="h6" id="tableTitle">
         Open Stretches
       </Typography>
       <Table>
@@ -248,7 +285,7 @@ const SingleCohortStretchTables = ({
             )
           })}
         </TableBody>
-      </Table>
+      </Table>*/}
     </div>
   )
 }
