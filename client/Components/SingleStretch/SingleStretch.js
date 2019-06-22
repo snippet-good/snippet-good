@@ -12,6 +12,7 @@ import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
 import CodeEditor from '../CodeEditor'
 import StretchScheduler from '../_shared/StretchScheduler'
+import CodeInputSection from './CodeInputSection'
 
 import { GeneralInfoStyles, SingleStretchStyles as styles } from './styles'
 
@@ -172,6 +173,7 @@ class SingleStretch extends Component {
               </Grid>
 
               <Grid item xs={12}>
+                <CodeInputSection />
                 <CodeEditor
                   initialCode={state.initialCode}
                   codeTargetName="codePrompt"
