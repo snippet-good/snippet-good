@@ -1,21 +1,17 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import CodeEditor, {
-  AuxillaryComponents,
-  codeEditorFunctions
-} from '../CodeEditor'
+import { AuxillaryComponents, codeEditorFunctions } from '../CodeEditor'
 const { runCode, clearCodeResults } = codeEditorFunctions
 const {
   ThemeSelector,
   RunCodeButton,
   ClearCodeResultsButton,
-  CodeOutput
+  CommonEditorAndOutput
 } = AuxillaryComponents
 
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { codeSectionStyles } from './styles'
-import Typography from '@material-ui/core/Typography'
 
 class CodeSection extends Component {
   constructor() {
@@ -110,47 +106,13 @@ class CodeSection extends Component {
             </Grid>
           </Grid>
         </Grid>
-        <Grid container>
-          <Grid item xs={6}>
-            <CodeEditor
-              codeTargetName="code"
-              initialCode={solution}
-              editorTheme={editorTheme}
-              handleCodeChange={handleChange}
-              language={language}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            {language === 'jsx' && (
-              <Typography
-                variant="subtitle2"
-                style={codeSectionStyles.outputLabels}
-              >
-                JSX Rendering
-              </Typography>
-            )}
-
-            {language === 'jsx' && (
-              <iframe
-                src={fileGenerated ? `/temp/file-${cohortStretchId}.html` : ''}
-                style={codeSectionStyles.iframe}
-              />
-            )}
-            {language === 'jsx' && (
-              <Typography
-                variant="subtitle2"
-                style={codeSectionStyles.outputLabels}
-              >
-                Console
-              </Typography>
-            )}
-            <CodeOutput
-              codeResponse={codeResponse}
-              codeError={codeError}
-              minHeight={`${language === 'jsx' ? '10' : '23'}rem`}
-            />
-          </Grid>
-        </Grid>
+        <CommonEditorAndOutput
+          codeTargetName="code"
+          fileName={`/temp/file-${cohortStretchId}.html`}
+          initialCode={solution}
+          handleCodeChange={handleChange}
+          {...{ language, editorTheme, fileGenerated, codeResponse, codeError }}
+        />
       </div>
     )
   }

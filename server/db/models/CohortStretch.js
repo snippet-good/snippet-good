@@ -21,7 +21,7 @@ const CohortStretch = db.define('cohortstretch', {
       notEmpty: true
     }
   },
-  solution: {
+  cohortSolution: {
     type: db.Sequelize.TEXT,
     defaultValue: `const solution = console.log('Default solution for a cohort stretch. You did it!')`,
     allowNull: false,
@@ -36,11 +36,7 @@ const CohortStretch = db.define('cohortstretch', {
     type: db.Sequelize.DATE,
     allowNull: false,
     validate: {
-      notEmpty: true,
-      afterCurrentDate(value) {
-        // if (value < Date.now())
-        // throw new Error('Can not schedule stretch for before right now')
-      }
+      notEmpty: true
     }
   }
 })

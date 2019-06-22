@@ -1,20 +1,16 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import CodeEditor, {
-  AuxillaryComponents,
-  codeEditorFunctions
-} from '../CodeEditor'
+import { AuxillaryComponents, codeEditorFunctions } from '../CodeEditor'
 const { runCode, clearCodeResults } = codeEditorFunctions
 const {
   ThemeSelector,
   RunCodeButton,
   ClearCodeResultsButton,
-  CodeOutput
+  CommonEditorAndOutput
 } = AuxillaryComponents
 
 import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
 import { codeSectionStyles } from '../StretchReviewView/styles'
 
 class CodeSectionRun extends Component {
@@ -63,6 +59,7 @@ class CodeSectionRun extends Component {
       cohortStretchId,
       userDetails
     } = this.props
+    console.log(stretchAnswer)
     return (
       <div>
         <Grid container>
@@ -92,51 +89,13 @@ class CodeSectionRun extends Component {
             </Grid>
           </Grid>
         </Grid>
-        <Grid container>
-          <Grid item xs={6}>
-            <CodeEditor
-              codeTargetName="codeAnswer"
-              initialCode={codePrompt}
-              editorTheme={editorTheme}
-              handleCodeChange={({ target }) => setStretchAnswer(target.value)}
-              language={language}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            {language === 'jsx' && (
-              <Typography
-                variant="subtitle2"
-                style={codeSectionStyles.outputLabels}
-              >
-                JSX Rendering
-              </Typography>
-            )}
-
-            {language === 'jsx' && (
-              <iframe
-                src={
-                  fileGenerated
-                    ? `/temp/file-${cohortStretchId}-${userDetails.id}.html`
-                    : ''
-                }
-                style={codeSectionStyles.iframe}
-              />
-            )}
-            {language === 'jsx' && (
-              <Typography
-                variant="subtitle2"
-                style={codeSectionStyles.outputLabels}
-              >
-                Console
-              </Typography>
-            )}
-            <CodeOutput
-              codeResponse={codeResponse}
-              codeError={codeError}
-              minHeight={`${language === 'jsx' ? '10' : '23'}rem`}
-            />
-          </Grid>
-        </Grid>
+        <CommonEditorAndOutput
+          codeTargetName="codeAnswer"
+          fileName={`/temp/file-${cohortStretchId}-${userDetails.id}.html`}
+          initialCode={codePrompt}
+          handleCodeChange={({ target }) => setStretchAnswer(target.value)}
+          {...{ language, editorTheme, fileGenerated, codeResponse, codeError }}
+        />
       </div>
     )
   }

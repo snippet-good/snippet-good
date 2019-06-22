@@ -133,7 +133,7 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
 
       let cohortStretch = {
         status,
-        allowAnswersToBeRun: Math.random() <= 0.5,
+        allowAnswersToBeRun: Math.random() <= 1,
         solution: paragraph(),
         cohortId: cohortIds[j],
         stretchId: getRandomArrayEntry(stretchIdsTemp),
