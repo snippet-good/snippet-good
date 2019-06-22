@@ -17,10 +17,22 @@ const addClosingCurlyBracket = (editor, editorSession) => {
   }
 }
 
-const excludeCodePromptInStretchAnswer = (
-  codePromptRowCount,
-  editorSession
+export const excludeCodePromptInStretchAnswer = (
+  { codePromptRowCount, editor },
+  editorSession,
+  codeTargetName,
+  endBarrierRegEx,
+  startBarrierData,
+  initialCode
 ) => {
+  const currentCode = initialCode || editorSession.getValue()
+  if (codeTargetName === 'authorSolution' && currentCode) {
+    return currentCode.slice(
+      startBarrierData.length,
+      currentCode.search(endBarrierRegEx)
+    )
+  }
+
   let documentRowCount = editorSession.getLength()
   const arrayOfStretchLines = editorSession.getLines(
     codePromptRowCount,
@@ -34,13 +46,20 @@ const excludeCodePromptInStretchAnswer = (
 
 const configEditor = function(
   editor,
-  editorSession,
+  { editorSession, selection },
   userOptions,
   handleCodeChange,
   codeTargetName,
   codePromptRowCount
 ) {
-  const { initialCode, editorTheme, language, readOnly } = userOptions
+  const {
+    initialCode,
+    editorTheme,
+    language,
+    endBarrierRegEx,
+    startBarrierData,
+    readOnly
+  } = userOptions
   editorSession.setMode(`ace/mode/${language}`)
   if (initialCode) editor.setValue(initialCode)
   if (editorTheme) editor.setTheme(`ace/theme/${editorTheme}`)
@@ -56,16 +75,61 @@ const configEditor = function(
     enableSnippets: true
   })
 
+  selection.on('changeCursor', () => {
+    const currentCode = /* initialCode ||*/ editorSession.getValue()
+    if (editor.getCursorPosition().row <= this.state.firstLineCanEdit) {
+      editor.setReadOnly(true)
+    } else {
+      editor.setReadOnly(false)
+    }
+
+    if (codeTargetName === 'authorSolution' && currentCode) {
+      console.log('current code split', currentCode.split('\n'))
+      console.log('my cursor positon', editor.getCursorPosition().row)
+      const rg = currentCode.split('\n')[editor.getCursorPosition().row]
+      console.log('rg', rg)
+      if (
+        rg &&
+        rg.search('Write the solution above this line-----------------') >= 0
+      ) {
+        editor.setReadOnly(true)
+      }
+      /*currentCode.split('\n').forEach((row, idx) => {
+        console.log('for loop')
+        console.log(row)
+        console.log(
+          row.search('Write the solution above this line-----------------') >= 0
+        )
+        console.log(idx, editor.getCursorPosition().row)
+        if (
+          row.search(endBarrierRegEx) >= 0 &&
+          idx === editor.getCursorPosition().row
+        ) {
+          editor.setReadOnly(true)
+        }
+      })*/
+    }
+
+    console.log('cursorposition', editor.getCursorPosition().row)
+    console.log('irsliencanedit', this.state.firstLineCanEdit)
+
+    this.setState({ cursorPosition: editor.getCursorPosition() }, () =>
+      console.log(this.state)
+    )
+  })
   editorSession.on('change', () => {
     addClosingCurlyBracket(editor, editorSession)
     handleCodeChange({
       target: {
         name: codeTargetName,
         value: `${
-          codeTargetName === 'codeAnswer'
+          ['codeAnswer', 'authorSolution'].includes(codeTargetName)
             ? excludeCodePromptInStretchAnswer(
-                codePromptRowCount,
-                editorSession
+                { codePromptRowCount, editor },
+                editorSession,
+                codeTargetName,
+                endBarrierRegEx,
+                startBarrierData
               )
             : editorSession.getValue()
         }`

@@ -30,7 +30,10 @@ class SingleStretch extends Component {
     language: 'javascript',
     authorId: '',
     isLoaded: false,
-    modalOpen: false
+    modalOpen: false,
+    initialCodePrompt:
+      '// This is an example code prompt.\n// emxampleFunction(3) = 5',
+    initalSolution: ''
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
@@ -40,9 +43,18 @@ class SingleStretch extends Component {
     const { match, mode, stretches } = this.props
 
     let attributes = {}
-    if (match.params.id && stretches.length)
-      attributes = stretches.find(s => s.id === match.params.id)
-    this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
+    //if (match.params.id && stretches.length) {
+    const stretch = stretches.find(s => s.id === match.params.id) || {}
+    attributes = {
+      ...stretch,
+      initialCodePrompt: stretch.codePrompt || '',
+      initialSolution: stretch.authorSolution || ''
+    }
+    // }
+    this.setState({
+      mode,
+      ...attributes
+    })
   }
 
   handleChange = event => {
@@ -121,10 +133,11 @@ class SingleStretch extends Component {
       language,
       modalOpen,
       stretchId,
-      initialCode,
-      authorSolution
+      initialCodePrompt,
+      initialSolution,
+      authorSolution,
+      codePrompt
     } = state
-
     return (
       <div>
         <StretchScheduler
@@ -168,7 +181,6 @@ class SingleStretch extends Component {
                     label="Text Prompt"
                     value={state.textPrompt}
                     placeholder="Enter your written prompt here."
-                    helperText="This is to be substituted with a rich text editor."
                     fullWidth
                     multiline={true}
                     margin="normal"
@@ -183,7 +195,14 @@ class SingleStretch extends Component {
               <Grid item xs={12}>
                 <CodeInputSection
                   handleCodeChange={handleChange}
-                  {...{ initialCode, language, mode, authorSolution }}
+                  {...{
+                    initialCodePrompt,
+                    initialSolution,
+                    language,
+                    mode,
+                    authorSolution,
+                    codePrompt
+                  }}
                 />
               </Grid>
             </Grid>

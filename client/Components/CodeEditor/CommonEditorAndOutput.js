@@ -15,7 +15,10 @@ const CommonEditorAndOutput = props => {
     fileGenerated,
     codeResponse,
     codeError,
-    handleCodeChange
+    handleCodeChange,
+    onUnmount,
+    endBarrierRegEx,
+    startBarrierData
   } = props
   return (
     <Grid container>
@@ -26,7 +29,10 @@ const CommonEditorAndOutput = props => {
             initialCode,
             editorTheme,
             handleCodeChange,
-            language
+            language,
+            onUnmount,
+            endBarrierRegEx,
+            startBarrierData
           }}
         />
       </Grid>

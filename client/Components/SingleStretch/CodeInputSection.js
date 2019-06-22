@@ -48,13 +48,26 @@ class CodeInputSection extends Component {
     const { runCodeBinded, clearCodeResultsBinded } = this
     const { currentTab, codeResponse, codeError, fileGenerated } = this.state
     const {
-      initialCode,
+      initialCodePrompt,
+      initialSolution,
       language,
       mode,
       handleCodeChange,
       userDetails,
-      authorSolution
+      authorSolution,
+      codePrompt
     } = this.props
+    //  const startBarrierRegEx = new RegExp(initialCodePrompt)
+    //   `${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
+    const startBarrierString = `${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
+    console.log(startBarrierString.split('\n'))
+    const startBarrierData = {
+      length: startBarrierString.length,
+      numberOfLines: startBarrierString.split('\n').length - 2
+    }
+    const endBarrierString = `\n// Write the solution above this line-----------------\n `
+    const endBarrierRegEx = /\n\/\/ Write the solution above this line-----------------/
+    const solutionAnnonated = `${startBarrierString}${initialSolution}${endBarrierString}`
     return (
       <Grid container>
         <Grid item xs={12}>
@@ -73,11 +86,17 @@ class CodeInputSection extends Component {
           <Grid item xs={12}>
             {currentTab === 0 && (
               <CodeEditor
-                initialCode={initialCode}
+                initialCode={initialCodePrompt}
                 codeTargetName="codePrompt"
                 handleCodeChange={handleCodeChange}
                 language={language}
                 readOnly={mode === 'read'}
+                startBarrierData={startBarrierData}
+                onUnmount={() =>
+                  handleCodeChange({
+                    target: { name: 'initialCodePrompt', value: codePrompt }
+                  })
+                }
               />
             )}
             {currentTab === 1 && (
@@ -102,15 +121,23 @@ class CodeInputSection extends Component {
                 </Grid>
                 <CommonEditorAndOutput
                   codeTargetName="authorSolution"
-                  initialCode={authorSolution}
+                  initialCode={solutionAnnonated}
                   editorTheme="monokai"
                   fileName={`file-${userDetails.id}.html`}
+                  onUnmount={() =>
+                    handleCodeChange({
+                      target: { name: 'initialSolution', value: authorSolution }
+                    })
+                  }
+                  //startBarrierLength={startBarrierString.length}
                   {...{
                     language,
                     fileGenerated,
                     codeResponse,
                     codeError,
-                    handleCodeChange
+                    handleCodeChange,
+                    endBarrierRegEx,
+                    startBarrierData
                   }}
                 />
               </Grid>
