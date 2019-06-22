@@ -22,7 +22,9 @@ class SingleStretch extends Component {
     title: 'Untitled',
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
-    codePrompt: '// This is an example code prompt.',
+    codePrompt:
+      '// This is an example code prompt.\n// emxampleFunction(3) = 5',
+    authorSolution: '',
     difficulty: 3,
     minutes: '',
     language: 'javascript',
@@ -47,8 +49,6 @@ class SingleStretch extends Component {
     const { name, value } = event.target
     this.setState({ [name]: value })
   }
-
-  handleCodeChange = codePrompt => this.setState({ codePrompt })
 
   // This function is called when SingleStretch is in 'create' or 'update' mode.
   handleSubmit = event => {
@@ -115,7 +115,15 @@ class SingleStretch extends Component {
     const { state } = this
     const { handleSubmit, changeMode } = this
     const { handleChange, notScheduleStretch } = this
-    const { mode, authorId, language, modalOpen, stretchId } = state
+    const {
+      mode,
+      authorId,
+      language,
+      modalOpen,
+      stretchId,
+      initialCode,
+      authorSolution
+    } = state
 
     return (
       <div>
@@ -173,13 +181,9 @@ class SingleStretch extends Component {
               </Grid>
 
               <Grid item xs={12}>
-                <CodeInputSection />
-                <CodeEditor
-                  initialCode={state.initialCode}
-                  codeTargetName="codePrompt"
+                <CodeInputSection
                   handleCodeChange={handleChange}
-                  language={language}
-                  readOnly={mode === 'read'}
+                  {...{ initialCode, language, mode, authorSolution }}
                 />
               </Grid>
             </Grid>
