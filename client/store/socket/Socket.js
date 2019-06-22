@@ -6,6 +6,7 @@ import {
   addReceivedStretchAnswer,
   replaceStretchAnswer
 } from '../stretch-answers/actions'
+import { addStretch } from '../stretches/actions'
 import { generateFlashMessageId } from '../../utilityfunctions'
 
 class Socket {
@@ -51,6 +52,10 @@ class Socket {
           this.generateFlashMessageObjectForRatedAnswer(updatedStretchAnswer)
         )
       )
+    })
+
+    this.socket.on('receivedNewStretch', newStretch => {
+      this.storeAPI.dispatch(addStretch(newStretch, false))
     })
   }
 
@@ -144,6 +149,10 @@ class Socket {
 
   sendAnswerRating(updatedStretchAnswer) {
     this.socket.emit('answerRated', updatedStretchAnswer)
+  }
+
+  sendNewStretch(newStretch) {
+    this.socket.emit('stretchCreated', newStretch)
   }
 }
 

@@ -64,6 +64,10 @@ const socketFunction = socketServer => {
           .emit('receivedAnswerRating', updatedStretchAnswer)
       }
     })
+
+    socket.on('stretchCreated', newStretch => {
+      socket.broadcast.emit('receivedNewStretch', newStretch)
+    })
   })
 }
 

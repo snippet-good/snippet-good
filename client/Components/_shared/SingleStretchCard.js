@@ -93,17 +93,15 @@ const SingleStretchCard = ({
           {status === 'open' && (
             <Grid item xs={12} md={6}>
               <Timer
+                answeringWhenStretchOpen={true}
                 minutesForStretch={minutes}
                 timeStretchStarted={startTimer}
-                action={
-                  userDetails.isAdmin
-                    ? closeStretchProcess
-                    : updateCohortStretch
-                }
+                action={!userDetails.isAdmin && updateCohortStretch}
                 args={
-                  userDetails.isAdmin
-                    ? [cohortStretchId]
-                    : [cohortStretch.id, { ...cohortStretch, status: 'closed' }]
+                  !userDetails.isAdmin && [
+                    cohortStretch.id,
+                    { ...cohortStretch, status: 'closed' }
+                  ]
                 }
                 {...{ totalSecondsLeft, setTotalSecondsLeft }}
               />

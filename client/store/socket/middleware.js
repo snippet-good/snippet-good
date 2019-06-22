@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import Socket from './Socket'
 import { GET_USER_DETAILS, LOGOUT } from '../auth/actions'
 import { CREATE_COMMENT } from '../comments/actions'
@@ -6,6 +7,7 @@ import {
   CREATE_STRETCH_ANSWER,
   UPDATE_STRETCH_ANSWER
 } from '../stretch-answers/actions'
+import { CREATE_STRETCH } from '../stretches/actions'
 
 const socketMiddleware = storeAPI => {
   let socket
@@ -29,6 +31,11 @@ const socketMiddleware = storeAPI => {
       case UPDATE_STRETCH_ANSWER:
         if (action.emit) {
           socket.sendAnswerRating(action.updatedStretchAnswer)
+        }
+        break
+      case CREATE_STRETCH:
+        if (action.emit) {
+          socket.sendNewStretch(action.newStretch)
         }
         break
       default:
