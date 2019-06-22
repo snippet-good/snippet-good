@@ -28,7 +28,7 @@ const ScheduledStretchButtons = ({
       <TableCell>
         <Button
           color="secondary"
-          onClick={() => handleunscheduleModalOpen(cohortStretch.id)}
+          onClick={() => handleunscheduleModalOpen(cohortStretch)}
         >
           {' '}
           Unschedule{' '}
