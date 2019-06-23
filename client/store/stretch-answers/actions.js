@@ -78,8 +78,8 @@ export const updateStretchAnswerThunk = (stretchAnswerId, updatedFields) => {
     return axios
       .put(`/api/stretch-answers/${stretchAnswerId}`, updatedFields)
       .then(res => res.data)
-      .then(stretchAnswer =>
+      .then(stretchAnswer => {
         dispatch(replaceStretchAnswer(stretchAnswerId, stretchAnswer, true))
-      )
+      })
   }
 }

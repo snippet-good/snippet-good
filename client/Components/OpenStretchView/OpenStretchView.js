@@ -37,7 +37,10 @@ const mapDispatchToProps = dispatch => ({
   createStretchAnswer: (answer, attendance, cohortStretch) => {
     return dispatch(
       createStretchAnswerThunk(answer, attendance, cohortStretch.adminIds)
-    ).then(() => dispatch(updateCohortStretch({ status: 'closed' })))
+    ).then(() => {
+      const data = { ...cohortStretch, status: 'closed' }
+      dispatch(updateCohortStretch(cohortStretch.id, data))
+    })
   }
 })
 
@@ -54,6 +57,12 @@ const mapStateToProps = (state, ownProps) => {
     const myCohortStretch = cohortStretches.find(
       cs => cs.id === cohortStretchId
     )
+
+    console.groupCollapsed('Debugging on mapStateToProps in OpenStretchView')
+    console.log('stretches:', stretches)
+    console.log('cohortStretches:', cohortStretches)
+    console.info('myCohortStretch:', myCohortStretch)
+    console.groupEnd()
 
     result.myStretch = stretches.find(s => s.id === myCohortStretch.stretchId)
     result.myCohortStretch = myCohortStretch
