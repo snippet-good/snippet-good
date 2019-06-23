@@ -1,68 +1,85 @@
 /* eslint-disable complexity */
+
+// React imports
 import React, { useState, useEffect } from 'react'
+
+// Redux imports
 import { connect } from 'react-redux'
-import CodeSectionNoRun from './CodeSectionNoRun'
-import CodeSectionRun from './CodeSectionRun'
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import { createStretchAnswerThunk } from '../../store/stretch-answers/actions'
 import { updateCohortStretch } from '../../store/cohort-stretches/actions'
-import { checkIfAllDataExists } from '../../utilityfunctions'
+
+// Subcomponent imports
+import CodeSectionNoRun from './CodeSectionNoRun'
+import CodeSectionRun from './CodeSectionRun'
 import ConfirmDialogBox from '../_shared/ConfirmDialogBox'
-import moment from 'moment'
 import Timer from '../_shared/Timer'
 
-const mapDispatchToProps = dispatch => {
-  return {
-    createStretchAnswer: (stretchAnswer, cohortStretch) =>
-      dispatch(
-        createStretchAnswerThunk(stretchAnswer, cohortStretch.adminIds)
-      ).then(() =>
-        dispatch(
-          updateCohortStretch(cohortStretch.id, {
-            ...cohortStretch,
-            status: 'closed'
-          })
-        )
-      )
-  }
-}
+// Material-UI imports
+import { makeStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
 
-const mapStateToProps = (
-  { userDetails, stretches, cohortStretches },
-  {
-    match: {
-      params: { cohortStretchId }
-    }
+// Utility imports
+import { checkIfAllDataExists } from '../../utilityfunctions'
+import moment from 'moment'
+
+// ----------------------------------------------------------------------
+// Redux dispatches
+
+const mapDispatchToProps = dispatch => ({
+  /**
+   * Dispatches the return of a Redux thunk for creating new `StretchAnswer` and `Attendance` instances for specified user and cohort. If successful, the funcion proceeds to update the `CohortStretch` instance's `status` field to `closed`.
+   * @param {Object} answer
+   * @param {Object} attendance
+   * @param {Object} cohortStretch
+   */
+  createStretchAnswer: (answer, attendance, cohortStretch) => {
+    return dispatch(
+      createStretchAnswerThunk(answer, attendance, cohortStretch.adminIds)
+    ).then(() => dispatch(updateCohortStretch({ status: 'closed' })))
   }
-) => {
+})
+
+// ----------------------------------------------------------------------
+// Maps Redux state to props
+
+const mapStateToProps = (state, ownProps) => {
+  const { userDetails, stretches, cohortStretches } = state
+  const cohortStretchId = ownProps.match.params.cohortStretchId
+
+  const result = { userDetails }
+
   if (checkIfAllDataExists(stretches, cohortStretches)) {
     const myCohortStretch = cohortStretches.find(
       cs => cs.id === cohortStretchId
     )
-    return {
-      myStretch: stretches.find(s => s.id === myCohortStretch.stretchId),
-      myCohortStretch,
-      userDetails
-    }
+
+    result.myStretch = stretches.find(s => s.id === myCohortStretch.stretchId)
+    result.myCohortStretch = myCohortStretch
   }
-  return {}
+
+  return result
 }
+
+// ----------------------------------------------------------------------
+// Material-UI styles
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3, 2)
   }
 }))
 
-const OpenStretchView = ({
-  myStretch,
-  myCohortStretch,
-  createStretchAnswer,
-  userDetails,
-  history
-}) => {
+// ----------------------------------------------------------------------
+// OpenStretchView component
+
+const OpenStretchView = props => {
+  const { myStretch, myCohortStretch, createStretchAnswer } = props
+  const { history, userDetails } = props
+
+  const classes = useStyles()
+
   let initialTotalSecondsLeft
   let answeringWhenStretchOpen = true
   if (myStretch) {
@@ -82,19 +99,25 @@ const OpenStretchView = ({
     initialTotalSecondsLeft || 1
   )
 
-  const classes = useStyles()
   let [modalOpen, setModalOpen] = useState(false)
   const [codePrompt, setCodePrompt] = useState('')
   const [stretchAnswer, setStretchAnswer] = useState('')
 
   const submitStretch = (stretchAnswer, myStretch, userDetails, history) => {
     return createStretchAnswer(
+      // New stretch answer
       {
         body: stretchAnswer,
         timeToSolve: myStretch.minutes * 60 - totalSecondsLeft,
         cohortstretchId: myCohortStretch.id,
         userId: userDetails.id,
         submittedOnTime: answeringWhenStretchOpen
+      },
+      // New attendance record
+      {
+        userId: userDetails.id,
+        startDate: myCohortStretch.startTimer,
+        cohortId: myCohortStretch.cohortId
       },
       myCohortStretch
     ).then(() => history.push('/student/stretches/submitted'))
