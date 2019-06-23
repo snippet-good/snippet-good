@@ -14,7 +14,6 @@ import SingleCohortStretchTables from './SingleCohortStretchTables'
 import CohortStudents from './CohortStudents'
 import Attendance from './Attendance'
 
-
 class SingleCohort extends Component {
   state = {
     tab: 0,
@@ -51,12 +50,12 @@ class SingleCohort extends Component {
       >
         <Grid container spacing={2} style={{ width: '98%' }}>
           <Grid item xs={12}>
-            <Typography variant="h3">
-              {cohort.name}
-            </Typography>
-            <Link to={`/admin/cohort/analytics/${cohort.id}`}><Button variant="contained" color="primary">
-              Performance Analytics
-                </Button></Link>
+            <Typography variant="h3">{cohort.name}</Typography>
+            <Link to={`/admin/cohort/analytics/${cohort.id}`}>
+              <Button variant="contained" color="primary">
+                Performance Analytics
+              </Button>
+            </Link>
           </Grid>
           <Grid item xs={7}>
             <Grid item xs={12}>
