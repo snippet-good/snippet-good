@@ -18,6 +18,7 @@ class CodeSectionRun extends Component {
     super()
     this.state = {
       editorTheme: 'monokai',
+      codeToRun: '',
       codeResponse: '',
       codeError: '',
       fileGenerated: false
@@ -50,7 +51,13 @@ class CodeSectionRun extends Component {
   }
 
   render() {
-    const { editorTheme, codeResponse, codeError, fileGenerated } = this.state
+    const {
+      editorTheme,
+      codeResponse,
+      codeError,
+      fileGenerated,
+      codeToRun
+    } = this.state
     const { runCodeBinded, clearCodeResultsBinded, handleChange } = this
     const {
       setStretchAnswer,
@@ -59,7 +66,14 @@ class CodeSectionRun extends Component {
       cohortStretchId,
       userDetails
     } = this.props
-    console.log(stretchAnswer)
+    const startBarrierString = `${codePrompt}\n\n// Write your answer below this line --------------------------------\n`
+    const startBarrierData = {
+      length: startBarrierString.length,
+      numberOfLines: startBarrierString.split('\n').length - 2
+    }
+    const endBarrierString = `// Write your answer above this line-----------------\n `
+    const endBarrierRegEx = /\/\/ Write your answer above this line-----------------/
+    const solutionAnnonated = `${startBarrierString}\n${endBarrierString}`
     return (
       <div>
         <Grid container>
@@ -73,7 +87,7 @@ class CodeSectionRun extends Component {
                   color="primary"
                   runCode={runCodeBinded}
                   postPayload={{
-                    code: stretchAnswer,
+                    code: codeToRun,
                     language,
                     fileName:
                       language === 'javascript'
@@ -90,11 +104,20 @@ class CodeSectionRun extends Component {
           </Grid>
         </Grid>
         <CommonEditorAndOutput
-          codeTargetName="codeAnswer"
+          codeTargetName="studentAnswer"
           fileName={`/temp/file-${cohortStretchId}-${userDetails.id}.html`}
-          initialCode={codePrompt}
+          initialCode={solutionAnnonated}
           handleCodeChange={({ target }) => setStretchAnswer(target.value)}
-          {...{ language, editorTheme, fileGenerated, codeResponse, codeError }}
+          changeCodeToRun={codeToRun => this.setState({ codeToRun })}
+          {...{
+            language,
+            editorTheme,
+            fileGenerated,
+            codeResponse,
+            codeError,
+            startBarrierData,
+            endBarrierRegEx
+          }}
         />
       </div>
     )

@@ -90,7 +90,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
-      data.codePrompt += `\n \n/*your code below --------------------------------------------------------------*/`
+      // data.codePrompt += `\n \n/*your code below --------------------------------------------------------------*/`
       this.props
         .createStretch({ ...data, authorId: this.props.userDetails.id })
         .then(({ newStretch: { id } }) =>

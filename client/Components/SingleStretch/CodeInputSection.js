@@ -21,6 +21,7 @@ class CodeInputSection extends Component {
     super()
     this.state = {
       currentTab: 0,
+      codeToRun: '',
       codeResponse: '',
       codeError: '',
       fileGenerated: false
@@ -60,14 +61,13 @@ class CodeInputSection extends Component {
     //  const startBarrierRegEx = new RegExp(initialCodePrompt)
     //   `${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
     const startBarrierString = `${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
-    console.log(startBarrierString.split('\n'))
     const startBarrierData = {
       length: startBarrierString.length,
       numberOfLines: startBarrierString.split('\n').length - 2
     }
-    const endBarrierString = `\n// Write the solution above this line-----------------\n `
-    const endBarrierRegEx = /\n\/\/ Write the solution above this line-----------------/
-    const solutionAnnonated = `${startBarrierString}${initialSolution}${endBarrierString}`
+    const endBarrierString = `// Write the solution above this line-----------------\n `
+    const endBarrierRegEx = /\/\/ Write the solution above this line-----------------/
+    const solutionAnnonated = `${startBarrierString}${initialSolution}\n${endBarrierString}`
     return (
       <Grid container>
         <Grid item xs={12}>
@@ -89,6 +89,7 @@ class CodeInputSection extends Component {
                 initialCode={initialCodePrompt}
                 codeTargetName="codePrompt"
                 handleCodeChange={handleCodeChange}
+                changeCodeToRun={codeToRun => this.setState({ codeToRun })}
                 language={language}
                 readOnly={mode === 'read'}
                 startBarrierData={startBarrierData}
@@ -106,7 +107,7 @@ class CodeInputSection extends Component {
                     color="primary"
                     runCode={runCodeBinded}
                     postPayload={{
-                      code: authorSolution,
+                      code: this.state.codeToRun,
                       language,
                       fileName:
                         language === 'javascript'
@@ -123,13 +124,13 @@ class CodeInputSection extends Component {
                   codeTargetName="authorSolution"
                   initialCode={solutionAnnonated}
                   editorTheme="monokai"
-                  fileName={`file-${userDetails.id}.html`}
+                  fileName={`/temp/file-${userDetails.id}.html`}
                   onUnmount={() =>
                     handleCodeChange({
                       target: { name: 'initialSolution', value: authorSolution }
                     })
                   }
-                  //startBarrierLength={startBarrierString.length}
+                  changeCodeToRun={codeToRun => this.setState({ codeToRun })}
                   {...{
                     language,
                     fileGenerated,

@@ -48,7 +48,7 @@ const configEditor = function(
   editor,
   { editorSession, selection },
   userOptions,
-  handleCodeChange,
+  { handleCodeChange, changeCodeToRun },
   codeTargetName,
   codePromptRowCount
 ) {
@@ -76,46 +76,24 @@ const configEditor = function(
   })
 
   selection.on('changeCursor', () => {
-    const currentCode = /* initialCode ||*/ editorSession.getValue()
-    if (editor.getCursorPosition().row <= this.state.firstLineCanEdit) {
-      editor.setReadOnly(true)
-    } else {
-      editor.setReadOnly(false)
-    }
-
-    if (codeTargetName === 'authorSolution' && currentCode) {
-      console.log('current code split', currentCode.split('\n'))
-      console.log('my cursor positon', editor.getCursorPosition().row)
-      const rg = currentCode.split('\n')[editor.getCursorPosition().row]
-      console.log('rg', rg)
-      if (
-        rg &&
-        rg.search('Write the solution above this line-----------------') >= 0
-      ) {
+    if (endBarrierRegEx) {
+      const currentCode = editorSession.getValue()
+      if (editor.getCursorPosition().row <= this.state.firstLineCanEdit) {
         editor.setReadOnly(true)
+      } else {
+        editor.setReadOnly(false)
       }
-      /*currentCode.split('\n').forEach((row, idx) => {
-        console.log('for loop')
-        console.log(row)
-        console.log(
-          row.search('Write the solution above this line-----------------') >= 0
-        )
-        console.log(idx, editor.getCursorPosition().row)
-        if (
-          row.search(endBarrierRegEx) >= 0 &&
-          idx === editor.getCursorPosition().row
-        ) {
+
+      if (
+        ['studentAnswer', 'authorSolution'].includes(codeTargetName) &&
+        currentCode
+      ) {
+        const rg = currentCode.split('\n')[editor.getCursorPosition().row]
+        if (rg && rg.search(endBarrierRegEx) >= 0) {
           editor.setReadOnly(true)
         }
-      })*/
+      }
     }
-
-    console.log('cursorposition', editor.getCursorPosition().row)
-    console.log('irsliencanedit', this.state.firstLineCanEdit)
-
-    this.setState({ cursorPosition: editor.getCursorPosition() }, () =>
-      console.log(this.state)
-    )
   })
   editorSession.on('change', () => {
     addClosingCurlyBracket(editor, editorSession)
@@ -123,7 +101,7 @@ const configEditor = function(
       target: {
         name: codeTargetName,
         value: `${
-          ['codeAnswer', 'authorSolution'].includes(codeTargetName)
+          ['studentAnswer', 'authorSolution'].includes(codeTargetName)
             ? excludeCodePromptInStretchAnswer(
                 { codePromptRowCount, editor },
                 editorSession,
@@ -135,6 +113,9 @@ const configEditor = function(
         }`
       }
     })
+    if (['studentAnswer', 'authorSolution'].includes(codeTargetName)) {
+      changeCodeToRun(editorSession.getValue())
+    }
   })
 }
 

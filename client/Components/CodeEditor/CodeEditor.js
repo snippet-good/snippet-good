@@ -1,18 +1,20 @@
 /* eslint-disable complexity */
 import React, { Component } from 'react'
-import configEditor, { excludeCodePromptInStretchAnswer } from './configeditor'
+import configEditor from './configeditor'
 
 class AceEditor extends Component {
   constructor(props) {
     super(props)
     console.log(props)
+    const { editorId, startBarrierData } = this.props
     this.state = {
       editor: {},
       editorSession: {},
       selection: {},
-      firstLineCanEdit: this.props.startBarrierData.numberOfLines || 0,
-      cursorPosition: {},
-      editorId: this.props.editorId ? `ace-${this.props.editorId}` : 'ace'
+      firstLineCanEdit: startBarrierData
+        ? startBarrierData.numberOfLines || 0
+        : 0,
+      editorId: editorId ? `ace-${editorId}` : 'ace'
     }
     this.configEditor = configEditor
   }
@@ -26,9 +28,9 @@ class AceEditor extends Component {
       readOnly,
       initialCode,
       endBarrierRegEx,
-      startBarrierData
+      startBarrierData,
+      changeCodeToRun
     } = this.props
-
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
     const selection = editorSession.selection
@@ -44,7 +46,7 @@ class AceEditor extends Component {
         startBarrierData,
         readOnly: !!readOnly
       },
-      handleCodeChange,
+      { handleCodeChange, changeCodeToRun },
       codeTargetName,
       codePromptRowCount
     )
@@ -61,15 +63,18 @@ class AceEditor extends Component {
       codeTargetName,
       endBarrierRegEx,
       startBarrierData,
-      handleCodeChange
+      handleCodeChange,
+      changeCodeToRun
     } = this.props
+
     if (prevProps.language !== language && language !== '') {
       this.state.editorSession.setMode(`ace/mode/${language}`)
       this.state.editor.setValue('')
     }
     if (
+      startBarrierData &&
       prevProps.startBarrierData.numberOfLines !==
-      startBarrierData.numberOfLines
+        startBarrierData.numberOfLines
     ) {
       this.setState({ firstLineCanEdit: startBarrierData.numberOfLines })
     }
@@ -89,7 +94,7 @@ class AceEditor extends Component {
           startBarrierData,
           readOnly: !!readOnly
         },
-        handleCodeChange,
+        { handleCodeChange, changeCodeToRun },
         codeTargetName,
         0
       )
@@ -103,9 +108,7 @@ class AceEditor extends Component {
   }
 
   componentWillUnmount() {
-    console.log('first')
     if (typeof this.props.onUnmount === 'function') {
-      console.log('second')
       this.props.onUnmount()
     }
   }

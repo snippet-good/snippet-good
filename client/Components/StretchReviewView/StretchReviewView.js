@@ -14,7 +14,13 @@ const StretchReviewView = ({
   cohortStretchId
 }) => {
   if (!attributes) return <div>Data still loading</div>
-  const { textPrompt, codePrompt, ...otherStretchFields } = attributes
+
+  const {
+    textPrompt,
+    codePrompt,
+    authorSolution,
+    ...otherStretchFields
+  } = attributes
 
   return (
     <div>
@@ -36,7 +42,8 @@ const StretchReviewView = ({
         </Grid>
         <Grid item xs={12}>
           <CodeSection
-            solution={`${codePrompt}\n\n${currentCohortStretch.solution}`}
+            solution={`${codePrompt}\n\n${currentCohortStretch.cohortSolution ||
+              authorSolution}`}
             language={otherStretchFields.language}
             cohortStretchId={cohortStretchId}
           />
