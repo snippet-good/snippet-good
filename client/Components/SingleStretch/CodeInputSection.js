@@ -58,16 +58,27 @@ class CodeInputSection extends Component {
       authorSolution,
       codePrompt
     } = this.props
-    //  const startBarrierRegEx = new RegExp(initialCodePrompt)
-    //   `${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
-    const startBarrierString = `${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
+    const startBarrierString = `// Code Prompt\n${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
     const startBarrierData = {
       length: startBarrierString.length,
-      numberOfLines: startBarrierString.split('\n').length - 2
+      numberOfLines: startBarrierString.split('\n').length - 2,
+      lastLine:
+        'Write the soluton below this line --------------------------------'
     }
     const endBarrierString = `// Write the solution above this line-----------------\n `
     const endBarrierRegEx = /\/\/ Write the solution above this line-----------------/
-    const solutionAnnonated = `${startBarrierString}${initialSolution}\n${endBarrierString}`
+    const jsxBarriers = {
+      string:
+        "\n//Put component to render as first argument in ReactDOM.render\nReactDOM.render(\n\n,document.querySelector('#app'))",
+      regExToCheck: {
+        render: /ReactDOM.render\(/,
+        querySelector: /,document.querySelector\('#app'\)\)/,
+        string: /\/\/Put component to render as first argument in ReactDOM.render/
+      }
+    }
+    const solutionAnnonated = `${startBarrierString}${initialSolution}\n${endBarrierString}${
+      language === 'jsx' ? jsxBarriers.string : ''
+    }`
     return (
       <Grid container>
         <Grid item xs={12}>
@@ -138,7 +149,8 @@ class CodeInputSection extends Component {
                     codeError,
                     handleCodeChange,
                     endBarrierRegEx,
-                    startBarrierData
+                    startBarrierData,
+                    jsxBarriers
                   }}
                 />
               </Grid>

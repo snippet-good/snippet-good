@@ -58,7 +58,7 @@ const runTranspiledCode = (transpiledCode, fileName) => {
 
 //process JSX code coming in from client
 const processUserJSXCode = async (fileName, code) => {
-  const codeForBabel = `${code}; ReactDOM.render(<App />, document.querySelector('#app'))`
+  //const codeForBabel = `${code}; ReactDOM.render(<App />, document.querySelector('#app'))`
   const userFilesDir = path.join(__dirname, '..', '..', 'TempUserFiles')
   const htmlFileStart = `<!DOCTYPE html>
     <html lang="en">
@@ -76,12 +76,9 @@ const processUserJSXCode = async (fileName, code) => {
             </body>
         </html>`
 
-  await writeFilePromise(
-    path.join(userFilesDir, `${fileName}.js`),
-    codeForBabel
-  )
+  await writeFilePromise(path.join(userFilesDir, `${fileName}.js`), code)
   const transpiledCode = await babelTransformPromise(
-    codeForBabel,
+    code,
     path.join(userFilesDir, `${fileName}.js`)
   )
 

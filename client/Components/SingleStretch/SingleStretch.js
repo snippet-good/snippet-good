@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography'
 
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
-import CodeEditor from '../CodeEditor'
 import StretchScheduler from '../_shared/StretchScheduler'
 import CodeInputSection from './CodeInputSection'
 
@@ -90,7 +89,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
-      // data.codePrompt += `\n \n/*your code below --------------------------------------------------------------*/`
+      data.codePrompt = `// Code Prompt\n${data.codePrompt}`
       this.props
         .createStretch({ ...data, authorId: this.props.userDetails.id })
         .then(({ newStretch: { id } }) =>

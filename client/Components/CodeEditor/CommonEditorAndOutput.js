@@ -19,7 +19,8 @@ const CommonEditorAndOutput = props => {
     onUnmount,
     endBarrierRegEx,
     startBarrierData,
-    changeCodeToRun
+    changeCodeToRun,
+    jsxBarriers
   } = props
   return (
     <Grid container>
@@ -34,7 +35,8 @@ const CommonEditorAndOutput = props => {
             language,
             onUnmount,
             endBarrierRegEx,
-            startBarrierData
+            startBarrierData,
+            jsxBarriers
           }}
         />
       </Grid>

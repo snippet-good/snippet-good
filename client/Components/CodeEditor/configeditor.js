@@ -19,7 +19,7 @@ const addClosingCurlyBracket = (editor, editorSession) => {
 
 export const excludeCodePromptInStretchAnswer = (
   editorSession,
-  codeTargetName,
+  editor,
   endBarrierRegEx,
   startBarrierData,
   initialCode
@@ -33,6 +33,49 @@ export const excludeCodePromptInStretchAnswer = (
   }
 }
 
+const checkIfDeletingLineBetweenTwoReadOnlyLines = (
+  editor,
+  editorSession,
+  firstROLine,
+  secondROLine
+) => {
+  const cursorRow = editor.getCursorPosition().row
+  const codeSplitByLine = editorSession.getValue().split('\n')
+  console.log('checktifd', cursorRow, codeSplitByLine)
+  if (
+    codeSplitByLine[cursorRow].search(firstROLine) >= 0 &&
+    codeSplitByLine[cursorRow + 1].search(secondROLine) >= 0
+  ) {
+    editorSession.insert({ row: cursorRow + 1, column: 0 }, '\n')
+  }
+}
+
+const checkIfCurentLineReadOnly = (
+  currentLine,
+  language,
+  jsxBarriers,
+  endBarrierRegEx,
+  editor
+) => {
+  let onJXSRenderLine = false
+  if (language === 'jsx') {
+    for (let key in jsxBarriers.regExToCheck) {
+      if (currentLine.search(jsxBarriers.regExToCheck[key]) >= 0) {
+        onJXSRenderLine = true
+        break
+      }
+    }
+  }
+  console.log('READONLY', currentLine, endBarrierRegEx)
+  if (
+    currentLine &&
+    ((endBarrierRegEx && currentLine.search(endBarrierRegEx) >= 0) ||
+      onJXSRenderLine)
+  ) {
+    editor.setReadOnly(true)
+  }
+}
+
 const configEditor = function(
   editor,
   { editorSession, selection },
@@ -40,12 +83,14 @@ const configEditor = function(
   { handleCodeChange, changeCodeToRun },
   codeTargetName
 ) {
+  console.log('at start of ocnfig editor')
   const {
     initialCode,
     editorTheme,
     language,
     endBarrierRegEx,
     startBarrierData,
+    jsxBarriers,
     readOnly
   } = userOptions
   editorSession.setMode(`ace/mode/${language}`)
@@ -66,21 +111,34 @@ const configEditor = function(
   const codeHasAddedBehavior =
     codeTargetName === 'authorSolution' ||
     codeTargetName.startsWith('studentAnswer')
+
   selection.on('changeCursor', () => {
-    if (endBarrierRegEx) {
-      const currentCode = editorSession.getValue()
+    const currentCode = editorSession.getValue()
+    const currentLine = currentCode.split('\n')[editor.getCursorPosition().row]
+    editor.setReadOnly(false)
+    if (codeHasAddedBehavior) {
       if (editor.getCursorPosition().row <= this.state.firstLineCanEdit) {
         editor.setReadOnly(true)
-      } else {
-        editor.setReadOnly(false)
       }
 
-      if (codeHasAddedBehavior && currentCode) {
-        const rg = currentCode.split('\n')[editor.getCursorPosition().row]
-        if (rg && rg.search(endBarrierRegEx) >= 0) {
-          editor.setReadOnly(true)
-        }
+      if (currentCode) {
+        checkIfCurentLineReadOnly(
+          currentLine,
+          language,
+          jsxBarriers,
+          endBarrierRegEx,
+          editor
+        )
       }
+    }
+    if (codeTargetName === 'classroomCode') {
+      checkIfCurentLineReadOnly(
+        currentLine,
+        language,
+        jsxBarriers,
+        endBarrierRegEx,
+        editor
+      )
     }
   })
   editorSession.on('change', () => {
@@ -92,7 +150,7 @@ const configEditor = function(
           codeHasAddedBehavior
             ? excludeCodePromptInStretchAnswer(
                 editorSession,
-                codeTargetName,
+                editor,
                 endBarrierRegEx,
                 startBarrierData
               )
@@ -102,6 +160,22 @@ const configEditor = function(
     })
     if (['authorSolution', 'studentAnswerRun'].includes(codeTargetName)) {
       changeCodeToRun(editorSession.getValue())
+    }
+    if (language === 'jsx' && jsxBarriers) {
+      checkIfDeletingLineBetweenTwoReadOnlyLines(
+        editor,
+        editorSession,
+        jsxBarriers.regExToCheck.render,
+        jsxBarriers.regExToCheck.querySelector
+      )
+    }
+    if (language === 'javascript') {
+      checkIfDeletingLineBetweenTwoReadOnlyLines(
+        editor,
+        editorSession,
+        startBarrierData.lastLine,
+        endBarrierRegEx
+      )
     }
   })
 }

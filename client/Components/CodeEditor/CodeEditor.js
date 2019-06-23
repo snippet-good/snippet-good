@@ -29,7 +29,8 @@ class AceEditor extends Component {
       initialCode,
       endBarrierRegEx,
       startBarrierData,
-      changeCodeToRun
+      changeCodeToRun,
+      jsxBarriers
     } = this.props
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
@@ -43,6 +44,7 @@ class AceEditor extends Component {
         language,
         endBarrierRegEx,
         startBarrierData,
+        jsxBarriers,
         readOnly: !!readOnly
       },
       { handleCodeChange, changeCodeToRun },
@@ -62,7 +64,8 @@ class AceEditor extends Component {
       endBarrierRegEx,
       startBarrierData,
       handleCodeChange,
-      changeCodeToRun
+      changeCodeToRun,
+      jsxBarriers
     } = this.props
 
     if (prevProps.language !== language && language !== '') {
@@ -90,6 +93,7 @@ class AceEditor extends Component {
           language,
           endBarrierRegEx,
           startBarrierData,
+          jsxBarriers,
           readOnly: !!readOnly
         },
         { handleCodeChange, changeCodeToRun },

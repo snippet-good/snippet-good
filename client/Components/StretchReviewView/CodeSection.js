@@ -14,12 +14,12 @@ import Button from '@material-ui/core/Button'
 import { codeSectionStyles } from './styles'
 
 class CodeSection extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       editorTheme: 'monokai',
-      code: '',
-      solution: '',
+      classroomCode: '',
+      solution: this.props.outlinedCode,
       codeResponse: '',
       codeError: '',
       fileGenerated: false
@@ -56,7 +56,7 @@ class CodeSection extends Component {
   render() {
     const {
       editorTheme,
-      code,
+      classroomCode,
       codeResponse,
       codeError,
       solution,
@@ -68,7 +68,7 @@ class CodeSection extends Component {
       handleChange,
       showSolution
     } = this
-    const { language, cohortStretchId } = this.props
+    const { language, cohortStretchId, jsxBarriers } = this.props
     return (
       <div>
         <Grid container>
@@ -92,7 +92,7 @@ class CodeSection extends Component {
                   color="primary"
                   runCode={runCodeBinded}
                   postPayload={{
-                    code,
+                    code: classroomCode,
                     language,
                     fileName:
                       language === 'javascript' ? '' : `file-${cohortStretchId}`
@@ -107,11 +107,18 @@ class CodeSection extends Component {
           </Grid>
         </Grid>
         <CommonEditorAndOutput
-          codeTargetName="code"
+          codeTargetName="classroomCode"
           fileName={`/temp/file-${cohortStretchId}.html`}
           initialCode={solution}
           handleCodeChange={handleChange}
-          {...{ language, editorTheme, fileGenerated, codeResponse, codeError }}
+          {...{
+            language,
+            editorTheme,
+            fileGenerated,
+            codeResponse,
+            codeError,
+            jsxBarriers
+          }}
         />
       </div>
     )

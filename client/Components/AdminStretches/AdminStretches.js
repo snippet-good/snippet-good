@@ -11,6 +11,8 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import Tooltip from '@material-ui/core/Tooltip'
 
@@ -130,11 +132,16 @@ class AdminStretches extends Component {
 
   render() {
     const { searchTerm, currentTab } = this.state
-    const { stretches, cohorts, cohortStretches } = this.props
-    const currentStretches =
+    const { stretches, cohorts, cohortStretches, userDetails } = this.props
+    let currentStretches =
       this.state.currentStretches.length > 0
         ? this.state.currentStretches
         : stretches
+    currentStretches = currentStretches.filter(stretch => {
+      return currentTab === 0
+        ? stretch.authorId === userDetails.id
+        : stretch.authorId !== userDetails.id
+    })
 
     const allCategories = []
     stretches.map(stretch => allCategories.push(stretch.categoryName))
@@ -250,6 +257,21 @@ class AdminStretches extends Component {
           <Typography variant="h6" id="tableTitle">
             Stretch Inventory
           </Typography>
+
+          {
+            <Tabs
+              value={currentTab}
+              onChange={(event, tab) => this.setState({ currentTab: tab })}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              style={{ marginBottom: '2em' }}
+            >
+              <Tab label="Stretches Created By You" />
+              <Tab label="Other Stretches" />
+            </Tabs>
+          }
+
           <Table>
             <TableHead>
               <TableRow>
@@ -310,12 +332,14 @@ const mapStateToProps = ({
   categories,
   stretches,
   cohorts,
-  cohortStretches
+  cohortStretches,
+  userDetails
 }) => ({
   categories,
   stretches,
   cohorts,
-  cohortStretches
+  cohortStretches,
+  userDetails
 })
 
 const mapDispatchToProps = dispatch => {
