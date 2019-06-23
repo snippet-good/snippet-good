@@ -18,7 +18,6 @@ const addClosingCurlyBracket = (editor, editorSession) => {
 }
 
 export const excludeCodePromptInStretchAnswer = (
-  { codePromptRowCount, editor },
   editorSession,
   codeTargetName,
   endBarrierRegEx,
@@ -26,22 +25,12 @@ export const excludeCodePromptInStretchAnswer = (
   initialCode
 ) => {
   const currentCode = initialCode || editorSession.getValue()
-  if (codeTargetName === 'authorSolution' && currentCode) {
+  if (currentCode) {
     return currentCode.slice(
       startBarrierData.length,
       currentCode.search(endBarrierRegEx)
     )
   }
-
-  let documentRowCount = editorSession.getLength()
-  const arrayOfStretchLines = editorSession.getLines(
-    codePromptRowCount,
-    documentRowCount
-  )
-  return arrayOfStretchLines.reduce((acc, line) => {
-    acc += `${line} \n`
-    return acc
-  }, [])
 }
 
 const configEditor = function(
@@ -49,8 +38,7 @@ const configEditor = function(
   { editorSession, selection },
   userOptions,
   { handleCodeChange, changeCodeToRun },
-  codeTargetName,
-  codePromptRowCount
+  codeTargetName
 ) {
   const {
     initialCode,
@@ -75,6 +63,9 @@ const configEditor = function(
     enableSnippets: true
   })
 
+  const codeHasAddedBehavior =
+    codeTargetName === 'authorSolution' ||
+    codeTargetName.startsWith('studentAnswer')
   selection.on('changeCursor', () => {
     if (endBarrierRegEx) {
       const currentCode = editorSession.getValue()
@@ -84,10 +75,7 @@ const configEditor = function(
         editor.setReadOnly(false)
       }
 
-      if (
-        ['studentAnswer', 'authorSolution'].includes(codeTargetName) &&
-        currentCode
-      ) {
+      if (codeHasAddedBehavior && currentCode) {
         const rg = currentCode.split('\n')[editor.getCursorPosition().row]
         if (rg && rg.search(endBarrierRegEx) >= 0) {
           editor.setReadOnly(true)
@@ -101,9 +89,8 @@ const configEditor = function(
       target: {
         name: codeTargetName,
         value: `${
-          ['studentAnswer', 'authorSolution'].includes(codeTargetName)
+          codeHasAddedBehavior
             ? excludeCodePromptInStretchAnswer(
-                { codePromptRowCount, editor },
                 editorSession,
                 codeTargetName,
                 endBarrierRegEx,
@@ -113,7 +100,7 @@ const configEditor = function(
         }`
       }
     })
-    if (['studentAnswer', 'authorSolution'].includes(codeTargetName)) {
+    if (['authorSolution', 'studentAnswerRun'].includes(codeTargetName)) {
       changeCodeToRun(editorSession.getValue())
     }
   })

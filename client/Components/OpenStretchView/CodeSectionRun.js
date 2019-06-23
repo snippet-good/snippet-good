@@ -104,7 +104,7 @@ class CodeSectionRun extends Component {
           </Grid>
         </Grid>
         <CommonEditorAndOutput
-          codeTargetName="studentAnswer"
+          codeTargetName="studentAnswerRun"
           fileName={`/temp/file-${cohortStretchId}-${userDetails.id}.html`}
           initialCode={solutionAnnonated}
           handleCodeChange={({ target }) => setStretchAnswer(target.value)}

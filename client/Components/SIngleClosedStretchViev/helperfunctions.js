@@ -1,5 +1,51 @@
 import moment from 'moment'
 
+const generateListOfSolutions = (
+  cohortStretches,
+  stretchId,
+  cohortId,
+  authorSolution
+) => {
+  let solutions = cohortStretches
+    .filter(cs => cs.stretchId === stretchId && cs.cohortSolution)
+    .map(cs => cs.cohortSolution)
+  let clickedCohortSolution = cohortStretches.find(
+    cs => cs.cohortId === cohortId
+  ).cohortSolution
+
+  let otherSolutionNumber = 1
+  solutions = [...solutions, authorSolution]
+    .reduce((acc, value) => {
+      console.log(acc)
+      if (!acc.includes(value)) acc.push(value)
+      return acc
+    }, [])
+    .reduce((acc, solution) => {
+      let dropdownTitle = ''
+      if ([clickedCohortSolution, authorSolution].includes(solution)) {
+        if (solution === clickedCohortSolution) {
+          dropdownTitle = 'Cohort'
+        }
+        if (solution === authorSolution) {
+          dropdownTitle = `${dropdownTitle}${
+            dropdownTitle === 'Cohort' ? '/' : ''
+          }Author`
+        }
+        dropdownTitle = `${dropdownTitle} Solution`
+      } else {
+        dropdownTitle = `Other Solution #${otherSolutionNumber}`
+        ++otherSolutionNumber
+      }
+      acc.push({ solution, dropdownTitle })
+      return acc
+    }, [])
+
+  return solutions.sort((a, b) => {
+    if (a.dropdownTitle.startsWith('Cohort')) return -1
+    return a.dropdownTitle - b.dropdownTitle
+  })
+}
+
 export const getStretchAnswerMetaData = (
   stretchAnswer,
   stretches,
@@ -27,22 +73,16 @@ export const getStretchAnswerMetaData = (
     title,
     textPrompt,
     codePrompt,
-    language
+    language,
+    authorSolution
   } = stretches.find(s => s.id === stretchId)
 
-  const solutions = cohortStretches
-    .filter(cs => cs.stretchId === stretchId)
-    .map(cs => {
-      return {
-        solution: cs.solution,
-        dropdownTitle:
-          cs.cohortId === cohortId ? 'Cohort Solution' : cs.cohortName
-      }
-    })
-    .sort((a, b) => {
-      if (a.dropdownTitle === 'Cohort Solution') return -1
-      return a.dropdownTitle - b.dropdownTitle
-    })
+  let solutions = generateListOfSolutions(
+    cohortStretches,
+    stretchId,
+    cohortId,
+    authorSolution
+  )
 
   const stretchMetaData = {
     stretchAnswerId: id,

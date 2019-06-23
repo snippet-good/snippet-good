@@ -24,6 +24,7 @@ class AdminStretches extends Component {
       filterCategoryNames: [],
       selectedAuthor: '',
       currentStretches: [],
+      currentTab: 0,
 
       // The below two keys are for the StretchScheduler modal.
       modalIsOpen: false,
@@ -128,7 +129,7 @@ class AdminStretches extends Component {
     this.setState({ modalIsOpen: true, selectedStretch })
 
   render() {
-    const { searchTerm } = this.state
+    const { searchTerm, currentTab } = this.state
     const { stretches, cohorts, cohortStretches } = this.props
     const currentStretches =
       this.state.currentStretches.length > 0
