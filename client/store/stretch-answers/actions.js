@@ -62,10 +62,11 @@ export const getAnswersOfCohortsOfStudentThunk = studentId => dispatch => {
 
 export const createStretchAnswerThunk = (
   newStretchAnswer,
+  attendance,
   adminIds
 ) => dispatch => {
   return axios
-    .post(`/api/stretch-answers/create`, { newStretchAnswer })
+    .post(`/api/stretch-answers/create`, { newStretchAnswer, attendance })
     .then(res => res.data)
     .then(stretchAnswer =>
       dispatch(createStretchAnswer(stretchAnswer, adminIds))
@@ -77,8 +78,8 @@ export const updateStretchAnswerThunk = (stretchAnswerId, updatedFields) => {
     return axios
       .put(`/api/stretch-answers/${stretchAnswerId}`, updatedFields)
       .then(res => res.data)
-      .then(stretchAnswer =>
+      .then(stretchAnswer => {
         dispatch(replaceStretchAnswer(stretchAnswerId, stretchAnswer, true))
-      )
+      })
   }
 }
