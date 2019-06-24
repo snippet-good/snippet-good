@@ -16,7 +16,7 @@ const runCode = function(postPayload) {
                 codeError: '',
                 fileGenerated: true
               }
-        this.setState(stateObject, () => console.log(this.state))
+        this.setState(stateObject)
       })
       .catch(({ response: { data } }) => {
         this.setState({ codeError: data, codeResponse: '' })

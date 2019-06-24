@@ -8,6 +8,7 @@ import StretchReviewView from '../StretchReviewView'
 import StudentClosedStretchView from '../SIngleClosedStretchViev'
 import StretchAnalytics from '../AdminAnalytics/StretchAnalytics'
 import CohortAnalytics from '../AdminAnalytics/CohortAnalytics'
+import CohortStretchCreation from '../CohortStretchCreation'
 
 class AdminController extends Component {
   render() {
@@ -33,6 +34,12 @@ class AdminController extends Component {
           render={routeProps => <SingleStretch mode="read" {...routeProps} />}
         />
 
+        <Route
+          exact
+          path="/admin/stretch/:stretchId/schedule"
+          component={CohortStretchCreation}
+        />
+
         {/* This route is JSBin-like classroom for admin to go over completed stretch */}
         <Route
           exact
@@ -49,18 +56,23 @@ class AdminController extends Component {
 
         {/* path to go to Admin stretch dashboard for a stretch  */}
 
-        <Route exact path="/admin/stretch/analytics/:id"
-          component={StretchAnalytics} />
+        <Route
+          exact
+          path="/admin/stretch/analytics/:id"
+          component={StretchAnalytics}
+        />
 
-        <Route exact path="/admin/cohort/analytics/:id"
-          component={CohortAnalytics} />
+        <Route
+          exact
+          path="/admin/cohort/analytics/:id"
+          component={CohortAnalytics}
+        />
 
         <Route
           exact
           path="/admin/stretch/analytics/"
           component={StretchAnalytics}
         />
-
       </div>
     )
   }

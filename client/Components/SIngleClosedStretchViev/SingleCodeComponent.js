@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { Component } from 'react'
 import axios from 'axios'
 import CodeEditor, {
@@ -66,6 +67,16 @@ class SingleCodeComponent extends Component {
     } = this.state
     const { editorTheme, editorId, language, stretchAnswerId } = this.props
     const { root } = editorsStyles()
+
+    let readOnlyLinesRegEx =
+      language === 'jsx'
+        ? {
+            render: /ReactDOM.render\(<App \/>,/,
+            string: /\/\/ Return component to render inside App component/,
+            appComponentStart: /const App = \(\) => {/,
+            appComponentEnd: /} \/\/ End Of App component/
+          }
+        : {}
     return (
       <Grid container>
         <Grid item xs={12}>
@@ -76,6 +87,7 @@ class SingleCodeComponent extends Component {
             editorId={editorId}
             initialCode={savedCode}
             language={language}
+            readOnlyLinesRegEx={readOnlyLinesRegEx}
           />
         </Grid>
         <Grid item xs={12} style={root}>

@@ -11,7 +11,6 @@ import InputLabel from '@material-ui/core/InputLabel'
 const CategorySelect = props => {
   const { categories, categoryId, style } = props
   const { handleChange } = props
-
   if (!categories) return null
 
   return (

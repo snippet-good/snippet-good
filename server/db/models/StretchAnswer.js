@@ -7,11 +7,7 @@ const StretchAnswer = db.define('stretchanswer', {
     primaryKey: true
   },
   body: {
-    type: db.Sequelize.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
+    type: db.Sequelize.TEXT
   },
   isSolved: {
     type: db.Sequelize.BOOLEAN

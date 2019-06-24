@@ -13,9 +13,7 @@ import { editorsStyles } from './styles'
 class CodeSection extends Component {
   constructor(props) {
     super(props)
-    const cohortSolution = this.props.solutions.find(
-      s => s.dropdownTitle === 'Cohort Solution'
-    )
+    const cohortSolution = this.props.solutions[0]
     this.state = {
       editorTheme: 'monokai',
       solution: cohortSolution ? cohortSolution.solution : ''
@@ -65,14 +63,14 @@ class CodeSection extends Component {
         <Grid container>
           <Grid item xs={6}>
             <SingleCodeComponent
-              savedCode={`${codePrompt}\n\n${studentAnswer}`}
+              savedCode={`// Code Prompt\n${codePrompt}\n\n// Your answer\n${studentAnswer}\n\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))`}
               editorId="student"
               {...{ stretchAnswerId, editorTheme, handleChange, language }}
             />
           </Grid>
           <Grid item xs={6}>
             <SingleCodeComponent
-              savedCode={`${codePrompt}\n\n${solution}`}
+              savedCode={`// Code Prompt\n${codePrompt}\n\n// Solution\n${solution}\n\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))`}
               editorId="admin"
               {...{ stretchAnswerId, editorTheme, handleChange, language }}
             />

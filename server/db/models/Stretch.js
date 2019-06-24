@@ -38,7 +38,7 @@ const Stretch = db.define('stretch', {
       min: 1
     }
   },
-  solution: {
+  authorSolution: {
     type: db.Sequelize.TEXT,
     defaultValue: `const solution = console.log('You did it!')`,
     allowNull: false,
