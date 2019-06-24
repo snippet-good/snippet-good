@@ -4,5 +4,5 @@ public/bundle.*
 .npmrc
 CoverageReport
 TempUserFiles/*
-
+.env
 !TempUserFiles/blank.txt
