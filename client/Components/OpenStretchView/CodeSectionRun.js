@@ -66,14 +66,29 @@ class CodeSectionRun extends Component {
       cohortStretchId,
       userDetails
     } = this.props
-    const startBarrierString = `${codePrompt}\n\n// Write your answer below this line --------------------------------\n`
-    const startBarrierData = {
-      length: startBarrierString.length,
-      numberOfLines: startBarrierString.split('\n').length - 2
+
+    let readOnlyLinesRegEx = {
+      solutionStart: /\/\/ Write your answer below this line/,
+      solutionEnd: /\/\/ Write your answer above this line/
     }
-    const endBarrierString = `// Write your answer above this line-----------------\n `
-    const endBarrierRegEx = /\/\/ Write your answer above this line-----------------/
-    const solutionAnnonated = `${startBarrierString}\n${endBarrierString}`
+
+    const jsxBarriers = {
+      string:
+        "\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))",
+      regExToCheck: {
+        render: /ReactDOM.render\(<App \/>,/,
+        string: /\/\/ Return component to render inside App component/,
+        appComponentStart: /const App = \(\) => {/,
+        appComponentEnd: /} \/\/ End Of App component/
+      }
+    }
+    if (language === 'jsx') {
+      readOnlyLinesRegEx = {
+        ...readOnlyLinesRegEx,
+        ...jsxBarriers.regExToCheck
+      }
+    }
+
     return (
       <div>
         <Grid container>
@@ -106,7 +121,9 @@ class CodeSectionRun extends Component {
         <CommonEditorAndOutput
           codeTargetName="studentAnswerRun"
           fileName={`/temp/file-${cohortStretchId}-${userDetails.id}.html`}
-          initialCode={solutionAnnonated}
+          initialCode={`// Code Prompt\n\n${codePrompt}\n\n// Write your answer below this line --------------------------------\n\n// Write your answer above this line----------\n${
+            language === 'jsx' ? jsxBarriers.string : ''
+          }`}
           handleCodeChange={({ target }) => setStretchAnswer(target.value)}
           changeCodeToRun={codeToRun => this.setState({ codeToRun })}
           {...{
@@ -115,8 +132,7 @@ class CodeSectionRun extends Component {
             fileGenerated,
             codeResponse,
             codeError,
-            startBarrierData,
-            endBarrierRegEx
+            readOnlyLinesRegEx
           }}
         />
       </div>

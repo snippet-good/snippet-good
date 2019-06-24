@@ -19,7 +19,10 @@ class CodeSection extends Component {
     this.state = {
       editorTheme: 'monokai',
       classroomCode: '',
-      solution: this.props.outlinedCode,
+      solution:
+        this.props.language === 'jsx'
+          ? "\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))"
+          : '',
       codeResponse: '',
       codeError: '',
       fileGenerated: false
@@ -50,7 +53,12 @@ class CodeSection extends Component {
   }
 
   showSolution = () => {
-    this.setState({ solution: this.props.solution })
+    this.setState(prevState => {
+      let solution = `// Code Prompt\n\n${this.props.codePrompt}\n\n${
+        this.props.solution
+      }${prevState.solution}`
+      return { solution }
+    })
   }
 
   render() {
@@ -68,7 +76,18 @@ class CodeSection extends Component {
       handleChange,
       showSolution
     } = this
-    const { language, cohortStretchId, jsxBarriers } = this.props
+    const { language, cohortStretchId } = this.props
+
+    let readOnlyLinesRegEx =
+      language === 'jsx'
+        ? {
+            render: /ReactDOM.render\(<App \/>,/,
+            string: /\/\/ Return component to render inside App component/,
+            appComponentStart: /const App = \(\) => {/,
+            appComponentEnd: /} \/\/ End Of App component/
+          }
+        : {}
+
     return (
       <div>
         <Grid container>
@@ -117,7 +136,7 @@ class CodeSection extends Component {
             fileGenerated,
             codeResponse,
             codeError,
-            jsxBarriers
+            readOnlyLinesRegEx
           }}
         />
       </div>

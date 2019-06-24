@@ -10,14 +10,10 @@ const CodeSectionNoRun = ({
 }) => {
   const [editorTheme, setEditorTheme] = useState('monokai')
 
-  const startBarrierString = `${codePrompt}\n\n// Write your answer below this line --------------------------------\n`
-  const startBarrierData = {
-    length: startBarrierString.length,
-    numberOfLines: startBarrierString.split('\n').length - 2
+  const readOnlyLinesRegEx = {
+    solutionStart: /\/\/ Write your answer below this line --------------------------------/
   }
-  const endBarrierString = `// Write your answer above this line-----------------\n `
-  const endBarrierRegEx = /\/\/ Write your answer above this line-----------------/
-  const solutionAnnonated = `${startBarrierString}\n${endBarrierString}`
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -29,9 +25,9 @@ const CodeSectionNoRun = ({
       <Grid item xs={12}>
         <CodeEditor
           codeTargetName="studentAnswerNoRun"
-          initialCode={solutionAnnonated}
+          initialCode={`// Code Prompt\n\n${codePrompt}\n\n// Write your answer below this line --------------------------------\n`}
           handleCodeChange={({ target }) => setStretchAnswer(target.value)}
-          {...{ language, editorTheme, startBarrierData, endBarrierRegEx }}
+          {...{ language, editorTheme, readOnlyLinesRegEx }}
         />
       </Grid>
     </Grid>

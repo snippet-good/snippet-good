@@ -21,8 +21,7 @@ class SingleStretch extends Component {
     title: 'Untitled',
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
-    codePrompt:
-      '// This is an example code prompt.\n// emxampleFunction(3) = 5',
+    codePrompt: '',
     authorSolution: '',
     difficulty: 3,
     minutes: '',
@@ -89,7 +88,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
-      data.codePrompt = `// Code Prompt\n${data.codePrompt}`
+      //data.codePrompt = `// Code Prompt\n${data.codePrompt}`
       this.props
         .createStretch({ ...data, authorId: this.props.userDetails.id })
         .then(({ newStretch: { id } }) =>

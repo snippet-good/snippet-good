@@ -17,62 +17,124 @@ const addClosingCurlyBracket = (editor, editorSession) => {
   }
 }
 
-export const excludeCodePromptInStretchAnswer = (
-  editorSession,
-  editor,
-  endBarrierRegEx,
-  startBarrierData,
-  initialCode
-) => {
-  const currentCode = initialCode || editorSession.getValue()
-  if (currentCode) {
-    return currentCode.slice(
-      startBarrierData.length,
-      currentCode.search(endBarrierRegEx)
-    )
-  }
-}
-
 const checkIfDeletingLineBetweenTwoReadOnlyLines = (
   editor,
   editorSession,
-  firstROLine,
-  secondROLine
+  readOnlyLinesRegEx
 ) => {
   const cursorRow = editor.getCursorPosition().row
   const codeSplitByLine = editorSession.getValue().split('\n')
-  console.log('checktifd', cursorRow, codeSplitByLine)
-  if (
-    codeSplitByLine[cursorRow].search(firstROLine) >= 0 &&
-    codeSplitByLine[cursorRow + 1].search(secondROLine) >= 0
-  ) {
-    editorSession.insert({ row: cursorRow + 1, column: 0 }, '\n')
+  let linesReadOnlyCount = 0
+  for (let key in readOnlyLinesRegEx) {
+    if (cursorRow === codeSplitByLine.length - 1) {
+      ++linesReadOnlyCount
+    } else {
+      const currentLineReadOnlyForCurrentRegEx =
+        codeSplitByLine[cursorRow].search(readOnlyLinesRegEx[key]) >= 0
+      const nextLineReadOnlyForCurrentRegEx =
+        codeSplitByLine[cursorRow + 1].search(readOnlyLinesRegEx[key]) >= 0
+      if (
+        currentLineReadOnlyForCurrentRegEx ||
+        nextLineReadOnlyForCurrentRegEx
+      ) {
+        ++linesReadOnlyCount
+      }
+    }
+    if (linesReadOnlyCount === 2) {
+      editorSession.insert({ row: cursorRow + 1, column: 0 }, '\n')
+      return
+    }
   }
 }
 
-const checkIfCurentLineReadOnly = (
-  currentLine,
-  language,
-  jsxBarriers,
-  endBarrierRegEx,
-  editor
+const splitAndSetCodePromptAndSolutionOnState = (
+  editorSession,
+  { codePrompt, solutionStart, solutionEnd },
+  handleCodeChange
 ) => {
-  let onJXSRenderLine = false
-  if (language === 'jsx') {
-    for (let key in jsxBarriers.regExToCheck) {
-      if (currentLine.search(jsxBarriers.regExToCheck[key]) >= 0) {
-        onJXSRenderLine = true
-        break
-      }
+  const codeSplitByLine = editorSession.getValue().split('\n')
+  const correspondingLineNumbers = {}
+  for (let i = 0; i < codeSplitByLine.length; ++i) {
+    if (codeSplitByLine[i].search(codePrompt) >= 0)
+      correspondingLineNumbers.codePrompt = i
+    if (codeSplitByLine[i].search(solutionStart) >= 0)
+      correspondingLineNumbers.solutionStart = i
+    if (codeSplitByLine[i].search(solutionEnd) >= 0)
+      correspondingLineNumbers.solutionEnd = i
+  }
+  handleCodeChange({
+    target: {
+      name: 'codePrompt',
+      value: codeSplitByLine
+        .slice(
+          correspondingLineNumbers.codePrompt + 1,
+          correspondingLineNumbers.solutionStart
+        )
+        .join('')
+    }
+  })
+  handleCodeChange({
+    target: {
+      name: 'authorSolution',
+      value: codeSplitByLine
+        .slice(
+          correspondingLineNumbers.solutionStart + 1,
+          correspondingLineNumbers.solutionEnd
+        )
+        .join('')
+    }
+  })
+}
+
+const getStudentAnswerPortion = (
+  editorSession,
+  { solutionStart, solutionEnd }
+) => {
+  const codeSplitByLine = editorSession.getValue().split('\n')
+  const codeSplitWithLineNumber = codeSplitByLine.map((el, idx) => ({
+    code: el,
+    lineNumber: idx
+  }))
+  let answerLineNumberEnd
+  const answerLineNumberStart =
+    codeSplitWithLineNumber.find(
+      element => element.code.search(solutionStart) >= 0
+    ).lineNumber + 1
+  if (solutionEnd) {
+    answerLineNumberEnd = codeSplitWithLineNumber.find(
+      element => element.code.search(solutionEnd) >= 0
+    ).lineNumber
+  }
+  return codeSplitByLine
+    .slice(
+      answerLineNumberStart,
+      solutionEnd ? answerLineNumberEnd : codeSplitByLine.length
+    )
+    .join('')
+}
+
+const studentAnswerCheckLineReadOnly = (
+  readOnlyLinesRegEx,
+  editor,
+  currentCode
+) => {
+  let lastLineCodePrompt = 0
+  for (let i = 0; i < currentCode.length; ++i) {
+    if (currentCode[i].search(readOnlyLinesRegEx.solutionStart) >= 0) {
+      lastLineCodePrompt = i
+      break
     }
   }
-  console.log('READONLY', currentLine, endBarrierRegEx)
-  if (
-    currentLine &&
-    ((endBarrierRegEx && currentLine.search(endBarrierRegEx) >= 0) ||
-      onJXSRenderLine)
-  ) {
+  if (editor.getCursorPosition().row <= lastLineCodePrompt)
     editor.setReadOnly(true)
+}
+
+const checkIfCurentLineReadOnly = (currentLine, readOnlyLinesRegEx, editor) => {
+  for (let key in readOnlyLinesRegEx) {
+    if (currentLine.search(readOnlyLinesRegEx[key]) >= 0) {
+      editor.setReadOnly(true)
+      return
+    }
   }
 }
 
@@ -83,15 +145,12 @@ const configEditor = function(
   { handleCodeChange, changeCodeToRun },
   codeTargetName
 ) {
-  console.log('at start of ocnfig editor')
   const {
     initialCode,
     editorTheme,
     language,
-    endBarrierRegEx,
-    startBarrierData,
-    jsxBarriers,
-    readOnly
+    readOnly,
+    readOnlyLinesRegEx
   } = userOptions
   editorSession.setMode(`ace/mode/${language}`)
   if (initialCode) editor.setValue(initialCode)
@@ -108,75 +167,61 @@ const configEditor = function(
     enableSnippets: true
   })
 
-  const codeHasAddedBehavior =
-    codeTargetName === 'authorSolution' ||
-    codeTargetName.startsWith('studentAnswer')
-
   selection.on('changeCursor', () => {
+    if (codeTargetName === 'readStretch') return
+    editor.setReadOnly(false)
     const currentCode = editorSession.getValue()
     const currentLine = currentCode.split('\n')[editor.getCursorPosition().row]
-    editor.setReadOnly(false)
-    if (codeHasAddedBehavior) {
-      if (editor.getCursorPosition().row <= this.state.firstLineCanEdit) {
-        editor.setReadOnly(true)
-      }
-
-      if (currentCode) {
-        checkIfCurentLineReadOnly(
-          currentLine,
-          language,
-          jsxBarriers,
-          endBarrierRegEx,
-          editor
+    if (
+      typeof readOnlyLinesRegEx === 'object' &&
+      readOnlyLinesRegEx !== null &&
+      Object.keys(readOnlyLinesRegEx).length
+    ) {
+      if (codeTargetName.startsWith('studentAnswer')) {
+        studentAnswerCheckLineReadOnly(
+          readOnlyLinesRegEx,
+          editor,
+          currentCode.split('\n')
         )
       }
-    }
-    if (codeTargetName === 'classroomCode') {
-      checkIfCurentLineReadOnly(
-        currentLine,
-        language,
-        jsxBarriers,
-        endBarrierRegEx,
-        editor
-      )
+      if (codeTargetName !== 'studentAnswerNoRun') {
+        checkIfCurentLineReadOnly(currentLine, readOnlyLinesRegEx, editor)
+      }
     }
   })
   editorSession.on('change', () => {
+    if (codeTargetName === 'readStretch') return
     addClosingCurlyBracket(editor, editorSession)
+    if (codeTargetName === 'createStretch') {
+      splitAndSetCodePromptAndSolutionOnState(
+        editorSession,
+        readOnlyLinesRegEx,
+        handleCodeChange
+      )
+    }
+
     handleCodeChange({
       target: {
         name: codeTargetName,
         value: `${
-          codeHasAddedBehavior
-            ? excludeCodePromptInStretchAnswer(
-                editorSession,
-                editor,
-                endBarrierRegEx,
-                startBarrierData
-              )
+          codeTargetName.startsWith('studentAnswer')
+            ? getStudentAnswerPortion(editorSession, readOnlyLinesRegEx)
             : editorSession.getValue()
         }`
       }
     })
-    if (['authorSolution', 'studentAnswerRun'].includes(codeTargetName)) {
+    if (
+      ['authorSolution', 'studentAnswerRun', 'createStretch'].includes(
+        codeTargetName
+      )
+    ) {
       changeCodeToRun(editorSession.getValue())
     }
-    if (language === 'jsx' && jsxBarriers) {
-      checkIfDeletingLineBetweenTwoReadOnlyLines(
-        editor,
-        editorSession,
-        jsxBarriers.regExToCheck.render,
-        jsxBarriers.regExToCheck.querySelector
-      )
-    }
-    if (language === 'javascript') {
-      checkIfDeletingLineBetweenTwoReadOnlyLines(
-        editor,
-        editorSession,
-        startBarrierData.lastLine,
-        endBarrierRegEx
-      )
-    }
+    checkIfDeletingLineBetweenTwoReadOnlyLines(
+      editor,
+      editorSession,
+      readOnlyLinesRegEx
+    )
   })
 }
 

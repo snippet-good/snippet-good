@@ -5,15 +5,12 @@ import configEditor from './configeditor'
 class AceEditor extends Component {
   constructor(props) {
     super(props)
-    console.log(props)
-    const { editorId, startBarrierData } = this.props
+
+    const { editorId } = this.props
     this.state = {
       editor: {},
       editorSession: {},
       selection: {},
-      firstLineCanEdit: startBarrierData
-        ? startBarrierData.numberOfLines || 0
-        : 0,
       editorId: editorId ? `ace-${editorId}` : 'ace'
     }
     this.configEditor = configEditor
@@ -28,10 +25,10 @@ class AceEditor extends Component {
       readOnly,
       initialCode,
       endBarrierRegEx,
-      startBarrierData,
       changeCodeToRun,
-      jsxBarriers
+      readOnlyLinesRegEx
     } = this.props
+
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
     const selection = editorSession.selection
@@ -43,8 +40,7 @@ class AceEditor extends Component {
         editorTheme,
         language,
         endBarrierRegEx,
-        startBarrierData,
-        jsxBarriers,
+        readOnlyLinesRegEx,
         readOnly: !!readOnly
       },
       { handleCodeChange, changeCodeToRun },
@@ -61,23 +57,14 @@ class AceEditor extends Component {
       readOnly,
       initialCode,
       codeTargetName,
-      endBarrierRegEx,
-      startBarrierData,
       handleCodeChange,
       changeCodeToRun,
-      jsxBarriers
+      readOnlyLinesRegEx
     } = this.props
 
     if (prevProps.language !== language && language !== '') {
       this.state.editorSession.setMode(`ace/mode/${language}`)
       this.state.editor.setValue('')
-    }
-    if (
-      startBarrierData &&
-      prevProps.startBarrierData.numberOfLines !==
-        startBarrierData.numberOfLines
-    ) {
-      this.setState({ firstLineCanEdit: startBarrierData.numberOfLines })
     }
     if (prevProps.initialCode !== initialCode && initialCode !== '') {
       this.state.editor.setValue(initialCode)
@@ -91,9 +78,7 @@ class AceEditor extends Component {
           initialCode,
           editorTheme,
           language,
-          endBarrierRegEx,
-          startBarrierData,
-          jsxBarriers,
+          readOnlyLinesRegEx,
           readOnly: !!readOnly
         },
         { handleCodeChange, changeCodeToRun },
@@ -106,12 +91,6 @@ class AceEditor extends Component {
     }
     if (prevProps.readOnly !== readOnly) {
       this.state.editor.setReadOnly(readOnly)
-    }
-  }
-
-  componentWillUnmount() {
-    if (typeof this.props.onUnmount === 'function') {
-      this.props.onUnmount()
     }
   }
 

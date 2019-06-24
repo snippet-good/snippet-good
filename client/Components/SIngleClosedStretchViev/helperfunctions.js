@@ -16,7 +16,6 @@ const generateListOfSolutions = (
   let otherSolutionNumber = 1
   solutions = [...solutions, authorSolution]
     .reduce((acc, value) => {
-      console.log(acc)
       if (!acc.includes(value)) acc.push(value)
       return acc
     }, [])

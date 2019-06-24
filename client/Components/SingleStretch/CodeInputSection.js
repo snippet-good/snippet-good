@@ -1,8 +1,7 @@
+/* eslint-disable complexity */
 import React, { Component } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
 import Grid from '@material-ui/core/Grid'
 import CodeEditor, {
   AuxillaryComponents,
@@ -20,7 +19,6 @@ class CodeInputSection extends Component {
   constructor() {
     super()
     this.state = {
-      currentTab: 0,
       codeToRun: '',
       codeResponse: '',
       codeError: '',
@@ -47,116 +45,85 @@ class CodeInputSection extends Component {
 
   render() {
     const { runCodeBinded, clearCodeResultsBinded } = this
-    const { currentTab, codeResponse, codeError, fileGenerated } = this.state
+    const { codeResponse, codeError, fileGenerated } = this.state
     const {
       initialCodePrompt,
       initialSolution,
       language,
       mode,
       handleCodeChange,
-      userDetails,
-      authorSolution,
-      codePrompt
+      userDetails
     } = this.props
-    const startBarrierString = `// Code Prompt\n${initialCodePrompt}\n\n// Write the soluton below this line --------------------------------\n`
-    const startBarrierData = {
-      length: startBarrierString.length,
-      numberOfLines: startBarrierString.split('\n').length - 2,
-      lastLine:
-        'Write the soluton below this line --------------------------------'
+
+    let readOnlyLinesRegEx = {
+      codePrompt: /\/\/ Write the code prompt below this line/,
+      solutionStart: /\/\/ Write the solution below this line/,
+      solutionEnd: /\/\/ Write the solution above this line/
     }
-    const endBarrierString = `// Write the solution above this line-----------------\n `
-    const endBarrierRegEx = /\/\/ Write the solution above this line-----------------/
+
     const jsxBarriers = {
       string:
-        "\n//Put component to render as first argument in ReactDOM.render\nReactDOM.render(\n\n,document.querySelector('#app'))",
+        "\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))",
       regExToCheck: {
-        render: /ReactDOM.render\(/,
-        querySelector: /,document.querySelector\('#app'\)\)/,
-        string: /\/\/Put component to render as first argument in ReactDOM.render/
+        render: /ReactDOM.render\(<App \/>,/,
+        string: /\/\/ Return component to render inside App component/,
+        appComponentStart: /const App = \(\) => {/,
+        appComponentEnd: /} \/\/ End Of App component/
       }
     }
-    const solutionAnnonated = `${startBarrierString}${initialSolution}\n${endBarrierString}${
-      language === 'jsx' ? jsxBarriers.string : ''
-    }`
+    if (language === 'jsx') {
+      readOnlyLinesRegEx = {
+        ...readOnlyLinesRegEx,
+        ...jsxBarriers.regExToCheck
+      }
+    }
+
+    let solutionAnnonated
+    if (mode === 'create') {
+      solutionAnnonated = `// Write the code prompt below this line------\n\n${initialCodePrompt}// Write the solution below this line---------\n\n${initialSolution}// Write the solution above this line----------\n${
+        language === 'jsx' ? jsxBarriers.string : ''
+      }`
+    } else if (mode === 'read') {
+      solutionAnnonated = `// Code Prompt------\n\n${initialCodePrompt}\n\n// Author Solution---------\n\n${initialSolution}`
+    } else if (mode === 'update') {
+      solutionAnnonated = `// Write the code prompt below this line------\n\n${initialCodePrompt}\n\n// Write the solution below this line---------\n\n${initialSolution}\n\n// Write the solution above this line----------\n${
+        language === 'jsx' ? jsxBarriers.string : ''
+      }`
+    }
     return (
       <Grid container>
         <Grid item xs={12}>
-          <Tabs
-            value={currentTab}
-            onChange={(event, tab) => this.setState({ currentTab: tab })}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-            style={{ marginBottom: '2em' }}
-          >
-            <Tab label="Code Prompt" />
-            <Tab label="Solution" />
-          </Tabs>
-
-          <Grid item xs={12}>
-            {currentTab === 0 && (
-              <CodeEditor
-                initialCode={initialCodePrompt}
-                codeTargetName="codePrompt"
-                handleCodeChange={handleCodeChange}
-                changeCodeToRun={codeToRun => this.setState({ codeToRun })}
-                language={language}
-                readOnly={mode === 'read'}
-                startBarrierData={startBarrierData}
-                onUnmount={() =>
-                  handleCodeChange({
-                    target: { name: 'initialCodePrompt', value: codePrompt }
-                  })
-                }
-              />
-            )}
-            {currentTab === 1 && (
-              <Grid container>
-                <Grid item xs={12}>
-                  <RunCodeButton
-                    color="primary"
-                    runCode={runCodeBinded}
-                    postPayload={{
-                      code: this.state.codeToRun,
-                      language,
-                      fileName:
-                        language === 'javascript'
-                          ? ''
-                          : `file-${userDetails.id}`
-                    }}
-                  />
-                  <ClearCodeResultsButton
-                    color="secondary"
-                    clearCodeResults={clearCodeResultsBinded}
-                  />
-                </Grid>
-                <CommonEditorAndOutput
-                  codeTargetName="authorSolution"
-                  initialCode={solutionAnnonated}
-                  editorTheme="monokai"
-                  fileName={`/temp/file-${userDetails.id}.html`}
-                  onUnmount={() =>
-                    handleCodeChange({
-                      target: { name: 'initialSolution', value: authorSolution }
-                    })
-                  }
-                  changeCodeToRun={codeToRun => this.setState({ codeToRun })}
-                  {...{
-                    language,
-                    fileGenerated,
-                    codeResponse,
-                    codeError,
-                    handleCodeChange,
-                    endBarrierRegEx,
-                    startBarrierData,
-                    jsxBarriers
-                  }}
-                />
-              </Grid>
-            )}
-          </Grid>
+          <RunCodeButton
+            color="primary"
+            runCode={runCodeBinded}
+            postPayload={{
+              code: this.state.codeToRun,
+              language,
+              fileName:
+                language === 'javascript' ? '' : `file-${userDetails.id}`
+            }}
+          />
+          <ClearCodeResultsButton
+            color="secondary"
+            clearCodeResults={clearCodeResultsBinded}
+          />
         </Grid>
+        <CommonEditorAndOutput
+          codeTargetName={mode === 'read' ? 'readStretch' : 'createStretch'}
+          initialCode={solutionAnnonated}
+          editorTheme="monokai"
+          fileName={`/temp/file-${userDetails.id}.html`}
+          changeCodeToRun={codeToRun => this.setState({ codeToRun })}
+          readOnly={mode === 'read'}
+          {...{
+            language,
+            fileGenerated,
+            codeResponse,
+            codeError,
+            handleCodeChange,
+            readOnlyLinesRegEx
+          }}
+        />
       </Grid>
     )
   }

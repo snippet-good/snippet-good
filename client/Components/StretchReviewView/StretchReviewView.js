@@ -23,16 +23,6 @@ const StretchReviewView = ({
   } = attributes
   const { language } = otherStretchFields
 
-  const jsxBarriers = {
-    string:
-      "\n//Put component to render as first argument in ReactDOM.render\nReactDOM.render(\n\n,document.querySelector('#app'))",
-    regExToCheck: {
-      render: /ReactDOM.render\(/,
-      querySelector: /,document.querySelector\('#app'\)\)/,
-      string: /\/\/Put component to render as first argument in ReactDOM.render/
-    }
-  }
-
   return (
     <div>
       <GeneralInfo attributes={otherStretchFields} />
@@ -53,12 +43,10 @@ const StretchReviewView = ({
         </Grid>
         <Grid item xs={12}>
           <CodeSection
-            outlinedCode={language === 'jsx' ? jsxBarriers.string : ''}
-            solution={`${codePrompt}\n\n${currentCohortStretch.cohortSolution ||
-              authorSolution}\n${language === 'jsx' ? jsxBarriers.string : ''}`}
+            codePrompt={codePrompt}
+            solution={currentCohortStretch.cohortSolution || authorSolution}
             language={language}
             cohortStretchId={cohortStretchId}
-            jsxBarriers={jsxBarriers}
           />
         </Grid>
       </Grid>
