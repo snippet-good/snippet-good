@@ -3,6 +3,7 @@ const path = require('path')
 const volleyball = require('volleyball')
 const session = require('express-session')
 const app = express()
+require('dotenv').config()
 
 //setting up express-session, volleyball logging, json parsing, and serving up static files
 app.use(

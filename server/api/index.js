@@ -20,5 +20,6 @@ router.use('/comments', require('./comments'))
 
 // Misc. API
 router.use('/code', require('./code-editor'))
+router.use('/env', require('./env'))
 
 module.exports = router
