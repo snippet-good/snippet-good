@@ -100,7 +100,7 @@ const createStretchObjects = (userIds, categoryIds) => {
     let stretch = {
       title: words(),
       textPrompt: paragraph(),
-      codePrompt: `${paragraph()}\n \n/*your code below --------------------------------------------------------------*/`,
+      codePrompt: paragraph(),
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
       minutes: getRandomArrayEntry([2]),
