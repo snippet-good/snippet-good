@@ -116,6 +116,7 @@ const OpenStretchView = ({
         action={submitStretch}
         setModalClosed={() => setModalOpen(true)}
         showNoButton={false}
+        isGiphy={true}
       />
       <Paper className={classes.root}>
         <Typography variant="h5" component="h3">
@@ -143,7 +144,6 @@ const OpenStretchView = ({
           )}
         </Paper>
       </Paper>
-
       {myCohortStretch &&
         (!myCohortStretch.allowAnswersToBeRun ? (
           <CodeSectionNoRun
@@ -160,8 +160,9 @@ const OpenStretchView = ({
         ))}
 
       <Button
-        onClick={() =>
-          submitStretch(stretchAnswer, myStretch, userDetails, history)
+        onClick={
+          () => setModalOpen(true)
+          //submitStretch(stretchAnswer, myStretch, userDetails, history)
         }
       >
         Submit
