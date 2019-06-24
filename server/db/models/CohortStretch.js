@@ -22,12 +22,7 @@ const CohortStretch = db.define('cohortstretch', {
     }
   },
   cohortSolution: {
-    type: db.Sequelize.TEXT,
-    defaultValue: `const solution = console.log('Default solution for a cohort stretch. You did it!')`,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
+    type: db.Sequelize.TEXT
   },
   startTimer: {
     type: db.Sequelize.DATE

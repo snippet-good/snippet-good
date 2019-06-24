@@ -132,7 +132,13 @@ class AdminStretches extends Component {
 
   render() {
     const { searchTerm, currentTab } = this.state
-    const { stretches, cohorts, cohortStretches, userDetails } = this.props
+    const {
+      stretches,
+      cohorts,
+      cohortStretches,
+      userDetails,
+      history
+    } = this.props
     let currentStretches =
       this.state.currentStretches.length > 0
         ? this.state.currentStretches
@@ -311,7 +317,15 @@ class AdminStretches extends Component {
                       >
                         <Button
                           color="secondary"
-                          onClick={() => handleModalOpen(stretch)}
+                          onClick={() => {
+                            if (currentTab === 0) {
+                              handleModalOpen(stretch)
+                            } else {
+                              history.push(
+                                `/admin/stretch/${stretch.id}/schedule`
+                              )
+                            }
+                          }}
                         >
                           Schedule
                         </Button>

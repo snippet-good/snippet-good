@@ -113,11 +113,7 @@ const getStudentAnswerPortion = (
     .join('')
 }
 
-const studentAnswerCheckLineReadOnly = (
-  readOnlyLinesRegEx,
-  editor,
-  currentCode
-) => {
+const checkIfCursorInCodePrompt = (readOnlyLinesRegEx, editor, currentCode) => {
   let lastLineCodePrompt = 0
   for (let i = 0; i < currentCode.length; ++i) {
     if (currentCode[i].search(readOnlyLinesRegEx.solutionStart) >= 0) {
@@ -177,8 +173,11 @@ const configEditor = function(
       readOnlyLinesRegEx !== null &&
       Object.keys(readOnlyLinesRegEx).length
     ) {
-      if (codeTargetName.startsWith('studentAnswer')) {
-        studentAnswerCheckLineReadOnly(
+      if (
+        codeTargetName.startsWith('studentAnswer') ||
+        codeTargetName === 'cohortStretchCreation'
+      ) {
+        checkIfCursorInCodePrompt(
           readOnlyLinesRegEx,
           editor,
           currentCode.split('\n')
@@ -204,16 +203,20 @@ const configEditor = function(
       target: {
         name: codeTargetName,
         value: `${
-          codeTargetName.startsWith('studentAnswer')
+          codeTargetName.startsWith('studentAnswer') ||
+          codeTargetName === 'cohortStretchCreation'
             ? getStudentAnswerPortion(editorSession, readOnlyLinesRegEx)
             : editorSession.getValue()
         }`
       }
     })
     if (
-      ['authorSolution', 'studentAnswerRun', 'createStretch'].includes(
-        codeTargetName
-      )
+      [
+        'authorSolution',
+        'studentAnswerRun',
+        'createStretch',
+        'cohortStretchCreation'
+      ].includes(codeTargetName)
     ) {
       changeCodeToRun(editorSession.getValue())
     }

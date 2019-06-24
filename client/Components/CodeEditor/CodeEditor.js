@@ -24,7 +24,6 @@ class AceEditor extends Component {
       codeTargetName,
       readOnly,
       initialCode,
-      endBarrierRegEx,
       changeCodeToRun,
       readOnlyLinesRegEx
     } = this.props
@@ -32,6 +31,7 @@ class AceEditor extends Component {
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
     const selection = editorSession.selection
+    console.log('in config')
     this.configEditor(
       editor,
       { editorSession, selection },
@@ -39,7 +39,6 @@ class AceEditor extends Component {
         initialCode,
         editorTheme,
         language,
-        endBarrierRegEx,
         readOnlyLinesRegEx,
         readOnly: !!readOnly
       },
@@ -82,8 +81,7 @@ class AceEditor extends Component {
           readOnly: !!readOnly
         },
         { handleCodeChange, changeCodeToRun },
-        codeTargetName,
-        0
+        codeTargetName
       )
     }
     if (prevProps.editorTheme !== editorTheme) {
