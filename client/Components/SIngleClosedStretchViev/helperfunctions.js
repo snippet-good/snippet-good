@@ -38,10 +38,9 @@ const generateListOfSolutions = (
       acc.push({ solution, dropdownTitle })
       return acc
     }, [])
-
   return solutions.sort((a, b) => {
     if (a.dropdownTitle.startsWith('Cohort')) return -1
-    return a.dropdownTitle - b.dropdownTitle
+    return b.dropdownTitle - a.dropdownTitle
   })
 }
 

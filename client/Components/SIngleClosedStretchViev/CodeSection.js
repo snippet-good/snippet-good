@@ -13,9 +13,7 @@ import { editorsStyles } from './styles'
 class CodeSection extends Component {
   constructor(props) {
     super(props)
-    const cohortSolution = this.props.solutions.find(s =>
-      s.dropdownTitle.startsWith('Cohort')
-    )
+    const cohortSolution = this.props.solutions[0]
     this.state = {
       editorTheme: 'monokai',
       solution: cohortSolution ? cohortSolution.solution : ''

@@ -90,7 +90,6 @@ class CommonCodeSection extends Component {
         ...jsxBarriers.regExToCheck
       }
     }
-    console.log(codeTargetName)
 
     return (
       <div>

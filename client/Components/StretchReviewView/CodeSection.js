@@ -53,10 +53,14 @@ class CodeSection extends Component {
   }
 
   showSolution = () => {
-    this.setState(prevState => {
-      let solution = `// Code Prompt\n\n${this.props.codePrompt}\n\n${
-        this.props.solution
-      }${prevState.solution}`
+    this.setState(() => {
+      let solution = `// Code Prompt\n\n${
+        this.props.codePrompt
+      }\n\n// Solution\n\n${this.props.solution}${
+        this.props.language === 'jsx'
+          ? "\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))"
+          : ''
+      }`
       return { solution }
     })
   }

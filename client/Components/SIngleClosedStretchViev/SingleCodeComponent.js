@@ -77,7 +77,6 @@ class SingleCodeComponent extends Component {
             appComponentEnd: /} \/\/ End Of App component/
           }
         : {}
-
     return (
       <Grid container>
         <Grid item xs={12}>

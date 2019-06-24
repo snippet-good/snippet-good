@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { createCohortStretch } from '../../store/cohort-stretches/actions'
 

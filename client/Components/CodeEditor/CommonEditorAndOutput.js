@@ -18,7 +18,8 @@ const CommonEditorAndOutput = props => {
     handleCodeChange,
     changeCodeToRun,
     readOnlyLinesRegEx,
-    readOnly
+    readOnly,
+    editorId
   } = props
   return (
     <Grid container>
@@ -32,7 +33,8 @@ const CommonEditorAndOutput = props => {
             changeCodeToRun,
             language,
             readOnlyLinesRegEx,
-            readOnly
+            readOnly,
+            editorId
           }}
         />
       </Grid>

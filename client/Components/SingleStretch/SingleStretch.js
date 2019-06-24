@@ -17,7 +17,7 @@ import { GeneralInfoStyles, SingleStretchStyles as styles } from './styles'
 
 class SingleStretch extends Component {
   state = {
-    mode: 'read',
+    mode: this.props.mode || 'read',
     title: 'Untitled',
     categoryId: '',
     textPrompt: 'This is an example text prompt.',

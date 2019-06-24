@@ -25,12 +25,17 @@ const checkIfDeletingLineBetweenTwoReadOnlyLines = (
   const cursorRow = editor.getCursorPosition().row
   const codeSplitByLine = editorSession.getValue().split('\n')
   let linesReadOnlyCount = 0
+  // eslint-disable-next-line guard-for-in
   for (let key in readOnlyLinesRegEx) {
-    if (cursorRow === codeSplitByLine.length - 1) {
-      ++linesReadOnlyCount
-    } else {
-      const currentLineReadOnlyForCurrentRegEx =
-        codeSplitByLine[cursorRow].search(readOnlyLinesRegEx[key]) >= 0
+    const currentLineReadOnlyForCurrentRegEx =
+      codeSplitByLine[cursorRow].search(readOnlyLinesRegEx[key]) >= 0
+    if (
+      cursorRow === codeSplitByLine.length - 1 &&
+      currentLineReadOnlyForCurrentRegEx
+    ) {
+      editorSession.insert({ row: cursorRow + 1, column: 0 }, '\n')
+      return
+    } else if (cursorRow < codeSplitByLine.length - 1) {
       const nextLineReadOnlyForCurrentRegEx =
         codeSplitByLine[cursorRow + 1].search(readOnlyLinesRegEx[key]) >= 0
       if (

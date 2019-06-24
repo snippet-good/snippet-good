@@ -5,7 +5,6 @@ import configEditor from './configeditor'
 class AceEditor extends Component {
   constructor(props) {
     super(props)
-
     const { editorId } = this.props
     this.state = {
       editor: {},
@@ -27,11 +26,9 @@ class AceEditor extends Component {
       changeCodeToRun,
       readOnlyLinesRegEx
     } = this.props
-
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
     const selection = editorSession.selection
-    console.log('in config')
     this.configEditor(
       editor,
       { editorSession, selection },
@@ -62,8 +59,8 @@ class AceEditor extends Component {
     } = this.props
 
     if (prevProps.language !== language && language !== '') {
+      this.state.editor.setValue(initialCode || '')
       this.state.editorSession.setMode(`ace/mode/${language}`)
-      this.state.editor.setValue('')
     }
     if (prevProps.initialCode !== initialCode && initialCode !== '') {
       this.state.editor.setValue(initialCode)

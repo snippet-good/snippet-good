@@ -63,13 +63,7 @@ const SingleCohortStretchTables = ({ cohort, cohortStretches, stretches }) => {
         const { key, title } = table
         return (
           <div key={key}>
-            <ListItem
-              button
-              onClick={() => {
-                console.log(expandedTable)
-                setExpandTable(!expandedTable)
-              }}
-            >
+            <ListItem button onClick={() => setExpandTable(!expandedTable)}>
               <Grid container>
                 <Grid item xs={6}>
                   <Typography variant="h6" id="tableTitle">

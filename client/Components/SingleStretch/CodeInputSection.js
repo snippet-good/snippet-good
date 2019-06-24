@@ -54,7 +54,6 @@ class CodeInputSection extends Component {
       handleCodeChange,
       userDetails
     } = this.props
-
     let readOnlyLinesRegEx = {
       codePrompt: /\/\/ Write the code prompt below this line/,
       solutionStart: /\/\/ Write the solution below this line/,
@@ -80,7 +79,8 @@ class CodeInputSection extends Component {
 
     let solutionAnnonated
     if (mode === 'create') {
-      solutionAnnonated = `// Write the code prompt below this line------\n\n${initialCodePrompt}// Write the solution below this line---------\n\n${initialSolution}// Write the solution above this line----------\n${
+      solutionAnnonated = `// Write the code prompt below this line------\n\n${initialCodePrompt}\n\n// Write the solution below this line---------\n\n${initialSolution ||
+        ''}\n// Write the solution above this line----------\n${
         language === 'jsx' ? jsxBarriers.string : ''
       }`
     } else if (mode === 'read') {
