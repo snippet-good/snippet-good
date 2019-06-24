@@ -1,19 +1,16 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import { Link } from 'react-router-dom'
-import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
 import { getAttendance } from '../../store/attendance/actions'
 import Grid from '@material-ui/core/Grid'
 import Calendar from 'react-calendar'
 import SingleCohortStretchTables from './SingleCohortStretchTables'
 import CohortStudents from './CohortStudents'
 import Attendance from './Attendance'
-
 
 class SingleCohort extends Component {
   state = {
@@ -51,12 +48,12 @@ class SingleCohort extends Component {
       >
         <Grid container spacing={2} style={{ width: '98%' }}>
           <Grid item xs={12}>
-            <Typography variant="h3">
-              {cohort.name}
-            </Typography>
-            <Link to={`/admin/cohort/analytics/${cohort.id}`}><Button variant="contained" color="primary">
-              Performance Analytics
-                </Button></Link>
+            <Typography variant="h3">{cohort.name}</Typography>
+            <Link to={`/admin/cohort/analytics/${cohort.id}`}>
+              <Button variant="contained" color="primary">
+                Performance Analytics
+              </Button>
+            </Link>
           </Grid>
           <Grid item xs={7}>
             <Grid item xs={12}>
@@ -91,22 +88,6 @@ class SingleCohort extends Component {
           </Grid>
 
           <Grid item xs={1} />
-
-          <Grid
-            item
-            xs={4}
-            style={{
-              height: '100vh',
-              display: 'flex'
-            }}
-          >
-            <div>
-              <Calendar
-                onChange={handleCalendarChange}
-                value={state.currentDate}
-              />
-            </div>
-          </Grid>
         </Grid>
       </div>
     )

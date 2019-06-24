@@ -1,19 +1,17 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { AuxillaryComponents, codeEditorFunctions } from '../CodeEditor'
-const { runCode, clearCodeResults } = codeEditorFunctions
-const {
-  ThemeSelector,
-  RunCodeButton,
-  ClearCodeResultsButton,
-  CommonEditorAndOutput
-} = AuxillaryComponents
+import functions from './functions'
+const { runCode, clearCodeResults } = functions
+import ThemeSelector from './ThemeSelector'
+import RunCodeButton from './RunCodeButton'
+import ClearCodeResultsButton from './ClearCodeResultsButton'
+import CommonEditorAndOutput from './CommonEditorAndOutput'
 
 import Grid from '@material-ui/core/Grid'
 import { codeSectionStyles } from '../StretchReviewView/styles'
 
-class CodeSectionRun extends Component {
+class CommonCodeSection extends Component {
   constructor() {
     super()
     this.state = {
@@ -38,11 +36,10 @@ class CodeSectionRun extends Component {
   removeTemporaryUserFiles() {
     const {
       stretch: { language },
-      cohortStretchId,
-      userDetails
+      fileName
     } = this.props
     if (language === 'jsx') {
-      axios.delete(`/api/code/file-${cohortStretchId}-${userDetails.id}`)
+      axios.delete(`/api/code/${fileName}`)
     }
   }
 
@@ -60,22 +57,27 @@ class CodeSectionRun extends Component {
     } = this.state
     const { runCodeBinded, clearCodeResultsBinded, handleChange } = this
     const {
-      setStretchAnswer,
-      stretchAnswer,
-      stretch: { language, codePrompt },
-      cohortStretchId,
-      userDetails
+      handleCodeChange,
+      //readOnlyLinesRegEx,
+      //jsxBarriers,
+      codeTargetName,
+      fileName,
+      stretch: { language, codePrompt }
+      // cohortStretchId,
+      //userDetails
     } = this.props
 
+    const codeCommentWord =
+      codeTargetName === 'studentAnswerRun' ? 'answer' : 'solution'
+
     let readOnlyLinesRegEx = {
-      solutionStart: /\/\/ Write your answer below this line/,
-      solutionEnd: /\/\/ Write your answer above this line/
+      solutionStart: `Write your ${codeCommentWord} below this line`
     }
 
     const jsxBarriers = {
-      string:
-        "\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))",
+      string: `// Write your ${codeCommentWord} above this line\n\n// Return component to render inside App component\nconst App = () => {\n\n} // End Of App component\n\nReactDOM.render(<App />,document.querySelector('#app'))`,
       regExToCheck: {
+        solutionEnd: `Write your ${codeCommentWord} above this line`,
         render: /ReactDOM.render\(<App \/>,/,
         string: /\/\/ Return component to render inside App component/,
         appComponentStart: /const App = \(\) => {/,
@@ -104,10 +106,7 @@ class CodeSectionRun extends Component {
                   postPayload={{
                     code: codeToRun,
                     language,
-                    fileName:
-                      language === 'javascript'
-                        ? ''
-                        : `file-${cohortStretchId}-${userDetails.id}`
+                    fileName: language === 'javascript' ? '' : fileName
                   }}
                 />
                 <ClearCodeResultsButton
@@ -119,19 +118,21 @@ class CodeSectionRun extends Component {
           </Grid>
         </Grid>
         <CommonEditorAndOutput
-          codeTargetName="studentAnswerRun"
-          fileName={`/temp/file-${cohortStretchId}-${userDetails.id}.html`}
-          initialCode={`// Code Prompt\n\n${codePrompt}\n\n// Write your answer below this line --------------------------------\n\n// Write your answer above this line----------\n${
+          //codeTargetName="studentAnswerRun"
+          fileName={`/temp/${fileName}.html`}
+          initialCode={`// Code Prompt\n\n/*${codePrompt}*/\n\n// Write your ${codeCommentWord} below this line --------------------------------\n\n${
             language === 'jsx' ? jsxBarriers.string : ''
           }`}
-          handleCodeChange={({ target }) => setStretchAnswer(target.value)}
+          // handleCodeChange={handleCodeChange}
           changeCodeToRun={codeToRun => this.setState({ codeToRun })}
           {...{
+            handleCodeChange,
             language,
             editorTheme,
             fileGenerated,
             codeResponse,
             codeError,
+            codeTargetName,
             readOnlyLinesRegEx
           }}
         />
@@ -145,4 +146,4 @@ const mapStateToProps = ({ stretches, userDetails }, { stretchId }) => ({
   userDetails
 })
 
-export default connect(mapStateToProps)(CodeSectionRun)
+export default connect(mapStateToProps)(CommonCodeSection)

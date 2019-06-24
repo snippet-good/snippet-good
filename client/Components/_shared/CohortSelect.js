@@ -9,7 +9,6 @@ import InputLabel from '@material-ui/core/InputLabel'
 const CohortSelect = props => {
   const { style, cohorts, cohortId } = props
   const { handleChange } = props
-
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div>

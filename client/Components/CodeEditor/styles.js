@@ -24,3 +24,12 @@ export const buttonsStyles = {
     marginBottom: '10px'
   }
 }
+
+export const codeSectionStyles = {
+  outputLabels: {
+    textAlign: 'center'
+  },
+  iframe: {
+    width: '100%'
+  }
+}

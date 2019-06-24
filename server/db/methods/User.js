@@ -26,11 +26,14 @@ User.getStudentsOfSingleAdmin = async function(adminId) {
   return students.map(s => s.format())
 }
 
+// This method is used to authenticate a user using bcrypt.
 User.prototype.authenticate = function(password) {
   return bcrypt.compare(password, this.password)
 }
 
+// This method is used to format the array of cohortUser objects into an array of cohort id's.
 User.prototype.format = function() {
+  if (!this.dataValues.cohortusers) return { ...this.dataValues, cohortIds: [] }
   const { cohortusers, ...studentValues } = this.dataValues
 
   return {
@@ -38,36 +41,3 @@ User.prototype.format = function() {
     cohortIds: cohortusers.map(cu => cu.cohortId)
   }
 }
-
-// const getStudentsOfSingleAdmin = function(adminId) {
-//   return User.findOne({
-//     where: { id: adminId },
-//     include: CohortUser
-//   })
-
-//     .then(user => user.cohortusers.map(cu => cu.cohortId))
-//     .then(cohortIds => {
-//       return this.findAll({
-//         where: { isAdmin: false },
-//         include: [
-//           {
-//             model: CohortUser,
-//             attributes: ['cohortId'],
-//             where: { cohortId: { [Op.in]: cohortIds } }
-//           }
-//         ]
-//       })
-//     })
-//     .then(students => {
-//       return students.map(s => {
-//         const values = s.get()
-//         const { cohortusers, ...studentValues } = values
-//         return {
-//           ...studentValues,
-//           cohortIds: cohortusers.map(cu => cu.cohortId)
-//         }
-//       })
-//     })
-// }
-
-// module.exports = { getStudentsOfSingleAdmin }

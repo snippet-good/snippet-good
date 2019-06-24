@@ -15,7 +15,6 @@ const DropdownSelect = props => {
     label
   } = props
   const { handleChange } = props
-
   if (!data) return null
 
   return (
@@ -41,7 +40,7 @@ const DropdownSelect = props => {
 
 DropdownSelect.defaultProps = {
   style: { width: '100%' },
-  handleChange: () => { }
+  handleChange: () => {}
 }
 
 export default DropdownSelect

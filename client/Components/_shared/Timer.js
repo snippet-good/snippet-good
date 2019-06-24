@@ -25,7 +25,7 @@ const Timer = ({
             : totalSecondsLeft - 1
           setTotalSecondsLeft(newTotalSecondsLeft)
         }, 1000)
-      } else if (totalSecondsLeft === 0 && action) {
+      } else if (totalSecondsLeft <= 0 && action) {
         action(...args)
       }
     }

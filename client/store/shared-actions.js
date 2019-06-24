@@ -58,11 +58,19 @@ export const openStretchProcessThunk = (
       .then(({ data }) => {
         dispatch(updateCohortStretch(cohortStretchId, data))
         dispatch(startStretchTimer(data))
+        setTimeout(() => {
+          dispatch(closeStretchProcess(data.id))
+        }, stretch.minutes * 1000 * 60)
       })
   }
 }
 
-const closeStretchesOverdue = (cohortStretch, stretch, dispatch) => {
+const peformActionOnopenStretchesOnPageLoad = (
+  cohortStretch,
+  stretch,
+  dispatch,
+  type
+) => {
   const totalSecondsLeft =
     stretch.minutes * 60 -
     moment
@@ -75,6 +83,13 @@ const closeStretchesOverdue = (cohortStretch, stretch, dispatch) => {
         status: 'closed'
       })
     )
+  }
+  if (type === 'admin') {
+    return setTimeout(() => {
+      dispatch(closeStretchProcess(cohortStretch.id))
+    }, 1000 * totalSecondsLeft)
+  } else {
+    return true
   }
 }
 
@@ -104,7 +119,12 @@ export const loadAdminRelatedDataThunk = adminId => {
       return Promise.all(
         openCohortStretches.map(cohortStretch => {
           const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
-          return closeStretchesOverdue(cohortStretch, stretch, dispatch)
+          return peformActionOnopenStretchesOnPageLoad(
+            cohortStretch,
+            stretch,
+            dispatch,
+            'admin'
+          )
         })
       )
     })
@@ -135,7 +155,12 @@ export const loadStudentRelatedDataThunk = studentId => {
       return Promise.all(
         openCohortStretches.map(cohortStretch => {
           const stretch = stretches.find(s => s.id === cohortStretch.stretchId)
-          return closeStretchesOverdue(cohortStretch, stretch, dispatch)
+          return peformActionOnopenStretchesOnPageLoad(
+            cohortStretch,
+            stretch,
+            dispatch,
+            'student'
+          )
         })
       )
     })

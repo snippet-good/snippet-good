@@ -100,10 +100,10 @@ const createStretchObjects = (userIds, categoryIds) => {
     let stretch = {
       title: words(),
       textPrompt: paragraph(),
-      codePrompt: `${paragraph()}\n \n/*your code below --------------------------------------------------------------*/`,
+      codePrompt: paragraph(),
       difficulty:
         Math.random() <= 0.7 ? getRandomArrayEntry([1, 2, 3, 4, 5]) : null,
-      minutes: getRandomArrayEntry([2]),
+      minutes: getRandomArrayEntry([1]),
       language: 'jsx',
       authorId: getRandomArrayEntry(userIds),
       categoryId: getRandomArrayEntry(categoryIds)
@@ -133,7 +133,7 @@ const createCohortStretchObjects = (cohortIds, stretchIds) => {
 
       let cohortStretch = {
         status,
-        allowAnswersToBeRun: Math.random() <= 0.5,
+        allowAnswersToBeRun: Math.random() <= 1,
         solution: paragraph(),
         cohortId: cohortIds[j],
         stretchId: getRandomArrayEntry(stretchIdsTemp),

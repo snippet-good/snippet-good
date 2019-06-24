@@ -19,6 +19,7 @@ import cohortStretches from './cohort-stretches/reducer'
 import comments from './comments/reducer'
 
 import flashMessages from './flash-message/reducer'
+import env from './env/reducer'
 
 const logger = createLogger({
   collapsed: true
@@ -41,7 +42,8 @@ const store = createStore(
     cohortStretches,
     comments,
 
-    flashMessages
+    flashMessages,
+    env
   }),
   applyMiddleware(socketMiddleware, thunk, logger)
 )

@@ -32,3 +32,13 @@ export const parseDateTime = datetime => {
     localDateTime.format('LL').split(',')[0]
   }`
 }
+
+export const sortData = (data, orderColumn, orderDirection) => {
+  return data.sort((a, b) => {
+    if (a[orderColumn] < b[orderColumn])
+      return orderDirection === 'desc' ? 1 : -1
+    if (a[orderColumn] > b[orderColumn])
+      return orderDirection === 'desc' ? -1 : 1
+    return 0
+  })
+}

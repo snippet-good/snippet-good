@@ -1,13 +1,16 @@
+/* eslint-disable complexity */
 import React, { Component } from 'react'
 import configEditor from './configeditor'
 
 class AceEditor extends Component {
   constructor(props) {
     super(props)
+    const { editorId } = this.props
     this.state = {
       editor: {},
       editorSession: {},
-      editorId: this.props.editorId ? `ace-${this.props.editorId}` : 'ace'
+      selection: {},
+      editorId: editorId ? `ace-${editorId}` : 'ace'
     }
     this.configEditor = configEditor
   }
@@ -19,32 +22,64 @@ class AceEditor extends Component {
       handleCodeChange,
       codeTargetName,
       readOnly,
-      initialCode
+      initialCode,
+      changeCodeToRun,
+      readOnlyLinesRegEx
     } = this.props
-
     const editor = ace.edit(this.state.editorId)
     const editorSession = editor.getSession()
-    const codePromptRowCount = initialCode ? initialCode.split('\n').length : ''
+    const selection = editorSession.selection
     this.configEditor(
       editor,
-      editorSession,
-      { initialCode, editorTheme, language, readOnly: !!readOnly },
-      handleCodeChange,
-      codeTargetName,
-      codePromptRowCount
+      { editorSession, selection },
+      {
+        initialCode,
+        editorTheme,
+        language,
+        readOnlyLinesRegEx,
+        readOnly: !!readOnly
+      },
+      { handleCodeChange, changeCodeToRun },
+      codeTargetName
     )
 
-    this.setState({ editor, editorSession })
+    this.setState({ editor, editorSession, selection })
   }
 
   componentDidUpdate(prevProps) {
-    const { language, editorTheme, readOnly, initialCode } = this.props
+    const {
+      language,
+      editorTheme,
+      readOnly,
+      initialCode,
+      codeTargetName,
+      handleCodeChange,
+      changeCodeToRun,
+      readOnlyLinesRegEx
+    } = this.props
+
     if (prevProps.language !== language && language !== '') {
+      this.state.editor.setValue(initialCode || '')
       this.state.editorSession.setMode(`ace/mode/${language}`)
-      this.state.editor.setValue('')
     }
     if (prevProps.initialCode !== initialCode && initialCode !== '') {
       this.state.editor.setValue(initialCode)
+      this.configEditor(
+        this.state.editor,
+        {
+          editorSession: this.state.editorSession,
+          selection: this.state.selection
+        },
+        {
+          initialCode,
+          editorTheme,
+          language,
+          readOnlyLinesRegEx,
+          readOnly: !!readOnly
+        },
+        { handleCodeChange, changeCodeToRun },
+        codeTargetName
+      )
     }
     if (prevProps.editorTheme !== editorTheme) {
       this.state.editor.setTheme(`ace/theme/${editorTheme}`)

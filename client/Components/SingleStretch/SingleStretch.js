@@ -10,24 +10,28 @@ import Typography from '@material-ui/core/Typography'
 
 import Controls from './Controls'
 import GeneralInfo from './GeneralInfo'
-import CodeEditor from '../CodeEditor'
 import StretchScheduler from '../_shared/StretchScheduler'
+import CodeInputSection from './CodeInputSection'
 
 import { GeneralInfoStyles, SingleStretchStyles as styles } from './styles'
 
 class SingleStretch extends Component {
   state = {
-    mode: 'read',
+    mode: this.props.mode || 'read',
     title: 'Untitled',
     categoryId: '',
     textPrompt: 'This is an example text prompt.',
-    codePrompt: '// This is an example code prompt.',
+    codePrompt: '',
+    authorSolution: '',
     difficulty: 3,
     minutes: '',
     language: 'javascript',
     authorId: '',
     isLoaded: false,
-    modalOpen: false
+    modalOpen: false,
+    initialCodePrompt:
+      '// This is an example code prompt.\n// emxampleFunction(3) = 5',
+    initalSolution: ''
   }
 
   // This method changes the mode of the view. The valid modes are 'read', 'update', and 'create'.
@@ -37,17 +41,24 @@ class SingleStretch extends Component {
     const { match, mode, stretches } = this.props
 
     let attributes = {}
-    if (match.params.id && stretches.length)
-      attributes = stretches.find(s => s.id === match.params.id)
-    this.setState({ mode, ...attributes, initialCode: attributes.codePrompt })
+    //if (match.params.id && stretches.length) {
+    const stretch = stretches.find(s => s.id === match.params.id) || {}
+    attributes = {
+      ...stretch,
+      initialCodePrompt: stretch.codePrompt || '',
+      initialSolution: stretch.authorSolution || ''
+    }
+    // }
+    this.setState({
+      mode,
+      ...attributes
+    })
   }
 
   handleChange = event => {
     const { name, value } = event.target
     this.setState({ [name]: value })
   }
-
-  handleCodeChange = codePrompt => this.setState({ codePrompt })
 
   // This function is called when SingleStretch is in 'create' or 'update' mode.
   handleSubmit = event => {
@@ -77,7 +88,7 @@ class SingleStretch extends Component {
     }
 
     if (this.state.mode === 'create') {
-      data.codePrompt += `\n \n/*your code below --------------------------------------------------------------*/`
+      //data.codePrompt = `// Code Prompt\n${data.codePrompt}`
       this.props
         .createStretch({ ...data, authorId: this.props.userDetails.id })
         .then(({ newStretch: { id } }) =>
@@ -114,8 +125,17 @@ class SingleStretch extends Component {
     const { state } = this
     const { handleSubmit, changeMode } = this
     const { handleChange, notScheduleStretch } = this
-    const { mode, authorId, language, modalOpen, stretchId } = state
-
+    const {
+      mode,
+      authorId,
+      language,
+      modalOpen,
+      stretchId,
+      initialCodePrompt,
+      initialSolution,
+      authorSolution,
+      codePrompt
+    } = state
     return (
       <div>
         <StretchScheduler
@@ -159,7 +179,6 @@ class SingleStretch extends Component {
                     label="Text Prompt"
                     value={state.textPrompt}
                     placeholder="Enter your written prompt here."
-                    helperText="This is to be substituted with a rich text editor."
                     fullWidth
                     multiline={true}
                     margin="normal"
@@ -172,12 +191,16 @@ class SingleStretch extends Component {
               </Grid>
 
               <Grid item xs={12}>
-                <CodeEditor
-                  initialCode={state.initialCode}
-                  codeTargetName="codePrompt"
+                <CodeInputSection
                   handleCodeChange={handleChange}
-                  language={language}
-                  readOnly={mode === 'read'}
+                  {...{
+                    initialCodePrompt,
+                    initialSolution,
+                    language,
+                    mode,
+                    authorSolution,
+                    codePrompt
+                  }}
                 />
               </Grid>
             </Grid>

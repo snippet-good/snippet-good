@@ -1,11 +1,9 @@
-import moment from 'moment'
-
 const getStretchAndFormat = (stretches, stretchId) => {
   const { id, ...otherStretchFields } = stretches.find(s => s.id === stretchId)
   return { stretchId: id, ...otherStretchFields }
 }
 
-const formatCohortStretch = (cohortStretch, stretches) => {
+export const formatCohortStretch = (cohortStretch, stretches) => {
   const { id, stretchId, ...otherFields } = cohortStretch
   return {
     cohortStretchId: id,

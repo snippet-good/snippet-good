@@ -9,6 +9,11 @@ const CodeSectionNoRun = ({
   stretch: { language, codePrompt }
 }) => {
   const [editorTheme, setEditorTheme] = useState('monokai')
+
+  const readOnlyLinesRegEx = {
+    solutionStart: /\/\/ Write your answer below this line --------------------------------/
+  }
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -19,11 +24,10 @@ const CodeSectionNoRun = ({
       </Grid>
       <Grid item xs={12}>
         <CodeEditor
-          codeTargetName="code"
-          initialCode={codePrompt}
-          editorTheme={editorTheme}
+          codeTargetName="studentAnswerNoRun"
+          initialCode={`// Code Prompt\n\n${codePrompt}\n\n// Write your answer below this line --------------------------------\n`}
           handleCodeChange={({ target }) => setStretchAnswer(target.value)}
-          language={language}
+          {...{ language, editorTheme, readOnlyLinesRegEx }}
         />
       </Grid>
     </Grid>
