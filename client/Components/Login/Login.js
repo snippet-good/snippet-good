@@ -33,7 +33,7 @@ class Login extends Component {
         <AppBar position="fixed" style={styles.appbar}>
           <Toolbar>
             <Typography variant="h6" noWrap>
-              Codejar
+              CodeJar
             </Typography>
           </Toolbar>
         </AppBar>
