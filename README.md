@@ -2,6 +2,8 @@
 
 CodeJar is an educational platform for Fullstack students and instructors to manage coding exercises. Instructors can create, assign, and review coding exercises (AKA 'stretches') while also keeping track of attendance and the overall performance of their cohort. Students can submit answers, review their work, and track their personal progress throughout their program.
 
+Deployed app is at https://code-jar.herokuapp.com/
+
 ## Setup
 
 **Install OS level dependencies**
@@ -24,10 +26,8 @@ npm install
 **Steps to start app locally**
 
 1. Run one of two scripts
-
-- `npm run start:dev` - this script reseeds data, starts server, and watches for changes in backend (any file in server directory) and frontend (any .js file in client directory) code
-- `npm start` - this script is the one used in production, it only starts the server
-
+   - `npm run start:dev` - this script reseeds data, starts server, and watches for changes in backend (any file in server directory) and frontend (any .js file in client directory) code
+   - `npm start` - this script is the one used in production, it only starts the server
 2. Go to http://localhost:3000
 3. Login in as instructor or student
    - instructor emails in original seeded data are a@gmail.com, b@gmail.com, and c@gmail.com
