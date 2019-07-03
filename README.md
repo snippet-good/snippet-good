@@ -24,13 +24,15 @@ npm install
 **Steps to start app locally**
 
 1. Run one of two scripts
-2. `npm run start:dev` - this script reseeds data, starts server, and watches for changes in backend (any file in server directory) and frontend (any .js file in client directory) code
-3. `npm start` - this script is the one used in production, it only starts the server
-4. Go to http://localhost:3000
-5. Login in as instructor or student
+
+- `npm run start:dev` - this script reseeds data, starts server, and watches for changes in backend (any file in server directory) and frontend (any .js file in client directory) code
+- `npm start` - this script is the one used in production, it only starts the server
+
+2. Go to http://localhost:3000
+3. Login in as instructor or student
    - instructor emails in original seeded data are a@gmail.com, b@gmail.com, and c@gmail.com
    - student emails in original seeded data are next 20 letters of alphabet at gmail, so d@gmail.com to w@gmail.com
-6. Enjoy!
+4. Enjoy!
 
 **Environment variables**
 
