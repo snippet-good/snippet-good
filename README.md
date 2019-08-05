@@ -32,12 +32,13 @@ npm install
 3. Login in as instructor or student
    - instructor emails in original seeded data are a@gmail.com, b@gmail.com, and c@gmail.com
    - student emails in original seeded data are next 20 letters of alphabet at gmail, so d@gmail.com to w@gmail.com
+   - password is always '12345'
 4. Enjoy!
 
 **Environment variables**
 
 - **DATABASE_URL**: If you do not specify it, will be "postgres://localhost/snippet_db" (will work if you follow setup instructions)
-- **PORT**: If you do not specify it, will be "3000" (hence step 4 above)
+- **PORT**: If you do not specify it, will be "3000" (hence step 2 above)
 - **GIPHY_API_KEY**: Obtain an API key from https://developers.giphy.com/ and set the key as value of this variable in an .env file
 
 **Other Scripts To Use**
