@@ -32,6 +32,7 @@ npm install
 3. Login in as instructor or student
    - instructor emails in original seeded data are a@gmail.com, b@gmail.com, and c@gmail.com
    - student emails in original seeded data are next 20 letters of alphabet at gmail, so d@gmail.com to w@gmail.com
+   - password is always '12345'
 4. Enjoy!
 
 **Environment variables**
